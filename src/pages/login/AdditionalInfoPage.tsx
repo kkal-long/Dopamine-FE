@@ -12,7 +12,7 @@ const AdditionalInfoPage = () => {
     console.log("닉네임: ", nickname);
   };
 
-  const ProfileImageComponent = ProfileImages[selectedImage];
+  const ProfileImageUrl = ProfileImages[selectedImage];
 
   return (
     <div className="flex flex-col my-8 mx-4">
@@ -25,12 +25,16 @@ const AdditionalInfoPage = () => {
 
       <div className="flex justify-center mb-3">
         <div className="w-24 h-24 rounded-full border border-black flex items-center justify-center overflow-hidden">
-          <ProfileImageComponent className="w-full h-full" />
+          <img
+            src={ProfileImageUrl}
+            alt="프로필 이미지"
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
 
       <div className="grid grid-cols-4 gap-5 mb-8 ">
-        {ProfileImages.map((ImageComponent, index) => (
+        {ProfileImages.map((url, index) => (
           <button
             key={index}
             onClick={() => setSelectedImage(index)}
@@ -39,7 +43,11 @@ const AdditionalInfoPage = () => {
               selectedImage === index ? "border-mainpink" : "border-grey04"
             )}
           >
-            <ImageComponent className="w-16 h-16" />
+            <img
+              src={url}
+              alt={`프로필 이미지${index + 1}`}
+              className="w-16 h-16 object-cover"
+            />
             {selectedImage === index && (
               <div className="absolute -top-2 -right-4 z-10">
                 <Check className="w-5 h-5" />

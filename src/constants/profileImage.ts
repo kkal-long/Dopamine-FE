@@ -1,4 +1,4 @@
-import * as Profile from "@/assets/svgs/profile/index";
+import * as Profile from "@/assets/images/profile/index";
 
 export const ProfileImages = [
   Profile.ProfileImage1,
