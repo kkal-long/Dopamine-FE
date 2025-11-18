@@ -1,10 +1,16 @@
-import { useMemo } from "react";
+import { Logo } from "@/assets/svgs/main";
+import HeaderBell from "@/components/mainpage/HeaderBell";
 import SwipeDeck from "@/components/mainpage/SwipeDeck";
+import useNotificationSSE from "@/hooks/useNotificationSSE";
+import { useNotificationStore } from "@/state/useNotificationStore";
 import type { MainPageProduct } from "@/types/item/bid/Bid.type";
-
-import { Logo, Alarm } from "@/assets/svgs/main";
+import { useMemo } from "react";
 
 export default function HomePage() {
+  // 페이지 로드 시 SSE 연결
+  useNotificationSSE();
+
+  const unread = useNotificationStore(s => s.unreadCount);
   const products: MainPageProduct[] = useMemo(
     () => [
       {
@@ -45,16 +51,12 @@ export default function HomePage() {
       <header className="mx-auto w-[360px] py-4">
         <div className="flex items-center justify-between">
           {/* LOGO (컴포넌트) */}
-          <Logo className="h-3.5 w-auto ml-3" aria-label="LOGO" />
+          <Logo className="w-[58px] h-auto ml-3" aria-label="LOGO" />
 
-          {/* 알림 아이콘 (컴포넌트) */}
-          <button
-            type="button"
-            aria-label="알림"
-            className="grid h-6 w-6 place-items-center mr-3"
-          >
-            <Alarm className="h-5 w-5" />
-          </button>
+          {/* 2) 알림 아이콘 → HeaderBell 컴포넌트로 교체 */}
+          <div className="mr-3">
+            <HeaderBell />
+          </div>
         </div>
       </header>
 

@@ -7,27 +7,30 @@ import MainLayout from "@/layouts/MainLayout";
 import HomePage from "@/pages/home/HomePage";
 
 // 검색
+import CategoryResultPage from "@/pages/search/CategoryResultPage";
+import CategorySearchPage from "@/pages/search/CategorySearchPage";
+import CategorySelectPage from "@/pages/search/CategorySelectPage";
 import SearchPage from "@/pages/search/SearchPage";
 import SearchResultPage from "@/pages/search/SearchResultPage";
-import CategorySelectPage from "@/pages/search/CategorySelectPage";
-import CategorySearchPage from "@/pages/search/CategorySearchPage";
-import CategoryResultPage from "@/pages/search/CategoryResultPage";
 
 // 입찰/아이템
 import BidItemPage from "@/pages/bidItem/BidItemPage";
 import ItemDetailPage from "@/pages/itemDetail/ItemDetailPage";
 
 // 마이/포인트
-import MyPage from "@/pages/my/MyPage";
-import PointInquiryPage from "@/pages/my/PointInquiryPage";
 import ChargePointPage from "@/pages/my/ChargePointPage";
+import MyPage from "@/pages/my/MyPage";
 import NewAutionPage from "@/pages/my/NewAutionPage";
+import PointInquiryPage from "@/pages/my/PointInquiryPage";
+
+// 알림
+import AlarmPage from "@/pages/alarm/AlarmPage";
 
 // 기타
-import OnboardingPage from "@/pages/onboarding/OnboardingPage";
-import LoginPage from "@/pages/login/LoginPage";
 import ChatPage from "@/pages/chat/ChatPage";
+import LoginPage from "@/pages/login/LoginPage";
 import NotFoundPage from "@/pages/notFound/NotFoundPage";
+import OnboardingPage from "@/pages/onboarding/OnboardingPage";
 
 function App() {
   return (
@@ -67,6 +70,9 @@ function App() {
           <Route path="my/points" element={<PointInquiryPage />} />
           <Route path="my/points/charge" element={<ChargePointPage />} />
           <Route path="my/item/new" element={<NewAutionPage />} />
+
+          {/* 알림 페이지 */}
+          <Route path="alarm" element={<AlarmPage />} />
 
           {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />
