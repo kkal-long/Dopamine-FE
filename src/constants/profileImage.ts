@@ -1,16 +1,14 @@
-import * as Profile from "@/assets/images/profile/index";
-
 export const ProfileImages = [
-  Profile.ProfileImage1,
-  Profile.ProfileImage2,
-  Profile.ProfileImage3,
-  Profile.ProfileImage4,
-  Profile.ProfileImage5,
-  Profile.ProfileImage6,
-  Profile.ProfileImage7,
-  Profile.ProfileImage8,
-  Profile.ProfileImage9,
-  Profile.ProfileImage10,
-  Profile.ProfileImage11,
-  Profile.ProfileImage12,
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/Frame-1.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/Frame.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-1.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-2.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-3.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-4.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-5.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-6.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-7.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-8.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img-9.png",
+  "https://plip-images-bucket.s3.ap-northeast-2.amazonaws.com/plip-character-images/img.png",
 ];
