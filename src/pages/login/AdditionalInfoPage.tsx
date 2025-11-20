@@ -1,18 +1,36 @@
 import { Check } from "@/assets/svgs/common";
 import { ProfileImages } from "@/constants/profileImage";
+import { useAuthApi } from "@/hooks/auth/useAuthApi";
 import clsx from "clsx";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdditionalInfoPage = () => {
+  const navigate = useNavigate();
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [nickname, setNickname] = useState("");
 
-  const handleSubmit = () => {
-    console.log("프로필 이미지: ", selectedImage);
-    console.log("닉네임: ", nickname);
-  };
+  const { putUserProfileMutation } = useAuthApi();
 
   const ProfileImageUrl = ProfileImages[selectedImage];
+
+  const handleSubmit = () => {
+    putUserProfileMutation.mutate(
+      {
+        profileImageUrl: ProfileImages[selectedImage],
+        nickname: nickname,
+      },
+      {
+        onSuccess: () => {
+          navigate("/");
+        },
+        onError: () => {
+          alert("프로필 설정에 실패했습니다. 잠시 후 다시 시도해주세요.");
+        },
+      }
+    );
+  };
 
   return (
     <div className="flex flex-col my-8 mx-4">

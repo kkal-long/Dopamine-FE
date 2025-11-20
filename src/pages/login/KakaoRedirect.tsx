@@ -31,8 +31,6 @@ const KakaoRedirect = () => {
     const firstLoginParam = urlParams.get("isFirstLogin");
     const refreshToken = getCookie("refresh_token");
 
-    console.log(refreshToken);
-
     if (accessToken && refreshToken) {
       isProcessing.current = true;
 

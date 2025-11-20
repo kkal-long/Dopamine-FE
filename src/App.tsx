@@ -6,6 +6,8 @@ import BidItemPage from "@/pages/bidItem/BidItemPage";
 import ChatPage from "@/pages/chat/ChatPage";
 import HomePage from "@/pages/home/HomePage";
 import ItemDetailPage from "@/pages/itemDetail/ItemDetailPage";
+import AdditionalInfoPage from "@/pages/login/AdditionalInfoPage";
+import KakaoRedirectPage from "@/pages/login/KakaoRedirect";
 import LoginPage from "@/pages/login/LoginPage";
 import ChargePointPage from "@/pages/my/ChargePointPage";
 import MyPage from "@/pages/my/MyPage";
@@ -13,11 +15,11 @@ import NewAutionPage from "@/pages/my/NewAutionPage";
 import PointInquiryPage from "@/pages/my/PointInquiryPage";
 import NotFoundPage from "@/pages/notFound/NotFoundPage";
 import OnboardingPage from "@/pages/onboarding/OnboardingPage";
+import CategoryResultPage from "@/pages/search/CategoryResultPage";
+import CategorySearchPage from "@/pages/search/CategorySearchPage";
+import CategorySelectPage from "@/pages/search/CategorySelectPage";
 import SearchPage from "@/pages/search/SearchPage";
 import SearchResultPage from "@/pages/search/SearchResultPage";
-import CategorySelectPage from "@/pages/search/CategorySelectPage";
-import CategorySearchPage from "@/pages/search/CategorySearchPage";
-import CategoryResultPage from "@/pages/search/CategoryResultPage";
 
 function App() {
   return (
@@ -46,6 +48,11 @@ function App() {
 
           <Route path="onboarding" element={<OnboardingPage />} />
           <Route path="login" element={<LoginPage />} />
+          <Route path="/auth/kakao/callback" element={<KakaoRedirectPage />} />
+          <Route
+            path="/register/additional-info"
+            element={<AdditionalInfoPage />}
+          />
           <Route path="item/:id" element={<ItemDetailPage />} />
           <Route path="chat/:id" element={<ChatPage />} />
           <Route path="my/points" element={<PointInquiryPage />} />
