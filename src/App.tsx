@@ -23,15 +23,15 @@ import BidItemPage from "@/pages/bidItem/BidItemPage";
 import ItemDetailPage from "@/pages/itemDetail/ItemDetailPage";
 
 // 마이/포인트
-import ChargePointPage from "@/pages/my/ChargePointPage";
 import MyPage from "@/pages/my/MyPage";
-import NewAutionPage from "@/pages/my/NewAutionPage";
 import PointInquiryPage from "@/pages/my/PointInquiryPage";
+import ChargePointPage from "@/pages/my/ChargePointPage";
+import NewAutionPage from "@/pages/my/NewAutionPage";
 
 // 기타
+import OnboardingPage from "@/pages/onboarding/OnboardingPage";
 import ChatPage from "@/pages/chat/ChatPage";
 import NotFoundPage from "@/pages/notFound/NotFoundPage";
-import OnboardingPage from "@/pages/onboarding/OnboardingPage";
 
 function App() {
   return (
