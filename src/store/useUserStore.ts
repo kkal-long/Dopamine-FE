@@ -3,39 +3,34 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 type UserState = {
   userId: number | null;
-  isLoggedIn: boolean;
-  login: (userId: number) => void;
-  logout: () => void;
+  userName: string | null;
+  userImage: string | null;
+  setUser: (user: {
+    userId: number;
+    userName: string;
+    userImage: string;
+  }) => void;
+  clearUser: () => void;
 };
 
 export const useUserStore = create<UserState>()(
   persist(
     set => ({
-      userId: 1, // TODO: null로 변경
-      isLoggedIn: true, // TODO: false로 변경
+      userId: null,
+      userName: null,
+      userImage: null,
 
-      login: userId => {
-        set({ userId, isLoggedIn: true });
+      setUser: user => {
+        set(user);
       },
 
-      logout: () => {
-        set({ userId: null, isLoggedIn: false });
+      clearUser: () => {
+        set({ userId: null, userName: null, userImage: null });
       },
     }),
     {
       name: "user-storage",
       storage: createJSONStorage(() => localStorage),
-
-      partialize: state => ({
-        userId: state.userId,
-        isLoggedIn: state.isLoggedIn,
-      }),
-
-      onRehydrateStorage: state => {
-        if (state && !state.userId) {
-          state.isLoggedIn = false;
-        }
-      },
     }
   )
 );
