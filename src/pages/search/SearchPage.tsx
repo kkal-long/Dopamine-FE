@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { Delete, Goback, Search } from "@/assets/svgs/search";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Goback, Delete } from "@/assets/svgs/search";
 
 const SearchPage: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -65,13 +65,13 @@ const SearchPage: React.FC = () => {
             onKeyDown={handleKeyDown}
             type="text"
             placeholder="검색어를 입력하세요"
-            className="flex-1 bg-transparent outline-none font-med16 text-darkgrey02 placeholder-bluegrey04"
+            className="flex-1 bg-transparent outline-none text-med16 text-darkgrey02 placeholder-bluegrey04"
           />
         </div>
       </div>
 
       {/* 최근 검색어 */}
-      <h2 className="font-med16 text-darkgrey05 mb-4">최근 검색어</h2>
+      <h2 className="text-med16 text-darkgrey05 mb-4">최근 검색어</h2>
 
       <div
         className="flex flex-nowrap overflow-x-auto gap-2 pb-1 scrollbar-hide"
@@ -81,12 +81,12 @@ const SearchPage: React.FC = () => {
         }}
       >
         {recentSearches.length === 0 ? (
-          <p className="font-med14 text-grey04">최근 검색어가 없습니다.</p>
+          <p className="text-med14 text-grey04">최근 검색어가 없습니다.</p>
         ) : (
           recentSearches.map((item, i) => (
             <div
               key={i}
-              className="flex items-center font-med14 text-darkgrey01 border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0 cursor-pointer"
+              className="flex items-center text-med14 text-darkgrey01 border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0 cursor-pointer"
             >
               {/* 최근 검색어 클릭 시 자동 검색 */}
               <span onClick={() => handleRecentClick(item)}>{item}</span>

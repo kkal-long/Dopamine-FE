@@ -1,0 +1,9 @@
+export { default as Profile } from "./mockProfileImage.svg?react";
+export { default as Plus } from "./plus.svg?react";
+export { default as PlusPoint } from "./plusPoint.svg?react";
+export { default as MinusPoint } from "./minusPoint.svg?react";
+export { default as Camera } from "./camera.svg?react";
+export { default as NewPlus } from "./newItemPlus.svg?react";
+export { default as DropDown } from "./dropDown.svg?react";
+export { default as DropUp } from "./dropUp.svg?react";
+export { default as Warning } from "./warning.svg?react";

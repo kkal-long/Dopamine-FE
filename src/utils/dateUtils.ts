@@ -1,4 +1,9 @@
-import { format, formatDistanceToNow, intervalToDuration } from "date-fns";
+import {
+  format,
+  formatDistanceToNow,
+  intervalToDuration,
+  parseISO,
+} from "date-fns";
 import { ko } from "date-fns/locale";
 
 export const formatTimeLeft = (dateStr: string) => {
@@ -73,4 +78,12 @@ export const formatTimeStamp = (dateStr: string) => {
   const date = new Date(dateStr);
 
   return format(date, "a h:mm", { locale: ko });
+};
+
+export const formatDateSimple = (dateStr: string) => {
+  if (!dateStr) return;
+
+  const date = parseISO(dateStr);
+
+  return format(date, "yyyy-MM-dd HH:mm");
 };

@@ -16,7 +16,7 @@ const getCookie = (name: string): string | null => {
   return null;
 };
 
-const KakaoRedirect = () => {
+const KakaoRedirectPage = () => {
   const navigate = useNavigate();
   const authLogin = useAuthStore(state => state.login);
 
@@ -54,4 +54,4 @@ const KakaoRedirect = () => {
   return <LoadingSpinner />;
 };
 
-export default KakaoRedirect;
+export default KakaoRedirectPage;

@@ -1,5 +1,5 @@
+import { Goback, Search } from "@/assets/svgs/search";
 import React from "react";
-import { Search, Goback } from "@/assets/svgs/search";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const mockProducts = [
@@ -49,7 +49,7 @@ const CategoryResultPage: React.FC = () => {
           <Goback className="w-[17.5px] h-[24px]" />
         </button>
 
-        <h2 className="font-med16 text-darkgrey05">{category}</h2>
+        <h2 className="text-med16 text-darkgrey05">{category}</h2>
 
         <Search
           className="w-[17.5px] h-[24px] cursor-pointer"
@@ -72,18 +72,18 @@ const CategoryResultPage: React.FC = () => {
             >
               <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4" />
               <div className="flex flex-col flex-1">
-                <span className="font-med16 text-darkgrey05 mb-[4px]">
+                <span className="text-med16 text-darkgrey05 mb-[4px]">
                   {name}
                 </span>
                 <div className="flex items-center gap-2 mb-[4px]">
-                  <span className="font-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
+                  <span className="text-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
                     {status}
                   </span>
-                  <span className="font-med14 text-mainpink">
+                  <span className="text-med14 text-mainpink">
                     {timeLeft}시간 남음
                   </span>
                 </div>
-                <span className="font-med14 text-darkgrey05">
+                <span className="text-med14 text-darkgrey05">
                   현재 최고가: ₩{price.toLocaleString()}
                 </span>
               </div>
@@ -91,7 +91,7 @@ const CategoryResultPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p className="font-med14 text-grey04 text-center mt-8">
+        <p className="text-med14 text-grey04 text-center mt-8">
           해당 카테고리의 상품이 없습니다.
         </p>
       )}

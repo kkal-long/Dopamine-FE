@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Search, Goback, Delete } from "@/assets/svgs/search";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Delete, Goback, Search } from "@/assets/svgs/search";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const mockProducts = [
   {
@@ -120,7 +120,7 @@ const CategorySearchPage: React.FC = () => {
           {/* 카테고리 태그 */}
           {activeCategory && (
             <div className="flex items-center whitespace-nowrap border border-grey09 rounded-[8px] px-[6px] py-[5px] mr-2">
-              <span className="font-med14 text-darkgrey01 mr-[4px]">
+              <span className="text-med14 text-darkgrey01 mr-[4px]">
                 {activeCategory}
               </span>
               <button
@@ -143,7 +143,7 @@ const CategorySearchPage: React.FC = () => {
                 handleSearchSubmit();
               }
             }}
-            className="flex-1 bg-transparent outline-none font-med16 font-medium leading-[150%] text-darkgrey02 placeholder-bluegrey04"
+            className="flex-1 bg-transparent outline-none text-med16 leading-[150%] text-darkgrey02 placeholder-bluegrey04"
           />
         </div>
       </div>
@@ -151,7 +151,7 @@ const CategorySearchPage: React.FC = () => {
       {/* 최근 검색어 */}
       {recentSearches.length > 0 && (
         <div className="mt-4">
-          <p className="font-med14 text-darkgrey05 mb-3">최근 검색어</p>
+          <p className="text-med14 text-darkgrey05 mb-3">최근 검색어</p>
           <div
             className="flex flex-nowrap overflow-x-auto gap-2 pb-1 scrollbar-hide"
             style={{
@@ -162,7 +162,7 @@ const CategorySearchPage: React.FC = () => {
             {recentSearches.map((word, i) => (
               <div
                 key={i}
-                className="flex items-center font-med14 text-grey14 border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0 cursor-pointer"
+                className="flex items-center text-med14 text-grey14 border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0 cursor-pointer"
               >
                 <button
                   onClick={() => setQuery(word)}
@@ -172,7 +172,7 @@ const CategorySearchPage: React.FC = () => {
                 </button>
                 <button
                   onClick={() => handleRecentDelete(word)}
-                  className="font-med12 text-grey09 flex items-center justify-center"
+                  className="text-med12 text-grey09 flex items-center justify-center"
                 >
                   <Delete className="w-3 h-4" />
                 </button>
@@ -185,7 +185,7 @@ const CategorySearchPage: React.FC = () => {
       {/* 검색 결과 */}
       {query && (
         <div className="mt-6">
-          <p className="font-med12 text-black mb-[10px]">
+          <p className="text-med12 text-black mb-[10px]">
             검색 결과 {filteredProducts.length}개
           </p>
           <div
@@ -193,7 +193,7 @@ const CategorySearchPage: React.FC = () => {
             style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
           >
             {filteredProducts.length === 0 ? (
-              <p className="font-med14 text-grey04">검색 결과가 없습니다.</p>
+              <p className="text-med14 text-grey04">검색 결과가 없습니다.</p>
             ) : (
               filteredProducts.map(product => (
                 <div
@@ -202,18 +202,18 @@ const CategorySearchPage: React.FC = () => {
                 >
                   <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 flex-shrink-0" />
                   <div className="flex flex-col flex-1">
-                    <span className="font-med16 text-darkgrey05 mb-[4px]">
+                    <span className="text-med16 text-darkgrey05 mb-[4px]">
                       {product.name}
                     </span>
                     <div className="flex items-center gap-2 mb-[4px]">
-                      <span className="font-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
+                      <span className="text-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
                         {product.status}
                       </span>
-                      <span className="font-med14 text-mainpink">
+                      <span className="text-med14 text-mainpink">
                         {product.timeLeft}시간 남음
                       </span>
                     </div>
-                    <span className="font-med14 text-darkgrey05">
+                    <span className="text-med14 text-darkgrey05">
                       현재 최고가: ₩{product.price.toLocaleString()}
                     </span>
                   </div>

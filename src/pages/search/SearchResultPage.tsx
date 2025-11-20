@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { Dropdown, Filter, Goback, Search } from "@/assets/svgs/search";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Search, Goback, Filter, Dropdown } from "@/assets/svgs/search";
 
 const mockProducts = [
   {
@@ -73,7 +73,7 @@ const SearchResultPage: React.FC = () => {
             onKeyDown={e => e.key === "Enter" && handleSearchSubmit()}
             type="text"
             placeholder="검색어를 입력하세요"
-            className="flex-1 bg-transparent outline-none font-med16 text-darkgrey02 placeholder-bluegrey04"
+            className="flex-1 bg-transparent outline-none text-med16 text-darkgrey02 placeholder-bluegrey04"
           />
         </div>
       </div>
@@ -91,7 +91,7 @@ const SearchResultPage: React.FC = () => {
           {["상태", "연식", "가격", "카테고리"].map(label => (
             <button
               key={label}
-              className="flex items-center font-med13 text-grey14 border border-grey09 rounded-[3px] px-[6px] py-[3px] whitespace-nowrap flex-shrink-0"
+              className="flex items-center text-med13 text-grey14 border border-grey09 rounded-[3px] px-[6px] py-[3px] whitespace-nowrap flex-shrink-0"
             >
               {label}
               <Dropdown className="w-[18px] h-[18px] ml-[4px]" />
@@ -100,7 +100,7 @@ const SearchResultPage: React.FC = () => {
         </div>
       </div>
 
-      <p className="font-med12 text-black mb-[10px]">
+      <p className="text-med12 text-black mb-[10px]">
         검색 결과 {filteredProducts.length}개
       </p>
 
@@ -113,7 +113,7 @@ const SearchResultPage: React.FC = () => {
         }}
       >
         {filteredProducts.length === 0 ? (
-          <p className="font-med14 text-grey04">검색 결과가 없습니다.</p>
+          <p className="text-med14 text-grey04">검색 결과가 없습니다.</p>
         ) : (
           filteredProducts.map(({ id, name, price, status, timeLeft }) => (
             <div
@@ -122,18 +122,18 @@ const SearchResultPage: React.FC = () => {
             >
               <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 flex-shrink-0" />
               <div className="flex flex-col flex-1">
-                <span className="font-med16 text-darkgrey05 mb-[4px]">
+                <span className="text-med16 text-darkgrey05 mb-[4px]">
                   {name}
                 </span>
                 <div className="flex items-center gap-2 mb-[4px]">
-                  <span className="font-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
+                  <span className="text-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
                     {status}
                   </span>
-                  <span className="font-med14 text-mainpink">
+                  <span className="text-med14 text-mainpink">
                     {timeLeft}시간 남음
                   </span>
                 </div>
-                <span className="font-med14 text-darkgrey05">
+                <span className="text-med14 text-darkgrey05">
                   현재 최고가: ₩{price.toLocaleString()}
                 </span>
               </div>

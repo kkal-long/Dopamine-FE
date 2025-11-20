@@ -7,39 +7,27 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push:
+   build:
     runs-on: ubuntu-latest
+    container: pandoc/latex
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Prepare output
-        shell: sh
-        run: |
-          # enable extglob and dotglob might not work in sh
-          # Use alternative commands for file copying
-          rm -rf output
-          mkdir output
-          # Use find command instead of extglob pattern
-          find . -maxdepth 1 -not -path "./output" -not -path "./.git" -not -path "./.github" -exec cp -R {} output/ \;
-
-      - name: Push to https://github.com/BeJunseok/Dopamine-FE
-        id: push
-        uses: cpina/github-action-push-to-another-repository@v1.7.2
+      - uses: actions/checkout@v2
+      - name: Install mustache (to update the date)
+        run: apk add ruby && gem install mustache
+      - name: creates output
+        run: sh ./build.sh
+      - name: Pushes to another repository
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
         with:
-          source-directory: "output"
+          source-directory: 'output'
           destination-github-username: BeJunseok
           destination-repository-name: Dopamine-FE
-          user-name: GitHub Actions
           user-email: ${{ secrets.EMAIL }}
           commit-message: "Deploy: ${{ github.event.head_commit.message }} (${{ github.sha }})"
           target-branch: dev
-
-      - name: "Debug: show cloned dir"
-        run: echo "Cloned into $DESTINATION_CLONED_DIRECTORY"
+      - name: Test get variable exported by push-to-another-repository
+        run: echo $DESTINATION_CLONED_DIRECTORY
