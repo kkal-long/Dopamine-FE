@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -18,6 +18,7 @@ const getCookie = (name: string): string | null => {
 
 const KakaoRedirectPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const authLogin = useAuthStore(state => state.login);
 
   const isProcessing = useRef(false);
@@ -25,10 +26,8 @@ const KakaoRedirectPage = () => {
   useEffect(() => {
     if (isProcessing.current) return;
 
-    const urlParams = new URLSearchParams(window.location.search);
-
-    const accessToken = urlParams.get("token");
-    const firstLoginParam = urlParams.get("isFirstLogin");
+    const accessToken = searchParams.get("token");
+    const firstLoginParam = searchParams.get("isFirstLogin");
     const refreshToken = getCookie("refresh_token");
 
     if (accessToken && refreshToken) {
@@ -49,7 +48,7 @@ const KakaoRedirectPage = () => {
       console.error("로그인 토큰을 찾을 수 없습니다.");
       navigate("/login", { replace: true });
     }
-  }, [navigate, authLogin]);
+  }, [navigate, authLogin, searchParams]);
 
   return <LoadingSpinner />;
 };
