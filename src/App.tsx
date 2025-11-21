@@ -3,15 +3,20 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LayoutWithFooter from "@/layouts/LayoutWithFooter";
 import MainLayout from "@/layouts/MainLayout";
 
+// 로그인
+import AdditionalInfoPage from "@/pages/login/AdditionalInfoPage";
+import KakaoRedirectPage from "@/pages/login/KakaoRedirectPage";
+import LoginPage from "@/pages/login/LoginPage";
+
 // 메인(홈)
 import HomePage from "@/pages/home/HomePage";
 
 // 검색
+import CategoryResultPage from "@/pages/search/CategoryResultPage";
+import CategorySearchPage from "@/pages/search/CategorySearchPage";
+import CategorySelectPage from "@/pages/search/CategorySelectPage";
 import SearchPage from "@/pages/search/SearchPage";
 import SearchResultPage from "@/pages/search/SearchResultPage";
-import CategorySelectPage from "@/pages/search/CategorySelectPage";
-import CategorySearchPage from "@/pages/search/CategorySearchPage";
-import CategoryResultPage from "@/pages/search/CategoryResultPage";
 
 // 입찰/아이템
 import BidItemPage from "@/pages/bidItem/BidItemPage";
@@ -25,7 +30,6 @@ import NewAutionPage from "@/pages/my/NewAutionPage";
 
 // 기타
 import OnboardingPage from "@/pages/onboarding/OnboardingPage";
-import LoginPage from "@/pages/login/LoginPage";
 import ChatPage from "@/pages/chat/ChatPage";
 import NotFoundPage from "@/pages/notFound/NotFoundPage";
 
@@ -62,6 +66,11 @@ function App() {
           {/* 하단 탭이 필요 없는 단일 화면들 */}
           <Route path="onboarding" element={<OnboardingPage />} />
           <Route path="login" element={<LoginPage />} />
+          <Route path="/auth/kakao/callback" element={<KakaoRedirectPage />} />
+          <Route
+            path="/register/additional-info"
+            element={<AdditionalInfoPage />}
+          />
           <Route path="item/:id" element={<ItemDetailPage />} />
           <Route path="chat/:id" element={<ChatPage />} />
           <Route path="my/points" element={<PointInquiryPage />} />

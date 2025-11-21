@@ -1,4 +1,4 @@
-import Check from "@/assets/svgs/item/bid/check.svg?react";
+import { Check } from "@/assets/svgs/common/index";
 import Trophy from "@/assets/svgs/item/bid/trophy.svg?react";
 import WonItem from "@/components/item/bid/won/WonItem";
 import { WonItems } from "@/types/item/bid/Bid.type";
