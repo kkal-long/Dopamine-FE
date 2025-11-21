@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
   getUserProfile,
@@ -7,21 +7,11 @@ import {
 } from "@/apis/auth/authApi";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useUserStore } from "@/store/useUserStore";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
 export const useAuthApi = () => {
   const queryClient = useQueryClient();
-  const location = useLocation();
-
   const setAccessToken = useAuthStore(state => state.setAccessToken);
-  const isLoggedIn = useAuthStore(state => state.isLoggedIn);
   const setUser = useUserStore(state => state.setUser);
-
-  const excludePaths = ["/auth/kakao/callback", "/register"];
-  const skipUserProfile = excludePaths.some(path =>
-    location.pathname.includes(path)
-  );
 
   const postRefreshMutation = useMutation({
     mutationFn: postRefresh,
@@ -49,39 +39,24 @@ export const useAuthApi = () => {
     },
   });
 
-  const getUserProfileQuery = useQuery({
-    queryKey: ["userProfile"],
-    queryFn: getUserProfile,
-    enabled: isLoggedIn && !skipUserProfile,
-    staleTime: 1000 * 60 * 5, // 5분
-  });
-
   const getUserProfileMutation = useMutation({
     mutationFn: getUserProfile,
     onSuccess: res => {
-      const { user_id, nickname, profileImageUrl } = res;
+      try {
+        const { user_id, nickname, profileImageUrl } = res;
 
-      setUser({
-        userId: user_id,
-        userName: nickname,
-        userImage: profileImageUrl,
-      });
+        setUser({
+          userId: user_id,
+          userName: nickname,
+          userImage: profileImageUrl,
+        });
 
-      queryClient.setQueryData(["userProfile"], res);
+        queryClient.setQueryData(["userProfile"], res);
+      } catch (error) {
+        console.error(error);
+      }
     },
   });
-
-  useEffect(() => {
-    if (getUserProfileQuery.isSuccess && getUserProfileQuery.data) {
-      const { user_id, nickname, profileImageUrl } = getUserProfileQuery.data;
-
-      setUser({
-        userId: user_id,
-        userName: nickname,
-        userImage: profileImageUrl,
-      });
-    }
-  }, [getUserProfileQuery.data, getUserProfileQuery.isSuccess, setUser]);
 
   return {
     postRefreshMutation,

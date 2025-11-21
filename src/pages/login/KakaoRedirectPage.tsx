@@ -44,21 +44,21 @@ const KakaoRedirectPage = () => {
       if (firstLoginParam === "true") {
         navigate("/register/additional-info", { replace: true });
       } else {
-        getUserProfileMutation.mutate(undefined, {
-          onSuccess: () => {
+        getUserProfileMutation
+          .mutateAsync(undefined)
+          .then(() => {
             navigate("/", { replace: true });
-          },
-          onError: error => {
+          })
+          .catch(error => {
             console.error("유저 정보 조회 실패:", error);
             navigate("/login", { replace: true });
-          },
-        });
+          });
       }
     } else {
       console.error("로그인 토큰을 찾을 수 없습니다.");
       navigate("/login", { replace: true });
     }
-  }, [navigate, authLogin, searchParams, getUserProfileMutation]);
+  }, [navigate, authLogin, searchParams]);
 
   return <LoadingSpinner />;
 };
