@@ -1,4 +1,5 @@
 import {
+  GetUserProfileResponse,
   PostRefreshRequest,
   PostRefreshResponse,
   PutUserProfileRequset,
@@ -18,5 +19,10 @@ export const putUserProfile = async (
   data: PutUserProfileRequset
 ): Promise<PutUserProfileResponse> => {
   const response = await instance.put("/user/profile", data);
+  return response.data;
+};
+
+export const getUserProfile = async (): Promise<GetUserProfileResponse> => {
+  const response = await instance.get("/user/profile");
   return response.data;
 };

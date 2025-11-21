@@ -16,3 +16,9 @@ export interface PutUserProfileResponse {
   nickname: string;
   profileImageUrl: string;
 }
+
+export interface GetUserProfileResponse {
+  user_id: number;
+  nickname: string;
+  profileImageUrl: string;
+}
