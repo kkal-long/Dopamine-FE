@@ -34,7 +34,7 @@ instance.interceptors.response.use(
         const { refreshToken } = useAuthStore.getState();
 
         if (!refreshToken) {
-          throw new Error("Refresh Token이 없습니다. 다시 로그안 하세요.");
+          throw new Error("Refresh Token이 없습니다. 다시 로그인 하세요.");
         }
 
         const refreshRes = await axios.post(
