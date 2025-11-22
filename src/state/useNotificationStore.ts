@@ -1,47 +1,50 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type Alarm = {
-  type: string;
-  productName: string; // 상품명 따로 분리
-  fullMessage: string; // 최종 메시지
-  price: string | null;
-  time: string;
+export type AlarmItem = {
+  id: number;
+  message: string;
+  auctionId: number;
+  type: "OUTBID" | "WIN";
+  isRead: boolean;
+  createdAt: string;
+
+  // UI 가공 필드
+  timeLabel: string; // "5분 전", "1시간 전"
+  typeLabel: string; // 상위 입찰 / 낙찰 종료
   icon: React.FC<React.SVGProps<SVGSVGElement>>;
 };
 
 type NotificationStore = {
-  alarms: Alarm[];
+  alarms: AlarmItem[];
   unreadCount: number;
 
-  addAlarm: (alarm: Alarm) => void;
-  setAlarms: (list: Alarm[]) => void;
+  addAlarm: (alarm: AlarmItem) => void;
+  setAlarms: (list: AlarmItem[]) => void;
   resetUnread: () => void;
 };
 
-// persist 적용된 버전
 export const useNotificationStore = create<NotificationStore>()(
   persist(
     set => ({
       alarms: [],
       unreadCount: 0,
 
-      // 새 알림 추가
       addAlarm: alarm =>
         set(state => ({
-          alarms: [alarm, ...state.alarms], // 최신 알림이 위로
+          alarms: [alarm, ...state.alarms],
           unreadCount: state.unreadCount + 1,
         })),
 
-      // 알림 리스트 전체 세팅
-      setAlarms: list => set({ alarms: list }),
+      setAlarms: list =>
+        set(() => ({
+          alarms: list,
+        })),
 
-      // 읽지 않은 알림 개수 초기화
       resetUnread: () => set({ unreadCount: 0 }),
     }),
-
     {
-      name: "notification-store", // localStorage key
+      name: "notification-store",
     }
   )
 );

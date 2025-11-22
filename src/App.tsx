@@ -1,6 +1,8 @@
-import { RouterProvider } from "react-router-dom";
+// App.tsx
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { router } from "@/router/Router";
+import LayoutWithFooter from "@/layouts/LayoutWithFooter";
+import MainLayout from "@/layouts/MainLayout";
 
 // 메인(홈)
 import HomePage from "@/pages/home/HomePage";
@@ -17,7 +19,7 @@ import BidItemPage from "@/pages/bidItem/BidItemPage";
 import ItemDetailPage from "@/pages/itemDetail/ItemDetailPage";
 
 // 마이/포인트
-import ChargePointPage from "@/pages/my/ChargePointPage";
+import ChargePointPage from "@/pages/my/charge/ChargePointPage";
 import MyPage from "@/pages/my/MyPage";
 import NewAutionPage from "@/pages/my/NewAutionPage";
 import PointInquiryPage from "@/pages/my/PointInquiryPage";
@@ -35,14 +37,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 앱 공통 레이아웃 */}
         <Route path="/" element={<MainLayout />}>
-          {/* 하단 탭이 필요한 화면 묶음 */}
+          {/* Footer가 필요한 화면 */}
           <Route element={<LayoutWithFooter />}>
-            {/* 메인페이지: 루트(index)로 고정 */}
             <Route index element={<HomePage />} />
 
-            {/* 메인 근처에서 이동하는 화면들 */}
             <Route path="items" element={<BidItemPage />} />
             <Route path="search" element={<SearchPage />} />
             <Route path="search/result" element={<SearchResultPage />} />
@@ -61,7 +60,7 @@ function App() {
             <Route path="my" element={<MyPage />} />
           </Route>
 
-          {/* 하단 탭이 필요 없는 단일 화면들 */}
+          {/* Footer가 필요 없는 화면 */}
           <Route path="onboarding" element={<OnboardingPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="item/:id" element={<ItemDetailPage />} />
@@ -70,7 +69,7 @@ function App() {
           <Route path="my/points/charge" element={<ChargePointPage />} />
           <Route path="my/item/new" element={<NewAutionPage />} />
 
-          {/* 알림 페이지 */}
+          {/* 알림 */}
           <Route path="alarm" element={<AlarmPage />} />
 
           {/* 404 */}
@@ -80,8 +79,5 @@ function App() {
     </BrowserRouter>
   );
 }
-const App = () => {
-  return <RouterProvider router={router} />;
-};
 
 export default App;

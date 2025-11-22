@@ -1,74 +1,75 @@
-import { AlarmLogo, AlarmUp } from "@/assets/svgs/alarm";
-import { Goback } from "@/assets/svgs/search";
-import { useNotificationStore } from "@/state/useNotificationStore";
+// AlarmPage.tsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { AlarmLogo, AlarmUp } from "@/assets/svgs/alarm";
+import { Goback } from "@/assets/svgs/search";
+
+import { useNotificationList } from "@/hooks/useNotification";
+import useNotificationSSE from "@/hooks/useNotificationSSE";
+import { useNotificationStore } from "@/state/useNotificationStore";
+
 export default function AlarmPage() {
   const navigate = useNavigate();
-  const alarms = useNotificationStore(s => s.alarms);
-  const resetUnread = useNotificationStore(s => s.resetUnread);
-  const setAlarms = useNotificationStore(s => s.setAlarms);
 
-  // day/hour/minute → "시간 전" 포맷
-  const formatTime = (day: number, hour: number, minute: number) => {
-    if (day > 0) return `${day}일 전`;
-    if (hour > 0) return `${hour}시간 전`;
-    return `${minute}분 전`;
+  const { data: notifications, isLoading } = useNotificationList();
+  const { setAlarms, resetUnread, alarms } = useNotificationStore();
+
+  // SSE 활성화
+  useNotificationSSE();
+
+  /** createdAt → "시간 전" */
+  const formatTime = (createdAt: string) => {
+    const created = new Date(createdAt);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - created.getTime()) / 1000);
+
+    const minutes = Math.floor(diff / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days}일 전`;
+    if (hours > 0) return `${hours}시간 전`;
+    return `${minutes}분 전`;
   };
 
-  // 페이지 나갈 때 unreadCount 초기화
+  /** 백엔드 type → 한글 타입 */
+  const typeLabel = (t: "OUTBID" | "WIN") => {
+    return t === "OUTBID" ? "상위 입찰" : "낙찰 종료";
+  };
+
+  /** 백엔드 type → 아이콘 매핑 */
+  const typeIcon = (t: "OUTBID" | "WIN") => {
+    return t === "OUTBID" ? AlarmUp : AlarmLogo;
+  };
+
+  /** API 알림 데이터를 Zustand alarms로 변환 */
   useEffect(() => {
-    return () => {
-      resetUnread();
-    };
+    if (!notifications) return;
+
+    const mapped = notifications.map(n => ({
+      id: n.id,
+      message: n.message,
+      auctionId: n.auctionId,
+      type: n.type,
+      isRead: n.isRead,
+      createdAt: n.createdAt,
+
+      // UI 가공 필드
+      typeLabel: typeLabel(n.type),
+      timeLabel: formatTime(n.createdAt),
+      icon: typeIcon(n.type),
+    }));
+
+    setAlarms(mapped);
+  }, [notifications, setAlarms]);
+
+  /** 페이지 나갈 때 읽지 않은 개수 초기화 */
+  useEffect(() => {
+    return () => resetUnread();
   }, []);
 
-  // mock 데이터 세팅 (테스트 모드)
-  useEffect(() => {
-    setAlarms([]); // 기존 알림 제거
-
-    const mockList = [
-      {
-        type: "상위 입찰",
-        productName: "빈티지 레더 자켓",
-        message: (productName: string) =>
-          `다른 사용자가 "${productName}"에 상위 입찰을 했어요.`,
-        price: "243,000원",
-        day: 0,
-        hour: 5,
-        minute: 30,
-        icon: AlarmUp,
-      },
-      {
-        type: "낙찰 종료",
-        productName: "인센스 홀더",
-        message: (productName: string) =>
-          `축하해요! "${productName}"가 방금 당신에게 낙찰됐어요. 구매를 이어서 진행할 수 있어요.`,
-        price: null,
-        day: 1,
-        hour: 2,
-        minute: 20,
-        icon: AlarmLogo,
-      },
-    ];
-
-    // 최신순 정렬
-    const sortedList = [...mockList].sort((a, b) => {
-      const tA = a.day * 1440 + a.hour * 60 + a.minute;
-      const tB = b.day * 1440 + b.hour * 60 + b.minute;
-      return tA - tB;
-    });
-
-    // 상태 저장
-    setAlarms(
-      sortedList.map(m => ({
-        ...m,
-        fullMessage: m.message(m.productName),
-        time: formatTime(m.day, m.hour, m.minute),
-      }))
-    );
-  }, [setAlarms]);
+  if (isLoading) return <div className="p-4">로딩 중...</div>;
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -84,34 +85,32 @@ export default function AlarmPage() {
 
       {/* 알림 리스트 */}
       <div className="p-4 mt-4 space-y-6">
-        {alarms.map((item, index) => {
-          // 아이콘 크기 지정
-          const iconSize =
-            item.type === "낙찰 종료" ? "w-7 h-7 mt-1" : "w-5 h-5 mt-1";
-
-          const IconComp = item.icon ?? (() => null);
+        {alarms.map(item => {
+          const IconComp = item.icon;
 
           return (
             <div
-              key={index}
+              key={item.id}
               className="flex items-start gap-3 border-b border-grey01 pb-4"
             >
-              <IconComp className={iconSize} />
+              <IconComp
+                className={
+                  item.type === "WIN" ? "w-7 h-7 mt-1" : "w-5 h-5 mt-1"
+                }
+              />
 
               <div className="flex-1 min-w-0">
                 {/* 타입 + 시간 */}
                 <div className="flex items-center min-w-0">
-                  <p className="text-grey14 text-[11px]">{item.type}</p>
-
+                  <p className="text-grey14 text-[11px]">{item.typeLabel}</p>
                   <p className="text-[11px] text-grey14 whitespace-nowrap shrink-0 ml-auto">
-                    {item.time}
+                    {item.timeLabel}
                   </p>
                 </div>
 
                 {/* 메시지 */}
                 <p className="text-reg14 text-darkgrey05 break-words mt-1">
-                  {item.fullMessage}
-                  {item.price && ` (${item.price})`}
+                  {item.message}
                 </p>
               </div>
             </div>
