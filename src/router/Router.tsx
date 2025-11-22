@@ -30,6 +30,9 @@ import MyPage from "@/pages/my/MyPage";
 import NewAutionPage from "@/pages/my/NewAutionPage";
 import PointInquiryPage from "@/pages/my/PointInquiryPage";
 
+// 알림
+import AlarmPage from "@/pages/alarm/AlarmPage";
+
 // 기타
 import ChatPage from "@/pages/chat/ChatPage";
 import NotFoundPage from "@/pages/notFound/NotFoundPage";
@@ -85,6 +88,7 @@ export const router = createBrowserRouter([
           },
           { path: "item/:id", element: <ItemDetailPage /> },
           { path: "chat/:id", element: <ChatPage /> },
+          { path: "alarm", element: <AlarmPage /> },
           { path: "my/points", element: <PointInquiryPage /> },
           { path: "my/points/charge", element: <ChargePointPage /> },
           { path: "my/item/new", element: <NewAutionPage /> },
