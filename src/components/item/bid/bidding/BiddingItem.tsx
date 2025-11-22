@@ -12,7 +12,7 @@ const BiddingItem = ({ biddingItem }: BiddingItemProps) => {
 
   return (
     <Link
-      to={`/item/${biddingItem.acutionId}`}
+      to={`/item/${biddingItem.auctionId}`}
       className="w-full p-3 flex items-center justify-between gap-2 rounded-lg bg-white border border-grey04"
     >
       <img

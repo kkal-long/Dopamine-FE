@@ -37,7 +37,7 @@ const Bidding = ({ biddingItems }: BiddingProps) => {
       {hasItems ? (
         <div className="flex flex-col gap-3">
           {filteredItems.map(item => (
-            <BiddingItem key={item.acutionId} biddingItem={item} />
+            <BiddingItem key={item.auctionId} biddingItem={item} />
           ))}
         </div>
       ) : (

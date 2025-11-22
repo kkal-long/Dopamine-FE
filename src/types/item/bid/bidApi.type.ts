@@ -7,7 +7,7 @@ export interface WonItemData {
 }
 
 export interface BidItemData {
-  acutionId: number;
+  auctionId: number;
   goodsName: string;
   createdAt: string;
   endAt: string;
