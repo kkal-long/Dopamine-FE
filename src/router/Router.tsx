@@ -23,7 +23,9 @@ import BidItemPage from "@/pages/bidItem/BidItemPage";
 import ItemDetailPage from "@/pages/itemDetail/ItemDetailPage";
 
 // 마이/포인트
-import ChargePointPage from "@/pages/my/ChargePointPage";
+import ChargePointPage from "@/pages/my/charge/ChargePointPage";
+import PaymentFailPage from "@/pages/my/charge/PaymentFailPage";
+import PaymentSuccessPage from "@/pages/my/charge/PaymentSuccessPage";
 import MyPage from "@/pages/my/MyPage";
 import NewAutionPage from "@/pages/my/NewAutionPage";
 import PointInquiryPage from "@/pages/my/PointInquiryPage";
@@ -86,6 +88,8 @@ export const router = createBrowserRouter([
           { path: "my/points", element: <PointInquiryPage /> },
           { path: "my/points/charge", element: <ChargePointPage /> },
           { path: "my/item/new", element: <NewAutionPage /> },
+          { path: "/payment/success", element: <PaymentSuccessPage /> },
+          { path: "/payment/fail", element: <PaymentFailPage /> },
         ],
       },
     ],

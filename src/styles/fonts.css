@@ -41,6 +41,11 @@
   --text-bold16--line-height: 170%;
   --text-bold16--letter-spacing: 0;
 
+  --text-semibold16: 16px;
+  --text-semibold16--font-weight: 600;
+  --text-semibold16--line-height: 150%;
+  --text-semibold16--letter-spaceing: 0;
+
   --text-med16: 16px;
   --text-med16--font-weight: 500;
   --text-med16--line-height: 150%;
