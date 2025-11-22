@@ -37,8 +37,7 @@ export default function HomePage() {
       {
         id: "p4",
         title: "카드지갑",
-        imageUrl:
-          "https://crowdticket0.s3.ap-northeast-1.amazonaws.com/real/files/items/2691/1659951765742_thumb_img.jpg",
+        imageUrl: "https://www.mibizshop.co.kr/data/goods/657c2fe01ae63.jpg",
         highestBid: 50000,
       },
     ],

@@ -73,7 +73,7 @@ export default function AlarmPage() {
   return (
     <div className="w-full min-h-screen bg-white">
       {/* 헤더 */}
-      <div className="w-full flex items-center px-4 py-3 border-b border-bluegrey02 mt-[57px] relative">
+      <div className="w-full flex items-center px-4 py-3 border-b border-bluegrey02 mt-3 relative">
         <button onClick={() => navigate(-1)} className="text-xl font-bold">
           <Goback className="w-4 h-4 cursor-pointer" />
         </button>
