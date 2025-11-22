@@ -8,7 +8,7 @@ import AuctionDropdown from "@/components/my/AuctionForm/AuctionDropdown";
 import AuctionImageUploader from "@/components/my/AuctionForm/AuctionImageUploader";
 import AuctionTimeSection from "@/components/my/AuctionForm/AuctionTimeSection";
 
-import Check from "@/assets/svgs/item/bid/check.svg?react";
+import { Check } from "@/assets/svgs/common";
 import { Warning } from "@/assets/svgs/my";
 
 const categories = [

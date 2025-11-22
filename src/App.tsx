@@ -1,7 +1,6 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 
-import LayoutWithFooter from "@/layouts/LayoutWithFooter";
-import MainLayout from "@/layouts/MainLayout";
+import { router } from "@/router/Router";
 
 // 메인(홈)
 import HomePage from "@/pages/home/HomePage";
@@ -81,5 +80,8 @@ function App() {
     </BrowserRouter>
   );
 }
+const App = () => {
+  return <RouterProvider router={router} />;
+};
 
 export default App;
