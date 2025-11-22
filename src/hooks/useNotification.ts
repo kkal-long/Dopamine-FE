@@ -1,4 +1,3 @@
-// useNotification.ts
 import {
   fetchNotificationList,
   fetchUnreadCount,
