@@ -1,28 +1,30 @@
-import type { BiddingItemData } from "@/types/item/bid/Bid.type";
+import type { BidItemData } from "@/types/item/bid/bidApi.type";
 import { formatTimeLeftSimple } from "@/utils/dateUtils";
 import { formatPrice } from "@/utils/priceUtils";
 import { Link } from "react-router-dom";
 
 interface BiddingItemProps {
-  biddingItem: BiddingItemData;
+  biddingItem: BidItemData;
 }
 
 const BiddingItem = ({ biddingItem }: BiddingItemProps) => {
-  const isAcutioning = biddingItem.state === "RUNNING";
+  const isAcutioning = biddingItem.status === "IN_PROGRESS";
 
   return (
     <Link
-      to={`/item/${biddingItem.autionId}`}
+      to={`/item/${biddingItem.acutionId}`}
       className="w-full p-3 flex items-center justify-between gap-2 rounded-lg bg-white border border-grey04"
     >
       <img
-        src={biddingItem.image}
-        alt={biddingItem.title}
+        src={biddingItem.imageUrl}
+        alt={biddingItem.goodsName}
         className="object-cover w-16 h-16 rounded-lg bg-grey09"
       />
 
       <div className="flex flex-col flex-1 gap-1">
-        <div className="text-med14 text-darkgrey05">{biddingItem.title}</div>
+        <div className="text-med14 text-darkgrey05">
+          {biddingItem.goodsName}
+        </div>
         <div className="flex items-center gap-2">
           {isAcutioning ? (
             <>
@@ -30,7 +32,7 @@ const BiddingItem = ({ biddingItem }: BiddingItemProps) => {
                 경매중
               </span>
               <span className="text-reg14 text-mainpink">
-                {formatTimeLeftSimple(biddingItem.endsAt)}
+                {formatTimeLeftSimple(biddingItem.endAt)}
               </span>
             </>
           ) : (
@@ -44,7 +46,7 @@ const BiddingItem = ({ biddingItem }: BiddingItemProps) => {
         </div>
 
         <div className="text-reg14 text-darkgrey05">
-          현재 최고가: {formatPrice(biddingItem.bidPrice)}
+          현재 최고가: {formatPrice(biddingItem.currentPrice)}
         </div>
       </div>
     </Link>
