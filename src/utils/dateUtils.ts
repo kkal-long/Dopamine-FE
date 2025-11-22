@@ -31,7 +31,7 @@ export const formatTimeLeft = (dateStr: string) => {
 export const formatTimeLeftSimple = (dateStr: string) => {
   if (!dateStr) return;
 
-  const endDate = new Date(dateStr);
+  const endDate = parseISO(dateStr);
   const now = new Date();
 
   if (endDate.getTime() <= now.getTime()) return "";
