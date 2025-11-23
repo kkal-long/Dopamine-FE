@@ -7,7 +7,7 @@ import { useChatApi } from "@/hooks/chat/useChatApi";
 import { useStompClient } from "@/hooks/chat/useStompClient";
 import { useUserStore } from "@/store/useUserStore";
 import { ChatMesageList, ChatMessageItem } from "@/types/chat/chatApi.type";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const ChatPage = () => {
@@ -19,12 +19,22 @@ const ChatPage = () => {
   const [isSending, setSending] = useState(false);
   const [isModalOPen, setModalOpen] = useState(false);
 
-  const itemInfo = location.state.itemInfo;
+  const itemInfo = location.state?.itemInfo;
+
+  useEffect(() => {
+    if (!itemInfo) {
+      alert("잘못된 접근입니다.");
+      navigate("/items", { replace: true });
+    }
+  }, [itemInfo, navigate]);
 
   const userId = useUserStore(state => state.userId);
   const userName = useUserStore(state => state.userName);
   const userImage = useUserStore(state => state.userImage);
 
+  if (!itemInfo) {
+    return null;
+  }
   const isBuyer = itemInfo ? userId === itemInfo.buyerId : false;
   const opponentName = isBuyer
     ? itemInfo.sellerNickname
