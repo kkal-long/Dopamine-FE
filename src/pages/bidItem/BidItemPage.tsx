@@ -18,9 +18,21 @@ const BidItemPage = () => {
   const { mutate: creatChatRoom } = postCreateChatRoomMutation();
 
   const handleChatClick = (auctionId: number) => {
+    const selectedItem = items?.wonItems.find(
+      item => item.auctionId === auctionId
+    );
+
     creatChatRoom(auctionId, {
       onSuccess: res => {
-        navigate(`/chat/${res.roomId}`);
+        navigate(`/chat/${res.chatRoomId}`, {
+          state: {
+            itemInfo: {
+              goodsName: selectedItem?.goodsName,
+              imageUrl: selectedItem?.imageUrl,
+              finalPrice: selectedItem?.finalPrice,
+            },
+          },
+        });
       },
       onError: err => {
         console.error("채팅방 생성 실패: ", err);

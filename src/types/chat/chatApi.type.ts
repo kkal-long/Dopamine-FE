@@ -1,3 +1,3 @@
 export interface CreateChatRoomResponse {
-  roomId: number;
+  chatRoomId: number;
 }

@@ -1,4 +1,4 @@
-import { postCreateChatRoom } from "@/apis/chat/postApi";
+import { postCreateChatRoom } from "@/apis/chat/chatApi";
 import { useMutation } from "@tanstack/react-query";
 
 export const useChatApi = () => {
