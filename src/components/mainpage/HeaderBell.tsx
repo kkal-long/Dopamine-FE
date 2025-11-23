@@ -1,5 +1,5 @@
 import { Alarm } from "@/assets/svgs/main";
-import { useNotificationStore } from "@/state/useNotificationStore";
+import { useNotificationStore } from "@/store/useNotificationStore";
 import { useNavigate } from "react-router-dom";
 
 export default function HeaderBell() {

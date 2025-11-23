@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 import { AlarmLogo, AlarmUp } from "@/assets/svgs/alarm";
 import { Goback } from "@/assets/svgs/search";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 import { useNotificationList } from "@/hooks/useNotification";
 import useNotificationSSE from "@/hooks/useNotificationSSE";
-import { useNotificationStore } from "@/state/useNotificationStore";
+import { AlarmItem, useNotificationStore } from "@/store/useNotificationStore";
+import { formatTimeAgo } from "@/utils/dateUtils";
 
 export default function AlarmPage() {
   const navigate = useNavigate();
@@ -14,65 +16,45 @@ export default function AlarmPage() {
   const { data: notifications, isLoading } = useNotificationList();
   const { setAlarms, resetUnread, alarms } = useNotificationStore();
 
-  // SSE 활성화
   useNotificationSSE();
 
-  /** createdAt → "시간 전" */
-  const formatTime = (createdAt: string) => {
-    const created = new Date(createdAt);
-    const now = new Date();
-    const diff = Math.floor((now.getTime() - created.getTime()) / 1000);
+  const typeLabel = (t: "OUTBID" | "WIN") =>
+    t === "OUTBID" ? "상위 입찰" : "낙찰 종료";
 
-    const minutes = Math.floor(diff / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+  const typeIcon = (
+    t: "OUTBID" | "WIN"
+  ): React.FC<React.SVGProps<SVGSVGElement>> =>
+    t === "OUTBID" ? AlarmUp : AlarmLogo;
 
-    if (days > 0) return `${days}일 전`;
-    if (hours > 0) return `${hours}시간 전`;
-    return `${minutes}분 전`;
-  };
-
-  /** 백엔드 type → 한글 타입 */
-  const typeLabel = (t: "OUTBID" | "WIN") => {
-    return t === "OUTBID" ? "상위 입찰" : "낙찰 종료";
-  };
-
-  /** 백엔드 type → 아이콘 매핑 */
-  const typeIcon = (t: "OUTBID" | "WIN") => {
-    return t === "OUTBID" ? AlarmUp : AlarmLogo;
-  };
-
-  /** API 알림 데이터를 Zustand alarms로 변환 */
   useEffect(() => {
     if (!notifications) return;
 
-    const mapped = notifications.map(n => ({
-      id: n.id,
-      message: n.message,
-      auctionId: n.auctionId,
-      type: n.type,
-      isRead: n.isRead,
-      createdAt: n.createdAt,
+    const mapped = notifications.map(
+      (n): AlarmItem => ({
+        id: n.id,
+        message: n.message,
+        auctionId: n.auctionId,
+        type: n.type,
+        isRead: n.isRead,
+        createdAt: n.createdAt,
 
-      // UI 가공 필드
-      typeLabel: typeLabel(n.type),
-      timeLabel: formatTime(n.createdAt),
-      icon: typeIcon(n.type),
-    }));
+        typeLabel: typeLabel(n.type),
+        timeLabel: formatTimeAgo(n.createdAt) ?? "",
+        icon: typeIcon(n.type),
+      })
+    );
 
     setAlarms(mapped);
   }, [notifications, setAlarms]);
 
-  /** 페이지 나갈 때 읽지 않은 개수 초기화 */
   useEffect(() => {
     return () => resetUnread();
   }, []);
 
-  if (isLoading) return <div className="p-4">로딩 중...</div>;
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="w-full min-h-screen bg-white">
-      {/* 헤더 */}
       <div className="w-full flex items-center px-4 py-3 border-b border-bluegrey02 mt-3 relative">
         <button onClick={() => navigate(-1)} className="text-xl font-bold">
           <Goback className="w-4 h-4 cursor-pointer" />
@@ -82,7 +64,6 @@ export default function AlarmPage() {
         </h2>
       </div>
 
-      {/* 알림 리스트 */}
       <div className="p-4 mt-4 space-y-6">
         {alarms.map(item => {
           const IconComp = item.icon;
@@ -99,7 +80,6 @@ export default function AlarmPage() {
               />
 
               <div className="flex-1 min-w-0">
-                {/* 타입 + 시간 */}
                 <div className="flex items-center min-w-0">
                   <p className="text-grey14 text-[11px]">{item.typeLabel}</p>
                   <p className="text-[11px] text-grey14 whitespace-nowrap shrink-0 ml-auto">
@@ -107,7 +87,6 @@ export default function AlarmPage() {
                   </p>
                 </div>
 
-                {/* 메시지 */}
                 <p className="text-reg14 text-darkgrey05 break-words mt-1">
                   {item.message}
                 </p>
