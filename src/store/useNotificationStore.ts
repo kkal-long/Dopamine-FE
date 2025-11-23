@@ -9,10 +9,8 @@ export type AlarmItem = {
   isRead: boolean;
   createdAt: string;
 
-  // UI 가공 필드
   timeLabel: string; // "5분 전", "1시간 전"
   typeLabel: string; // 상위 입찰 / 낙찰 종료
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
 };
 
 type NotificationStore = {

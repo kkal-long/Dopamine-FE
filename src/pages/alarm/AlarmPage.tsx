@@ -1,36 +1,22 @@
+import { AlarmItem } from "@/store/useNotificationStore";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AlarmLogo, AlarmUp } from "@/assets/svgs/alarm";
 import { Goback } from "@/assets/svgs/search";
-
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useNotificationList } from "@/hooks/useNotification";
 import useNotificationSSE from "@/hooks/useNotificationSSE";
-import { useNotificationStore } from "@/state/useNotificationStore";
+import { useNotificationStore } from "@/store/useNotificationStore";
+import { formatTimeAgo } from "@/utils/dateUtils";
 
-export default function AlarmPage() {
+const AlarmPage = () => {
   const navigate = useNavigate();
 
   const { data: notifications, isLoading } = useNotificationList();
   const { setAlarms, resetUnread, alarms } = useNotificationStore();
 
-  // SSE 활성화
   useNotificationSSE();
-
-  /** createdAt → "시간 전" */
-  const formatTime = (createdAt: string) => {
-    const created = new Date(createdAt);
-    const now = new Date();
-    const diff = Math.floor((now.getTime() - created.getTime()) / 1000);
-
-    const minutes = Math.floor(diff / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `${days}일 전`;
-    if (hours > 0) return `${hours}시간 전`;
-    return `${minutes}분 전`;
-  };
 
   /** 백엔드 type → 한글 타입 */
   const typeLabel = (t: "OUTBID" | "WIN") => {
@@ -38,7 +24,8 @@ export default function AlarmPage() {
   };
 
   /** 백엔드 type → 아이콘 매핑 */
-  const typeIcon = (t: "OUTBID" | "WIN") => {
+  const getTypeIcon = (t: "OUTBID" | "WIN") => {
+    console.log(t);
     return t === "OUTBID" ? AlarmUp : AlarmLogo;
   };
 
@@ -46,33 +33,32 @@ export default function AlarmPage() {
   useEffect(() => {
     if (!notifications) return;
 
-    const mapped = notifications.map(n => ({
-      id: n.id,
-      message: n.message,
-      auctionId: n.auctionId,
-      type: n.type,
-      isRead: n.isRead,
-      createdAt: n.createdAt,
+    const mapped = notifications.map(
+      (n): AlarmItem => ({
+        id: n.id,
+        message: n.message,
+        auctionId: n.auctionId,
+        type: n.type,
+        isRead: n.isRead,
+        createdAt: n.createdAt,
 
-      // UI 가공 필드
-      typeLabel: typeLabel(n.type),
-      timeLabel: formatTime(n.createdAt),
-      icon: typeIcon(n.type),
-    }));
+        // UI 가공 필드
+        typeLabel: typeLabel(n.type),
+        timeLabel: formatTimeAgo(n.createdAt),
+      })
+    );
 
     setAlarms(mapped);
   }, [notifications, setAlarms]);
 
-  /** 페이지 나갈 때 읽지 않은 개수 초기화 */
   useEffect(() => {
     return () => resetUnread();
   }, []);
 
-  if (isLoading) return <div className="p-4">로딩 중...</div>;
+  if (isLoading || !notifications) return <LoadingSpinner />;
 
   return (
     <div className="w-full min-h-screen bg-white">
-      {/* 헤더 */}
       <div className="w-full flex items-center px-4 py-3 border-b border-bluegrey02 mt-3 relative">
         <button onClick={() => navigate(-1)} className="text-xl font-bold">
           <Goback className="w-4 h-4 cursor-pointer" />
@@ -82,11 +68,9 @@ export default function AlarmPage() {
         </h2>
       </div>
 
-      {/* 알림 리스트 */}
       <div className="p-4 mt-4 space-y-6">
         {alarms.map(item => {
-          const IconComp = item.icon;
-
+          const IconComp = getTypeIcon(item.type);
           return (
             <div
               key={item.id}
@@ -99,7 +83,6 @@ export default function AlarmPage() {
               />
 
               <div className="flex-1 min-w-0">
-                {/* 타입 + 시간 */}
                 <div className="flex items-center min-w-0">
                   <p className="text-grey14 text-[11px]">{item.typeLabel}</p>
                   <p className="text-[11px] text-grey14 whitespace-nowrap shrink-0 ml-auto">
@@ -107,7 +90,6 @@ export default function AlarmPage() {
                   </p>
                 </div>
 
-                {/* 메시지 */}
                 <p className="text-reg14 text-darkgrey05 break-words mt-1">
                   {item.message}
                 </p>
@@ -118,4 +100,6 @@ export default function AlarmPage() {
       </div>
     </div>
   );
-}
+};
+
+export default AlarmPage;
