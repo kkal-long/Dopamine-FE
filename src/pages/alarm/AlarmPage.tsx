@@ -1,16 +1,16 @@
+import { AlarmItem } from "@/store/useNotificationStore";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AlarmLogo, AlarmUp } from "@/assets/svgs/alarm";
 import { Goback } from "@/assets/svgs/search";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-
 import { useNotificationList } from "@/hooks/useNotification";
 import useNotificationSSE from "@/hooks/useNotificationSSE";
-import { AlarmItem, useNotificationStore } from "@/store/useNotificationStore";
+import { useNotificationStore } from "@/store/useNotificationStore";
 import { formatTimeAgo } from "@/utils/dateUtils";
 
-export default function AlarmPage() {
+const AlarmPage = () => {
   const navigate = useNavigate();
 
   const { data: notifications, isLoading } = useNotificationList();
@@ -18,14 +18,18 @@ export default function AlarmPage() {
 
   useNotificationSSE();
 
-  const typeLabel = (t: "OUTBID" | "WIN") =>
-    t === "OUTBID" ? "상위 입찰" : "낙찰 종료";
+  /** 백엔드 type → 한글 타입 */
+  const typeLabel = (t: "OUTBID" | "WIN") => {
+    return t === "OUTBID" ? "상위 입찰" : "낙찰 종료";
+  };
 
-  const typeIcon = (
-    t: "OUTBID" | "WIN"
-  ): React.FC<React.SVGProps<SVGSVGElement>> =>
-    t === "OUTBID" ? AlarmUp : AlarmLogo;
+  /** 백엔드 type → 아이콘 매핑 */
+  const getTypeIcon = (t: "OUTBID" | "WIN") => {
+    console.log(t);
+    return t === "OUTBID" ? AlarmUp : AlarmLogo;
+  };
 
+  /** API 알림 데이터를 Zustand alarms로 변환 */
   useEffect(() => {
     if (!notifications) return;
 
@@ -38,9 +42,9 @@ export default function AlarmPage() {
         isRead: n.isRead,
         createdAt: n.createdAt,
 
+        // UI 가공 필드
         typeLabel: typeLabel(n.type),
-        timeLabel: formatTimeAgo(n.createdAt) ?? "",
-        icon: typeIcon(n.type),
+        timeLabel: formatTimeAgo(n.createdAt),
       })
     );
 
@@ -51,7 +55,7 @@ export default function AlarmPage() {
     return () => resetUnread();
   }, []);
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading || !notifications) return <LoadingSpinner />;
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -66,8 +70,7 @@ export default function AlarmPage() {
 
       <div className="p-4 mt-4 space-y-6">
         {alarms.map(item => {
-          const IconComp = item.icon;
-
+          const IconComp = getTypeIcon(item.type);
           return (
             <div
               key={item.id}
@@ -97,4 +100,6 @@ export default function AlarmPage() {
       </div>
     </div>
   );
-}
+};
+
+export default AlarmPage;

@@ -11,7 +11,6 @@ export type AlarmItem = {
 
   timeLabel: string; // "5분 전", "1시간 전"
   typeLabel: string; // 상위 입찰 / 낙찰 종료
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
 };
 
 type NotificationStore = {
