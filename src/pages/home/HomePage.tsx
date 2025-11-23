@@ -2,7 +2,7 @@ import { Logo } from "@/assets/svgs/main";
 import HeaderBell from "@/components/mainpage/HeaderBell";
 import SwipeDeck from "@/components/mainpage/SwipeDeck";
 import useNotificationSSE from "@/hooks/useNotificationSSE";
-import { useNotificationStore } from "@/state/useNotificationStore";
+import { useNotificationStore } from "@/store/useNotificationStore";
 import type { MainPageProduct } from "@/types/item/bid/Bid.type";
 import { useMemo } from "react";
 

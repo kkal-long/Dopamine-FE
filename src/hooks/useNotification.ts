@@ -1,7 +1,7 @@
 // useNotification.ts
 import {
-  fetchNotificationList,
-  fetchUnreadCount,
+  getNotificationList,
+  getUnreadCount,
 } from "@/apis/notification/notificationApi";
 
 import { NotificationItem } from "@/types/alarm/notification";
@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 export const useUnreadCount = () => {
   return useQuery<number>({
     queryKey: ["unreadCount"],
-    queryFn: fetchUnreadCount,
+    queryFn: getUnreadCount,
     staleTime: 1000 * 10,
   });
 };
@@ -20,6 +20,6 @@ export const useUnreadCount = () => {
 export const useNotificationList = () => {
   return useQuery<NotificationItem[]>({
     queryKey: ["notificationList"],
-    queryFn: fetchNotificationList,
+    queryFn: getNotificationList,
   });
 };

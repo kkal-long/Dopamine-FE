@@ -1,4 +1,4 @@
-import { useNotificationStore } from "@/state/useNotificationStore";
+import { useNotificationStore } from "@/store/useNotificationStore";
 import { useEffect } from "react";
 
 export default function useNotificationSSE() {
