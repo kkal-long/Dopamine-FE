@@ -1,4 +1,3 @@
-// CategoryResultPage.tsx
 import { Goback, Search } from "@/assets/svgs/search";
 import { useCategoryList } from "@/hooks/useSearch";
 import React from "react";
@@ -11,7 +10,7 @@ const CategoryResultPage: React.FC = () => {
   const category = state?.category || "카테고리";
   const categoryId = state?.categoryId;
 
-  /** 🔥 카테고리별 검색 API 연결 */
+  /* 카테고리별 검색 API 연결 */
   const { data: products, isLoading, isError } = useCategoryList(categoryId);
 
   return (
@@ -39,11 +38,6 @@ const CategoryResultPage: React.FC = () => {
 
       <div className="w-full border-t border-grey02 mb-[5px]" />
 
-      {/* 로딩 */}
-      {isLoading && (
-        <p className="text-center text-med14 mt-8">불러오는 중...</p>
-      )}
-
       {/* 에러 */}
       {isError && (
         <p className="text-center text-med14 text-red-500 mt-8">
@@ -61,11 +55,13 @@ const CategoryResultPage: React.FC = () => {
             >
               {/* 이미지 */}
               <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
-                <img
-                  src={item.imageUrl}
-                  alt={item.goodsName}
-                  className="w-full h-full object-cover"
-                />
+                {item.imageUrl ? (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.goodsName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : null}
               </div>
 
               {/* 정보 */}
@@ -75,16 +71,28 @@ const CategoryResultPage: React.FC = () => {
                 </span>
 
                 <div className="flex items-center gap-2 mb-[4px]">
-                  <span className="text-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
+                  {/* 상태 badge */}
+                  <span
+                    className={
+                      item.status === "경매종료"
+                        ? "text-reg12 text-darkgrey04 bg-grey01 px-2 py-[2px] rounded-full"
+                        : "text-reg12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full"
+                    }
+                  >
                     {item.status}
                   </span>
-                  <span className="text-med14 text-mainpink">
-                    {item.remainingTime}
-                  </span>
+
+                  {item.status !== "경매종료" && (
+                    <span className="text-med14 text-mainpink">
+                      {item.remainingTime}
+                    </span>
+                  )}
                 </div>
 
-                <span className="text-med14 text-darkgrey05">
-                  현재 최고가: ₩{item.currentPrice.toLocaleString()}
+                <span className="text-reg14 text-darkgrey05">
+                  {item.status === "경매종료"
+                    ? `낙찰가: ₩${item.currentPrice.toLocaleString()}`
+                    : `현재 최고가: ₩${item.currentPrice.toLocaleString()}`}
                 </span>
               </div>
             </div>

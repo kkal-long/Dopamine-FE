@@ -18,18 +18,18 @@ const AlarmPage = () => {
 
   useNotificationSSE();
 
-  /** 백엔드 type → 한글 타입 */
+  /* 백엔드 type → 한글 타입 */
   const typeLabel = (t: "OUTBID" | "WIN") => {
     return t === "OUTBID" ? "상위 입찰" : "낙찰 종료";
   };
 
-  /** 백엔드 type → 아이콘 매핑 */
+  /* 백엔드 type → 아이콘 매핑 */
   const getTypeIcon = (t: "OUTBID" | "WIN") => {
     console.log(t);
     return t === "OUTBID" ? AlarmUp : AlarmLogo;
   };
 
-  /** API 알림 데이터를 Zustand alarms로 변환 */
+  /* API 알림 데이터를 Zustand alarms로 변환 */
   useEffect(() => {
     if (!notifications) return;
 

@@ -2,7 +2,7 @@ import { Search } from "@/assets/svgs/search";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-// SVG 아이콘 import (11개 모두 추가)
+// SVG 아이콘 import (11개 모두 추가, 프론트에서 처리)
 import {
   Category1,
   Category10,

@@ -1,105 +1,71 @@
 import { Delete, Goback, Search } from "@/assets/svgs/search";
+import { useCategoryKeyword } from "@/hooks/useSearch";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-const mockProducts = [
-  {
-    id: 1,
-    categoryId: 1,
-    name: "나이키 에어포스1 로우 265",
-    price: 110000,
-    status: "경매중",
-    timeLeft: "2",
-  },
-  {
-    id: 2,
-    categoryId: 1,
-    name: "나이키 에어포스1 실버 새상품",
-    price: 20000,
-    status: "경매중",
-    timeLeft: "2",
-  },
-  {
-    id: 3,
-    categoryId: 1,
-    name: "아디다스 슈퍼스타",
-    price: 90000,
-    status: "경매중",
-    timeLeft: "5",
-  },
-  {
-    id: 4,
-    categoryId: 1,
-    name: "뉴발란스 327",
-    price: 80000,
-    status: "경매중",
-    timeLeft: "1",
-  },
-  {
-    id: 5,
-    categoryId: 2,
-    name: "슈프림 박스 로고 후드",
-    price: 250000,
-    status: "경매중",
-    timeLeft: "3",
-  },
-  {
-    id: 6,
-    categoryId: 3,
-    name: "나이키 블루종 재킷",
-    price: 180000,
-    status: "경매중",
-    timeLeft: "6",
-  },
-];
 
 const CategorySearchPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const initialCategory = location.state?.category || "카테고리 2";
-  const categoryId = location.state?.categoryId || 1;
+  const initialCategory = location.state?.category || "카테고리";
+  const categoryId = location.state?.categoryId;
 
-  const [activeCategory, setActiveCategory] = useState<string | null>(
-    initialCategory
-  );
+  // 입력 중인 검색어
   const [query, setQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState(mockProducts);
+
+  // Enter로 확정된 검색어
+  const [confirmedQuery, setConfirmedQuery] = useState("");
+
+  // 로컬 최근 검색어
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  // 최근 검색어 로드
+  // 로컬스토리지 로드
   useEffect(() => {
     const stored = localStorage.getItem("recentSearches");
     if (stored) setRecentSearches(JSON.parse(stored));
   }, []);
 
-  // 검색 로직 (categoryId 기반 필터링)
-  useEffect(() => {
-    const baseList = mockProducts.filter(p => p.categoryId === categoryId);
-    const results = baseList.filter(p =>
-      p.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredProducts(results);
-  }, [query, categoryId]);
+  /* API: 카테고리 + 키워드 검색 */
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useCategoryKeyword(categoryId, confirmedQuery);
 
-  // 최근 검색어 저장
-  const handleSearchSubmit = () => {
-    if (!query.trim()) return;
-    const updated = [query, ...recentSearches.filter(q => q !== query)].slice(
-      0,
-      10
-    );
+  /* 최신 검색어 저장 */
+  const saveRecentKeyword = (word: string) => {
+    const trimmed = word.trim();
+    if (!trimmed) return;
+
+    const updated = [
+      trimmed,
+      ...recentSearches.filter(w => w !== trimmed),
+    ].slice(0, 10);
+
     setRecentSearches(updated);
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
 
-  const handleRecentDelete = (keyword: string) => {
-    const updated = recentSearches.filter(item => item !== keyword);
+  /* 검색 실행 */
+  const handleSearchSubmit = (word?: string) => {
+    const finalWord = (word ?? query).trim();
+    if (!finalWord) return;
+    saveRecentKeyword(finalWord);
+    setConfirmedQuery(finalWord);
+    setQuery(finalWord); // 검색창에도 반영
+  };
+
+  /* 최근 검색어 클릭 → 자동 검색 */
+  const handleRecentClick = (word: string) => {
+    handleSearchSubmit(word);
+  };
+
+  /* 최근 검색어 삭제 */
+  const handleDelete = (word: string) => {
+    const updated = recentSearches.filter(w => w !== word);
     setRecentSearches(updated);
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
-
-  const handleCategoryRemove = () => setActiveCategory(null);
 
   return (
     <div className="w-full max-w-[375px] mx-auto bg-white min-h-[812px] px-[20px] py-6">
@@ -107,26 +73,22 @@ const CategorySearchPage: React.FC = () => {
       <div className="flex items-center mb-[14px]">
         <button
           onClick={() => navigate(-1)}
-          className="flex justify-center items-center w-[32px] h-[32px] cursor-pointer bg-transparent border-none outline-none p-0"
-          style={{ WebkitTapHighlightColor: "transparent" }}
+          className="flex justify-center items-center w-[32px] h-[32px]"
         >
-          <Goback className="w-[17.5px] h-[24px]" />
+          <Goback className="w-[17.5px] h-[24px] cursor-pointer -ml-2" />
         </button>
 
-        {/* 검색창 */}
+        {/* 입력창 */}
         <div className="flex w-[304px] h-[50px] items-center bg-white rounded-lg pl-[8px] pr-[12px] py-[13px] border border-grey09">
           <Search className="w-[17.5px] h-[24px] mr-[14.5px]" />
 
           {/* 카테고리 태그 */}
-          {activeCategory && (
+          {initialCategory && (
             <div className="flex items-center whitespace-nowrap border border-grey09 rounded-[8px] px-[6px] py-[5px] mr-2">
               <span className="text-med14 text-darkgrey01 mr-[4px]">
-                {activeCategory}
+                {initialCategory}
               </span>
-              <button
-                onClick={handleCategoryRemove}
-                className="flex justify-center items-center w-4 h-4"
-              >
+              <button onClick={() => navigate(-1)}>
                 <Delete className="w-3.5 h-3.5 cursor-pointer" />
               </button>
             </div>
@@ -136,14 +98,14 @@ const CategorySearchPage: React.FC = () => {
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
-            onBlur={handleSearchSubmit}
             onKeyDown={e => {
               if (e.key === "Enter") {
                 e.preventDefault();
                 handleSearchSubmit();
               }
             }}
-            className="flex-1 bg-transparent outline-none text-med16 leading-[150%] text-darkgrey02 placeholder-bluegrey04"
+            placeholder="검색어를 입력하세요"
+            className="flex-1 bg-transparent outline-none text-med16 text-darkgrey02"
           />
         </div>
       </div>
@@ -152,29 +114,22 @@ const CategorySearchPage: React.FC = () => {
       {recentSearches.length > 0 && (
         <div className="mt-4">
           <p className="text-med14 text-darkgrey05 mb-3">최근 검색어</p>
-          <div
-            className="flex flex-nowrap overflow-x-auto gap-2 pb-1 scrollbar-hide"
-            style={{
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
-            }}
-          >
-            {recentSearches.map((word, i) => (
+
+          <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-hide">
+            {recentSearches.map((word, index) => (
               <div
-                key={i}
-                className="flex items-center text-med14 text-grey14 border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0 cursor-pointer"
+                key={index}
+                className="flex items-center border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0"
               >
                 <button
-                  onClick={() => setQuery(word)}
-                  className="mr-1 text-darkgrey04 whitespace-nowrap"
+                  className="mr-1 text-reg14 text-darkgrey04 cursor-pointer"
+                  onClick={() => handleRecentClick(word)}
                 >
                   {word}
                 </button>
-                <button
-                  onClick={() => handleRecentDelete(word)}
-                  className="text-med12 text-grey09 flex items-center justify-center"
-                >
-                  <Delete className="w-3 h-4" />
+
+                <button onClick={() => handleDelete(word)}>
+                  <Delete className="w-3 h-4 cursor-pointer" />
                 </button>
               </div>
             ))}
@@ -183,53 +138,52 @@ const CategorySearchPage: React.FC = () => {
       )}
 
       {/* 검색 결과 */}
-      {query && (
-        <div className="mt-6">
+      <div className="mt-6">
+        {confirmedQuery && (
           <p className="text-med12 text-black mb-[10px]">
-            검색 결과 {filteredProducts.length}개
+            검색 결과 {products.length}개
           </p>
-          <div
-            className="flex flex-col gap-3 overflow-y-auto max-h-[550px] scrollbar-hide"
-            style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
-          >
-            {filteredProducts.length === 0 ? (
-              <p className="text-med14 text-grey04">검색 결과가 없습니다.</p>
-            ) : (
-              filteredProducts.map(product => (
-                <div
-                  key={product.id}
-                  className="flex items-center border border-grey04 rounded-[8px] px-3 py-3"
-                >
-                  <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 flex-shrink-0" />
-                  <div className="flex flex-col flex-1">
-                    <span className="text-med16 text-darkgrey05 mb-[4px]">
-                      {product.name}
-                    </span>
-                    <div className="flex items-center gap-2 mb-[4px]">
-                      <span className="text-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
-                        {product.status}
-                      </span>
-                      <span className="text-med14 text-mainpink">
-                        {product.timeLeft}시간 남음
-                      </span>
-                    </div>
-                    <span className="text-med14 text-darkgrey05">
-                      현재 최고가: ₩{product.price.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
+        )}
 
-      {/* 스크롤바 숨기기 */}
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+        {!isLoading && products.length === 0 && confirmedQuery && (
+          <p className="text-med14 text-grey04">검색 결과가 없습니다.</p>
+        )}
+
+        {!isLoading &&
+          products.map(item => (
+            <div
+              key={item.auctionId}
+              className="flex items-center border border-grey04 rounded-[8px] px-3 py-3 mb-3"
+            >
+              <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
+                {item.imageUrl && (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.goodsName}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+
+              <div className="flex flex-col flex-1">
+                <span className="text-med16 text-darkgrey05 mb-[4px]">
+                  {item.goodsName}
+                </span>
+                <div className="flex items-center gap-2 mb-[4px]">
+                  <span className="text-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
+                    {item.status}
+                  </span>
+                  <span className="text-med14 text-mainpink">
+                    {item.remainingTime}
+                  </span>
+                </div>
+                <span className="text-med14 text-darkgrey05">
+                  현재 최고가: ₩{item.currentPrice.toLocaleString()}
+                </span>
+              </div>
+            </div>
+          ))}
+      </div>
     </div>
   );
 };
