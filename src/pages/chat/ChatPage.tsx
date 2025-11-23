@@ -30,7 +30,7 @@ const ChatPage = () => {
     ? itemInfo.sellerNickname
     : itemInfo.buyerNickname;
 
-  const { getChatMessageQuery } = useChatApi();
+  const { getChatMessageQuery, postChatCompleteMutation } = useChatApi();
   const { data: initialChatMessages, isLoading } = getChatMessageQuery(roomId);
 
   const [realTimeMessages, setRealTimeMessages] = useState<ChatMesageList>([]);
@@ -85,9 +85,20 @@ const ChatPage = () => {
     }
   };
 
+  const { mutate: postCompleteChat } = postChatCompleteMutation();
+
   const handelCompleteAution = () => {
-    setModalOpen(false);
-    navigate("/items");
+    postCompleteChat(roomId, {
+      onSuccess: () => {
+        setModalOpen(false);
+        navigate("/items");
+      },
+      onError: error => {
+        console.error("거래 완료 실패: ", error);
+        alert("거래 완료 처리에 실패했습니다.");
+        setModalOpen(false);
+      },
+    });
   };
 
   if (isLoading) {
