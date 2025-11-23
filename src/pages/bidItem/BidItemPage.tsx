@@ -30,6 +30,10 @@ const BidItemPage = () => {
               goodsName: selectedItem?.goodsName,
               imageUrl: selectedItem?.imageUrl,
               finalPrice: selectedItem?.finalPrice,
+              sellerId: res.sellerId,
+              sellerNickname: res.sellerNickname,
+              buyerId: res.buyerId,
+              buyerNickname: res.buyerNickname,
             },
           },
         });
