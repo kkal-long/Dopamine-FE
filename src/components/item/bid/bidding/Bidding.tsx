@@ -1,19 +1,21 @@
 import { Bid } from "@/assets/svgs/common";
 import BiddingItem from "@/components/item/bid/bidding/BiddingItem";
 import ToggleSwitch from "@/components/item/bid/bidding/ToggleSwitch";
-import { BiddingItems } from "@/types/item/bid/Bid.type";
+import type { BidItemData } from "@/types/item/bid/bidApi.type";
 import { useState } from "react";
 
 interface BiddingProps {
-  biddingItems: BiddingItems;
+  biddingItems: BidItemData[];
 }
 
 const Bidding = ({ biddingItems }: BiddingProps) => {
   const [showAuctioningOnly, setShowAuctioningOnly] = useState(false);
 
   const filteredItems = showAuctioningOnly
-    ? biddingItems.autions.filter(item => item.state === "RUNNING")
-    : biddingItems.autions;
+    ? biddingItems.filter(item => item.status === "IN_PROGRESS")
+    : biddingItems;
+
+  const hasItems = filteredItems.length > 0;
 
   return (
     <div className="bg-white p-4">
@@ -32,11 +34,17 @@ const Bidding = ({ biddingItems }: BiddingProps) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
-        {filteredItems.map(item => (
-          <BiddingItem key={item.autionId} biddingItem={item} />
-        ))}
-      </div>
+      {hasItems ? (
+        <div className="flex flex-col gap-3">
+          {filteredItems.map(item => (
+            <BiddingItem key={item.auctionId} biddingItem={item} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center justify-center h-24 rounded-lg border border-grey03 text-grey10">
+          입찰한 물품이 없습니다
+        </div>
+      )}
     </div>
   );
 };

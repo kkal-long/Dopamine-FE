@@ -1,18 +1,19 @@
 import { Check } from "@/assets/svgs/common/index";
 import Trophy from "@/assets/svgs/item/bid/trophy.svg?react";
 import WonItem from "@/components/item/bid/won/WonItem";
-import { WonItems } from "@/types/item/bid/Bid.type";
+import type { WonItemData } from "@/types/item/bid/bidApi.type";
 
 interface WonBidProps {
-  wonItems: WonItems;
+  wonItems: WonItemData[];
+  onChat: (auctionId: number) => void;
 }
 
-const WonBid = ({ wonItems }: WonBidProps) => {
-  const autions = wonItems.autions ?? [];
+const WonBid = ({ wonItems, onChat }: WonBidProps) => {
+  const auctions = wonItems ?? [];
 
-  const hasItems = autions.length > 0;
-  const firstItem = autions[0];
-  const restItems = autions.slice(1);
+  const hasItems = auctions.length > 0;
+  const firstItem = auctions[0];
+  const restItems = auctions.slice(1);
 
   return (
     <div className="bg-white p-4 mb-2">
@@ -32,12 +33,12 @@ const WonBid = ({ wonItems }: WonBidProps) => {
             </div>
 
             <div>
-              <WonItem wonItem={firstItem} />
+              <WonItem wonItem={firstItem} onChat={onChat} />
             </div>
           </div>
 
           {restItems.map(item => (
-            <WonItem key={item.autionId} wonItem={item} />
+            <WonItem key={item.auctionId} wonItem={item} onChat={onChat} />
           ))}
         </div>
       ) : (
