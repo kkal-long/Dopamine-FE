@@ -58,7 +58,9 @@ const QnaItem = ({
             {formatTimeAgo(qna.answerCreatedAt || "")}
           </span>
         </div>
-        <p className="text-darkgrey03 text-reg14">{qna.answerContent}</p>
+        <p className="text-darkgrey03 text-reg14 whitespace-pre-wrap">
+          {qna.answerContent}
+        </p>
       </div>
     );
 
@@ -100,7 +102,9 @@ const QnaItem = ({
             )}
           </div>
 
-          <p className="text-reg14 text-darkgrey03">{qna.questionContent}</p>
+          <p className="text-reg14 text-darkgrey03 whitespace-pre-wrap">
+            {qna.questionContent}
+          </p>
         </div>
 
         {hasAnswer && renderAnswerBlock()}
