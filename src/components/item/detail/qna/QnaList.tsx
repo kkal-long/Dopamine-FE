@@ -26,19 +26,25 @@ const QnaList = ({
         </div>
 
         <div className="flex flex-col gap-4">
-          {qnaList.map(qna => (
-            <QnaItem
-              key={qna.id}
-              qna={qna}
-              isSeller={isSeller}
-              isReplying={qna.id === replyingToId}
-              onStartReply={onStartReply}
-              onCancelReply={onCancelReply}
-              onReplySubmit={(questionId, answerText) =>
-                onReplySubmit(questionId, answerText)
-              }
-            />
-          ))}
+          {qnaList && qnaList.length > 0 ? (
+            qnaList.map(qna => (
+              <QnaItem
+                key={qna.qnaId}
+                qna={qna}
+                isSeller={isSeller}
+                isReplying={qna.qnaId === replyingToId}
+                onStartReply={onStartReply}
+                onCancelReply={onCancelReply}
+                onReplySubmit={(questionId, answerText) =>
+                  onReplySubmit(questionId, answerText)
+                }
+              />
+            ))
+          ) : (
+            <p className="text-center text-reg14 text-grey06 py-6">
+              아직 등록된 질문이 없습니다.
+            </p>
+          )}
         </div>
       </div>
     </div>

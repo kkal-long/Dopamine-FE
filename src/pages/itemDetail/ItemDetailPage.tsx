@@ -7,14 +7,22 @@ import ItemCard from "@/components/item/detail/itemCard/ItemCard";
 import ItemImage from "@/components/item/detail/itemImage/ItemImage";
 import QnaInputBar from "@/components/item/detail/qna/QnaInputBar";
 import QnaList from "@/components/item/detail/qna/QnaList";
+import { useAUctionQnaApi } from "@/hooks/item/detail/useAuctionQnaApi";
 import { useItemBid } from "@/hooks/useItemBid";
 import { useItemModal } from "@/hooks/useItemModal";
 import { useItemQna } from "@/hooks/useItemQna";
 import { useItemState } from "@/hooks/useItemState";
-import { mockBids, mockImages, mockItems, mockQna } from "@/mock/itemDetail";
+import { mockBids, mockImages, mockItems } from "@/mock/itemDetail";
+import { useParams } from "react-router-dom";
 
 const ItemDetailPage = () => {
+  const { id } = useParams();
+  const auctionId = Number(id);
+
   const item = mockItems;
+
+  const { getQnaMutation } = useAUctionQnaApi();
+  const { data: qnaData } = getQnaMutation(auctionId);
 
   // 제품 상태
   const { isLive, isEnded, viewState, depositAmount, hasBid, isSeller } =
@@ -32,7 +40,6 @@ const ItemDetailPage = () => {
 
   // Q&A
   const {
-    qnaList,
     isAsking,
     replyingToId,
     setIsAsking,
@@ -42,7 +49,7 @@ const ItemDetailPage = () => {
     handleQuestionSubmit,
     handleReplySubmit,
     cancelAsking,
-  } = useItemQna(mockQna);
+  } = useItemQna();
 
   // 입찰
   const {
@@ -77,7 +84,7 @@ const ItemDetailPage = () => {
         totalBidCount={mockBids.totalBidCount}
       />
       <QnaList
-        qnaList={qnaList}
+        qnaList={qnaData || []}
         isSeller={isSeller}
         replyingToId={replyingToId}
         onAskQuestion={handleAskQuestion}

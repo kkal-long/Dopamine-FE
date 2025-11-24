@@ -1,17 +1,7 @@
-export interface QnaData {
-  id: number;
-  name: string;
-  image: string;
-  text: string;
-  createdAt: string;
-  answer: {
-    text: string;
-    createdAt: string;
-  } | null;
-}
+import { QnaItem } from "@/types/item/detail/qnaApi.type";
 
 export interface QnaListProps {
-  qnaList: QnaData[];
+  qnaList: QnaItem[];
   isSeller: boolean;
   replyingToId: number | null;
   onAskQuestion: () => void;
@@ -21,7 +11,7 @@ export interface QnaListProps {
 }
 
 export interface QnaItemProps {
-  qna: QnaData;
+  qna: QnaItem;
   isSeller: boolean;
   isReplying: boolean;
   onStartReply: (questionId: number) => void;
