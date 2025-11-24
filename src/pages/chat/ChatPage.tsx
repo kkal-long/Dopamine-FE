@@ -2,51 +2,127 @@ import Footer from "@/components/chat/footer/Footer";
 import Header from "@/components/chat/header/Header";
 import MessageList from "@/components/chat/message/MessageList";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { mockItem, mockMessages } from "@/mock/chatInfo";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { useChatApi } from "@/hooks/chat/useChatApi";
+import { useStompClient } from "@/hooks/chat/useStompClient";
 import { useUserStore } from "@/store/useUserStore";
-import { Message } from "@/types/chat/Chat.type";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { ChatMesageList, ChatMessageItem } from "@/types/chat/chatApi.type";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const ChatPage = () => {
-  const [messages, setMessages] = useState<Message[]>(mockMessages);
+  const { id } = useParams();
+  const roomId = Number(id);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [isSending, setSending] = useState(false);
   const [isModalOPen, setModalOpen] = useState(false);
 
-  const userId = useUserStore(state => state.userId);
-  const sellerId = 2;
-  const isBuyer = !!userId && userId !== sellerId;
+  const itemInfo = location.state?.itemInfo;
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (!itemInfo) {
+      alert("잘못된 접근입니다.");
+      navigate("/items", { replace: true });
+    }
+  }, [itemInfo, navigate]);
+
+  const userId = useUserStore(state => state.userId);
+  const userName = useUserStore(state => state.userName);
+  const userImage = useUserStore(state => state.userImage);
+
+  if (!itemInfo) {
+    return null;
+  }
+  const isBuyer = itemInfo ? userId === itemInfo.buyerId : false;
+  const opponentName = isBuyer
+    ? itemInfo.sellerNickname
+    : itemInfo.buyerNickname;
+
+  const { getChatMessageQuery, postChatCompleteMutation } = useChatApi();
+  const { data: initialChatMessages, isLoading } = getChatMessageQuery(roomId);
+
+  const [realTimeMessages, setRealTimeMessages] = useState<ChatMesageList>([]);
+
+  const handleReceiveMessage = useCallback((message: ChatMessageItem) => {
+    if (message.senderId === userId) return;
+    setRealTimeMessages(prev => [...prev, message]);
+  }, []);
+
+  const { sendMessage } = useStompClient({
+    roomId,
+    onMessage: handleReceiveMessage,
+  });
+
+  const disaplayMessages: ChatMesageList = [
+    ...(initialChatMessages || []),
+    ...realTimeMessages,
+  ];
 
   const handleMessageSubmit = (text: string) => {
     if (isSending) return;
-
     setSending(true);
 
-    const tempMessage: Message = {
-      id: Math.random(),
+    const payload = {
       senderId: userId,
-      text: text,
-      createdAt: new Date().toISOString(),
-      isRead: false,
+      messageContent: text,
     };
 
-    setMessages(prevMessages => [...prevMessages, tempMessage]);
+    const tempMessage: ChatMessageItem = {
+      messageId: Date.now(),
+      senderId: userId as number,
+      senderName: userName || "",
+      profileImageUrl: userImage || "",
+      messageContent: text,
+      sendAt: new Date().toISOString(),
+      isRead: false,
+      myMessage: true,
+    };
 
-    setSending(false);
+    setRealTimeMessages(prev => [...prev, tempMessage]);
+
+    try {
+      const success = sendMessage(payload);
+      if (!success) {
+        alert("채팅 서버와 연결에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("메세지 전송 실패", error);
+      alert("메세지 전송에 실패했습니다.");
+    } finally {
+      setSending(false);
+    }
   };
+
+  const { mutate: postCompleteChat } = postChatCompleteMutation();
 
   const handelCompleteAution = () => {
-    setModalOpen(false);
-
-    navigate("/items");
+    postCompleteChat(roomId, {
+      onSuccess: () => {
+        setModalOpen(false);
+        navigate("/items");
+      },
+      onError: error => {
+        console.error("거래 완료 실패: ", error);
+        alert("거래 완료 처리에 실패했습니다.");
+        setModalOpen(false);
+      },
+    });
   };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="flex flex-col h-full">
-      <Header item={mockItem} />
-      <MessageList messages={messages} />
+      <Header
+        opponentName={opponentName}
+        goodsName={itemInfo.goodsName}
+        imageUrl={itemInfo.imageUrl}
+      />
+      <MessageList messages={disaplayMessages} />
       <Footer
         isBuyer={isBuyer}
         isSending={isSending}
