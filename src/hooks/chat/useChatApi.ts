@@ -1,5 +1,9 @@
-import { postCreateChatRoom } from "@/apis/chat/postApi";
-import { useMutation } from "@tanstack/react-query";
+import {
+  getChatMessage,
+  postChatComplete,
+  postCreateChatRoom,
+} from "@/apis/chat/chatApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useChatApi = () => {
   const postCreateChatRoomMutation = () => {
@@ -8,7 +12,23 @@ export const useChatApi = () => {
     });
   };
 
+  const postChatCompleteMutation = () => {
+    return useMutation({
+      mutationFn: postChatComplete,
+    });
+  };
+
+  const getChatMessageQuery = (roomId: number) => {
+    return useQuery({
+      queryKey: ["chatMessage", roomId],
+      queryFn: () => getChatMessage(roomId),
+      enabled: !!roomId && !isNaN(roomId),
+    });
+  };
+
   return {
     postCreateChatRoomMutation,
+    postChatCompleteMutation,
+    getChatMessageQuery,
   };
 };
