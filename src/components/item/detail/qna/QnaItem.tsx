@@ -78,7 +78,7 @@ const QnaItem = ({
               <img
                 src={qna.questionUserProfileImageUrl}
                 alt={qna.questionUserNickname}
-                className="w-8 h-8 object-cover bg-grey06"
+                className="w-8 h-8 object-cover bg-white rounded-full"
               />
               <div>
                 <div className="text-med14 text-darkgrey05">
