@@ -1,7 +1,7 @@
 import { Goback, Search } from "@/assets/svgs/search";
 import { useCategoryList } from "@/hooks/useSearch";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const CategoryResultPage: React.FC = () => {
   const navigate = useNavigate();
@@ -49,7 +49,8 @@ const CategoryResultPage: React.FC = () => {
       {!isLoading && products?.length ? (
         <div className="flex flex-col gap-3">
           {products.map(item => (
-            <div
+            <Link
+              to={`/item/${item.auctionId}`}
               key={item.auctionId}
               className="flex items-center border border-grey04 rounded-[8px] px-3 py-3"
             >
@@ -95,7 +96,7 @@ const CategoryResultPage: React.FC = () => {
                     : `현재 최고가: ₩${item.currentPrice.toLocaleString()}`}
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (

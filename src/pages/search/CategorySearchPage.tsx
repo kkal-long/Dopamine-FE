@@ -1,7 +1,7 @@
 import { Delete, Goback, Search } from "@/assets/svgs/search";
 import { useCategoryKeyword } from "@/hooks/useSearch";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const CategorySearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -139,6 +139,12 @@ const CategorySearchPage: React.FC = () => {
 
       {/* 검색 결과 */}
       <div className="mt-6">
+        {isError && (
+          <p className="text-center text-red-500 text-med14 mt-8">
+            데이터를 불러오지 못했습니다.
+          </p>
+        )}
+
         {confirmedQuery && (
           <p className="text-med12 text-black mb-[10px]">
             검색 결과 {products.length}개
@@ -151,7 +157,8 @@ const CategorySearchPage: React.FC = () => {
 
         {!isLoading &&
           products.map(item => (
-            <div
+            <Link
+              to={`/item/${item.auctionId}`}
               key={item.auctionId}
               className="flex items-center border border-grey04 rounded-[8px] px-3 py-3 mb-3"
             >
@@ -181,7 +188,7 @@ const CategorySearchPage: React.FC = () => {
                   현재 최고가: ₩{item.currentPrice.toLocaleString()}
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
       </div>
     </div>
