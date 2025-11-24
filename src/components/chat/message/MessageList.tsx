@@ -1,9 +1,9 @@
 import MessageItem from "@/components/chat/message/MessageItem";
-import { Message } from "@/types/chat/Chat.type";
+import { ChatMesageList } from "@/types/chat/chatApi.type";
 import { useEffect, useRef } from "react";
 
 interface MessageListProps {
-  messages: Message[];
+  messages: ChatMesageList;
 }
 
 const MessageList = ({ messages }: MessageListProps) => {
@@ -16,7 +16,7 @@ const MessageList = ({ messages }: MessageListProps) => {
   return (
     <div className="flex-1 p-4 overflow-y-auto">
       {messages.map(msg => (
-        <MessageItem key={msg.id} msg={msg} />
+        <MessageItem key={msg.messageId} msg={msg} />
       ))}
       <div ref={messagesEndRef}></div>
     </div>
