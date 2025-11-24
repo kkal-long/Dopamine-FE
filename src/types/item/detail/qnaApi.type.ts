@@ -14,3 +14,19 @@ export interface QnaItem {
 }
 
 export type QnaAuctionResponse = QnaItem[];
+
+export interface QnaQuestionRequest {
+  auctionId: number;
+  userId: number;
+  questionContent: string;
+}
+
+export type QnaQuestionResponse = QnaItem;
+
+export interface QnaAnswerRequest {
+  qnaId: number;
+  userId: number;
+  answerContent: string;
+}
+
+export type QnaAnswerResponse = QnaItem;

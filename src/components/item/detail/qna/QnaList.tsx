@@ -35,9 +35,7 @@ const QnaList = ({
                 isReplying={qna.qnaId === replyingToId}
                 onStartReply={onStartReply}
                 onCancelReply={onCancelReply}
-                onReplySubmit={(questionId, answerText) =>
-                  onReplySubmit(questionId, answerText)
-                }
+                onReplySubmit={onReplySubmit}
               />
             ))
           ) : (

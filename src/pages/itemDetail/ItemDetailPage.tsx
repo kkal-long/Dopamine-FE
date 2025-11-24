@@ -7,7 +7,7 @@ import ItemCard from "@/components/item/detail/itemCard/ItemCard";
 import ItemImage from "@/components/item/detail/itemImage/ItemImage";
 import QnaInputBar from "@/components/item/detail/qna/QnaInputBar";
 import QnaList from "@/components/item/detail/qna/QnaList";
-import { useAUctionQnaApi } from "@/hooks/item/detail/useAuctionQnaApi";
+import { useAuctionQnaApi } from "@/hooks/item/detail/useAuctionQnaApi";
 import { useItemBid } from "@/hooks/useItemBid";
 import { useItemModal } from "@/hooks/useItemModal";
 import { useItemQna } from "@/hooks/useItemQna";
@@ -21,7 +21,7 @@ const ItemDetailPage = () => {
 
   const item = mockItems;
 
-  const { getQnaMutation } = useAUctionQnaApi();
+  const { getQnaMutation } = useAuctionQnaApi();
   const { data: qnaData } = getQnaMutation(auctionId);
 
   // 제품 상태
@@ -42,14 +42,13 @@ const ItemDetailPage = () => {
   const {
     isAsking,
     replyingToId,
-    setIsAsking,
     handleAskQuestion,
     handleStartReply,
     handleCancelReply,
     handleQuestionSubmit,
     handleReplySubmit,
     cancelAsking,
-  } = useItemQna();
+  } = useItemQna(auctionId);
 
   // 입찰
   const {
@@ -63,7 +62,6 @@ const ItemDetailPage = () => {
   // 입찰하기 버튼 클릭시
   const handleBidClick = () => {
     setBidSheetOpen(true);
-    setIsAsking(false);
   };
 
   return (
