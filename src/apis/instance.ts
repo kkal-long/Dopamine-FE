@@ -1,20 +1,18 @@
+// src/apis/instance.ts
+import { useAuthStore } from "@/store/useAuthStore";
 import axios from "axios";
 
-import { useAuthStore } from "@/store/useAuthStore";
-
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_API_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL, // https://mmuuttssaa.shop
   withCredentials: true,
 });
 
 // 요청 인터셉터
 instance.interceptors.request.use(config => {
   const { accessToken } = useAuthStore.getState();
-
   if (accessToken) {
     config.headers["Authorization"] = `Bearer ${accessToken}`;
   }
-
   return config;
 });
 
@@ -22,38 +20,38 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(
   res => res,
   async err => {
-    const originalRequest = err.config;
+    const original = err.config;
 
+    // 🔥 여기 수정됨!!! (반드시 이 버전 사용)
     if (
       (err.response?.status === 401 || err.response?.status === 403) &&
-      !originalRequest._retry
+      !original._retry
     ) {
-      originalRequest._retry = true;
+      original._retry = true;
+
+      const { refreshToken, login, logout } = useAuthStore.getState();
+
+      if (!refreshToken) {
+        logout();
+        window.location.href = "/login";
+        return;
+      }
 
       try {
-        const { refreshToken } = useAuthStore.getState();
-
-        if (!refreshToken) {
-          throw new Error("Refresh Token이 없습니다. 다시 로그인 하세요.");
-        }
-
-        const refreshRes = await axios.post(
-          `${import.meta.env.VITE_SERVER_API_URL}/token/access`,
-          { refreshToken: refreshToken },
+        const refresh = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/token/access`,
+          { refreshToken },
           { withCredentials: true }
         );
 
-        const { accessToken: newAccess } = refreshRes.data;
+        login(refresh.data.accessToken, refreshToken);
 
-        useAuthStore.getState().login(newAccess, refreshToken);
+        original.headers["Authorization"] =
+          `Bearer ${refresh.data.accessToken}`;
 
-        originalRequest.headers["Authorization"] =
-          `Bearer ${refreshRes.data.accessToken}`;
-
-        return instance(originalRequest);
-      } catch (refreshError) {
-        console.error(refreshError);
-        useAuthStore.getState().logout();
+        return instance(original);
+      } catch {
+        logout();
         window.location.href = "/login";
       }
     }

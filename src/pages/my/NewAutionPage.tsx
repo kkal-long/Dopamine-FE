@@ -1,3 +1,5 @@
+// src/pages/my/NewAuctionPage.tsx
+
 import { Goback } from "@/assets/svgs/search";
 import Footer from "@/components/common/Footer";
 import { useState } from "react";
@@ -11,21 +13,23 @@ import AuctionTimeSection from "@/components/my/AuctionForm/AuctionTimeSection";
 import { Check } from "@/assets/svgs/common";
 import { Warning } from "@/assets/svgs/my";
 
+import { useCreateAuction } from "@/hooks/auction/useCreateAuction";
+import { useImageUpload } from "@/hooks/auction/useImageUpload";
+
+import { CreateAuctionRequest } from "@/types/auction/auction";
+
 const categories = [
-  "디지털 기기",
-  "가구/인테리어",
-  "유아동",
-  "생활가전",
-  "뷰티/미용",
-  "스포츠",
-  "취미/게임/음반",
-  "가공식품",
-  "도서",
-  "티켓/교환권",
-  "여성의류",
-  "여성잡화",
-  "남성패션/잡화",
-  "식물",
+  { id: 1, name: "디지털 기기" },
+  { id: 2, name: "가구/인테리어" },
+  { id: 3, name: "유아동" },
+  { id: 4, name: "생활가전" },
+  { id: 5, name: "스포츠" },
+  { id: 6, name: "가공식품" },
+  { id: 7, name: "취미/게임/음반" },
+  { id: 8, name: "도서" },
+  { id: 9, name: "남성패션" },
+  { id: 10, name: "여성패션" },
+  { id: 11, name: "식물" },
 ];
 
 const conditions = [
@@ -37,11 +41,24 @@ const conditions = [
   "New(미개봉 새상품)",
 ];
 
-const deliveryMethods = ["직거래", "택배"];
-const durations = ["12시간", "24시간", "직접 입력"];
+// 상태값 매핑 (API에서 요구하는 short code)
+const conditionMap: Record<string, string> = {
+  "S급(새상품급)": "S급",
+  "A급(미세 사용감)": "A급",
+  "B급(사용감 있음)": "B급",
+  "C급(생활감 많음)": "C급",
+  "D급(수리/부품 필요)": "D급",
+  "New(미개봉 새상품)": "New",
+};
 
-const NewAutionPage = () => {
+const deliveryMethods = ["직거래", "택배"];
+const durations = ["12시간", "24시간"];
+
+const NewAuctionPage = () => {
   const navigate = useNavigate();
+
+  const { uploadImages } = useImageUpload();
+  const { submitAuction } = useCreateAuction();
 
   const [images, setImages] = useState<(File | null)[]>([null, null, null]);
   const [title, setTitle] = useState("");
@@ -57,12 +74,10 @@ const NewAutionPage = () => {
   const [hideBid, setHideBid] = useState(false);
   const [delivery, setDelivery] = useState("직거래");
 
-  // 배송비 부담
   const [deliveryCharge, setDeliveryCharge] = useState<"판매자" | "구매자">(
     "판매자"
   );
 
-  // alert 상태
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -78,13 +93,54 @@ const NewAutionPage = () => {
     if (isSuccess) navigate("/my");
   };
 
-  const handleSubmit = () => {
+  // 경매 종료 시간 계산
+  const calculateEndAt = () => {
+    const now = new Date();
+    const end = new Date(now);
+
+    if (duration === "12시간") end.setHours(end.getHours() + 12);
+    if (duration === "24시간") end.setHours(end.getHours() + 24);
+
+    return end.toISOString();
+  };
+
+  const handleSubmit = async () => {
     if (!title || !category || !condition || !year || !location) {
       openAlert("내용을 모두 입력해주세요.", false);
       return;
     }
 
-    openAlert("새 경매 등록이 완료되었습니다.", true);
+    try {
+      // 이미지 중 File만 필터링
+      const fileList = images.filter((f): f is File => f !== null);
+
+      const uploadedUrls = await uploadImages(fileList);
+
+      const selected = categories.find(c => c.name === category);
+      const categoryId = selected ? [selected.id] : [];
+
+      // 🔥 API 타입과 완전히 맞춘 body
+      const body: CreateAuctionRequest = {
+        goodsName: title,
+        description: description,
+        startPrice: 0,
+        startAt: new Date().toISOString(),
+        endAt: calculateEndAt(),
+        condition: conditionMap[condition],
+        transactionMethod: delivery === "직거래" ? "FACE_TO_FACE" : "DELIVERY",
+        manufactureYear: year,
+        location: location,
+        imageUrls: uploadedUrls,
+        categoryIds: categoryId,
+        hideBidPrice: hideBid,
+      };
+
+      await submitAuction(body);
+
+      openAlert("새 경매 등록이 완료되었습니다!", true);
+    } catch (error) {
+      openAlert("등록 중 오류가 발생했습니다.", false);
+    }
   };
 
   return (
@@ -99,17 +155,16 @@ const NewAutionPage = () => {
           <h1 className="text-med18 ml-24 text-bluegrey10">새 경매 등록</h1>
         </div>
 
-        {/* 본문 */}
+        {/* 본문 영역 */}
         <div className="p-4">
           <div className="bg-white rounded-[8px] py-[16px] -mt-4">
-            {/* 이미지 업로드 */}
+            {/* 이미지 업로더 */}
             <AuctionImageUploader images={images} setImages={setImages} />
 
             <p className="text-bluegrey08 text-reg12 -mt-2 mb-4 ml-1">
               최대 10장까지 등록 가능합니다
             </p>
 
-            {/* 구분선 */}
             <div className="w-[375px] h-px bg-bluegrey02 my-4 -mx-4"></div>
 
             {/* 물품명 */}
@@ -138,18 +193,15 @@ const NewAutionPage = () => {
               {description.length}/200
             </div>
 
-            {/* 구분선 */}
             <div className="w-[375px] h-px bg-bluegrey02 my-4 -mx-4"></div>
 
-            {/* 카테고리 */}
+            {/* 카테고리, 상태 */}
             <AuctionDropdown
               label="카테고리"
               value={category}
               onChange={setCategory}
-              options={categories}
+              options={categories.map(c => c.name)}
             />
-
-            {/* 상태 */}
             <AuctionDropdown
               label="상태"
               value={condition}
@@ -157,7 +209,7 @@ const NewAutionPage = () => {
               options={conditions}
             />
 
-            {/* 연식/위치 */}
+            {/* 연식 / 위치 */}
             <div className="flex gap-3 mb-4">
               <div className="flex-1">
                 <label className="block text-med16 text-bluegrey10 mb-2">
@@ -165,10 +217,7 @@ const NewAutionPage = () => {
                 </label>
                 <input
                   value={year}
-                  onChange={e => {
-                    const onlyNums = e.target.value.replace(/[^0-9]/g, "");
-                    setYear(onlyNums);
-                  }}
+                  onChange={e => setYear(e.target.value.replace(/[^0-9]/g, ""))}
                   maxLength={4}
                   inputMode="numeric"
                   placeholder="예: 2023"
@@ -189,7 +238,7 @@ const NewAutionPage = () => {
               </div>
             </div>
 
-            {/* 경매 시간 설정 */}
+            {/* 경매 시간 */}
             <AuctionTimeSection
               duration={duration}
               onChangeDuration={setDuration}
@@ -205,7 +254,7 @@ const NewAutionPage = () => {
               options={deliveryMethods}
             />
 
-            {/* 택배 선택 시 → 배송비 부담 버튼 나타남 */}
+            {/* 배송비 부담 */}
             {delivery === "택배" && (
               <div className="mt-4">
                 <label className="block text-med16 text-bluegrey10 mb-2">
@@ -238,7 +287,6 @@ const NewAutionPage = () => {
               </div>
             )}
 
-            {/* 구분선 */}
             <div className="w-[375px] h-px bg-bluegrey02 my-4 -mx-4"></div>
 
             {/* 주의사항 */}
@@ -254,7 +302,7 @@ const NewAutionPage = () => {
               </p>
             </div>
 
-            {/* 등록 버튼 */}
+            {/* 제출 버튼 */}
             <button
               onClick={handleSubmit}
               className="w-[343px] bg-mainpink text-white py-3 rounded-[8px] text-med18 cursor-pointer transition mt-6"
@@ -290,4 +338,4 @@ const NewAutionPage = () => {
   );
 };
 
-export default NewAutionPage;
+export default NewAuctionPage;
