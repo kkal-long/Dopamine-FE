@@ -1,9 +1,7 @@
+import { SellerData } from "@/types/item/detail/itemDetailApi.type";
+
 interface SellerInfoProps {
-  seller: {
-    id: number;
-    name: string;
-    image: string;
-  };
+  seller: SellerData;
 }
 
 const SellerInfo = ({ seller }: SellerInfoProps) => (
@@ -11,11 +9,11 @@ const SellerInfo = ({ seller }: SellerInfoProps) => (
     <h3 className="text-reg14 text-bluegrey08 mb-2"> 판매자</h3>
     <div className="flex items-center space-x-2">
       <img
-        src={seller.image}
-        alt={seller.name}
+        src={seller.profileImageUrl}
+        alt={seller.nickname}
         className="w-9 h-9 rounded-full bg-grey06 object-cover"
       />
-      <span className="text-med14">{seller.name}</span>
+      <span className="text-med14">{seller.nickname}</span>
     </div>
   </section>
 );

@@ -1,9 +1,16 @@
 import { Trophy } from "@/assets/svgs/item/detail";
 import { useUserStore } from "@/store/useUserStore";
-import { BidHistoryItemProps } from "@/types/item/detail/BidHistory.type";
+import { BidHistoryData } from "@/types/item/bid/bidApi.type";
 import { formatTimeAgo } from "@/utils/dateUtils";
 import { formatPrice } from "@/utils/priceUtils";
 import clsx from "clsx";
+
+interface BidHistoryItemProps {
+  bid: BidHistoryData;
+  rank: number;
+  isWinner: boolean; // 경매가 끝났을 때 1등
+  isCurrentTop: boolean; // 경매가 진행중일 때 1등
+}
 
 const BidHistoryItem = ({
   bid,
@@ -40,7 +47,7 @@ const BidHistoryItem = ({
   const renderNameInfo = () => (
     <div className="flex flex-col">
       <div className="flex items-center gap-1">
-        <span className="text-reg14 text-darkgrey05">{bid.name}</span>
+        <span className="text-reg14 text-darkgrey05">{bid.nickname}</span>
         {isWinner && <span className="w-1 h-1 rounded-full bg-mainpink"></span>}
       </div>
 
@@ -64,7 +71,7 @@ const BidHistoryItem = ({
       </div>
 
       <div className="text-darkgrey01 text-reg12">
-        {formatTimeAgo(bid.bidAt)}
+        {formatTimeAgo(bid.createAt)}
       </div>
     </div>
   );
@@ -79,8 +86,8 @@ const BidHistoryItem = ({
     >
       {renderRank()}
       <img
-        src={bid.image}
-        alt={bid.name}
+        src={bid.profileImageUrl}
+        alt={bid.nickname}
         className="w-10 h-10 rounded-full mx-2 bg-grey06"
       />
       {renderNameInfo()}

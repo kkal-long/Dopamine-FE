@@ -1,9 +1,9 @@
 import { useUserStore } from "@/store/useUserStore";
-import type { ItemData } from "@/types/item/detail/ItemCard.type";
 import { ViewState } from "@/types/item/detail/ItemCard.type";
+import { AuctionDetailResponse } from "@/types/item/detail/itemDetailApi.type";
 
 interface UseItemStateProps {
-  item: ItemData;
+  item: AuctionDetailResponse;
 }
 
 export interface ItemState {
@@ -18,11 +18,11 @@ export interface ItemState {
 export const useItemState = ({ item }: UseItemStateProps): ItemState => {
   const userId = useUserStore(state => state.userId);
 
-  const isSeller = item.seller.id === userId;
-  const hasBid = item.myPrice !== null && item.myPrice > 0;
-  const isWinner = item.winnerId === userId;
-  const isLive = item.state === "RUNNING";
-  const isEnded = item.state === "ENDED";
+  const isSeller = item.seller.userId === userId;
+  const hasBid = item.myBidPrice !== null && item.myBidPrice > 0;
+  const isWinner = item.winner?.userId === userId;
+  const isLive = item.status === "IN_PROGRESS";
+  const isEnded = item.status === "SOLD" || item.status === "CANCELED";
 
   /**
    * LIVE : 입찰 안 함(경매중)
@@ -36,14 +36,14 @@ export const useItemState = ({ item }: UseItemStateProps): ItemState => {
       return hasBid && !isSeller ? "LIVE_BIDDING" : "LIVE";
     }
     if (isEnded) {
-      if (isWinner || (isSeller && item.winnerId !== null)) return "WON";
+      if (isWinner || (isSeller && item.winner?.userId !== null)) return "WON";
       if (!isWinner && hasBid) return "LOST";
     }
     return "ENDED";
   })();
 
   // 보증금
-  const depositAmount = item.myPrice ? item.myPrice / 10 : 0;
+  const depositAmount = item.myBidPrice ? item.myBidPrice / 10 : 0;
 
   return {
     isLive,
