@@ -1,4 +1,5 @@
 import { useChatApi } from "@/hooks/chat/useChatApi";
+import { useAuctionDeailApi } from "@/hooks/item/detail/useAuctionDetailApi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -41,9 +42,21 @@ export const useItemModal = (
     });
   };
 
+  const { postRefusePurchaseMutation } = useAuctionDeailApi();
+  const { mutate: refusePurchase } = postRefusePurchaseMutation();
+
   const handleConfirmReject = () => {
-    setRejectModalOpen(false);
-    navigate("/");
+    refusePurchase(auctionId, {
+      onSuccess: () => {
+        setRejectModalOpen(false);
+        alert("구매 거부가 완료되었습니다.");
+        navigate("/");
+      },
+      onError: err => {
+        console.error("구매 거부 실패: ", err);
+        alert("구매 거부에 실패했습니다.");
+      },
+    });
   };
 
   return {

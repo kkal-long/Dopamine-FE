@@ -1,5 +1,8 @@
-import { getAuctionDetail } from "@/apis/item/detail/itemDetailApi";
-import { useQuery } from "@tanstack/react-query";
+import {
+  getAuctionDetail,
+  postRefusePurchase,
+} from "@/apis/item/detail/itemDetailApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useAuctionDeailApi = () => {
   const getAuctionDetailQuery = (auctionId: number) => {
@@ -12,5 +15,11 @@ export const useAuctionDeailApi = () => {
     });
   };
 
-  return { getAuctionDetailQuery };
+  const postRefusePurchaseMutation = () => {
+    return useMutation({
+      mutationFn: postRefusePurchase,
+    });
+  };
+
+  return { getAuctionDetailQuery, postRefusePurchaseMutation };
 };

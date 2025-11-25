@@ -35,3 +35,12 @@ export interface AuctionDetailResponse {
   categories: CategoryData[];
   myBidPrice: number | null;
 }
+
+export interface RefusePurchaseResponse {
+  success: boolean;
+  nexbidder: {
+    user_id: number;
+    nickname: string;
+    profileImageUrl: string;
+  } | null;
+}
