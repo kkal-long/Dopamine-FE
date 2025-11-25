@@ -58,9 +58,9 @@ export const formatTimeLeftSimple = (dateStr: string) => {
 };
 
 export const formatTimeAgo = (dateStr: string) => {
-  if (!dateStr) return;
+  if (!dateStr) return "";
 
-  const date = new Date(dateStr);
+  const date = parseISO(dateStr);
   const now = new Date();
 
   if (isNaN(date.getTime())) return "";

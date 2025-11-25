@@ -86,7 +86,7 @@ const SearchPage: React.FC = () => {
           recentSearches.map((item, i) => (
             <div
               key={i}
-              className="flex items-center text-med14 text-darkgrey01 border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0 cursor-pointer"
+              className="flex items-center text-reg14 text-darkgrey01 border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0 cursor-pointer"
             >
               {/* 최근 검색어 클릭 시 자동 검색 */}
               <span onClick={() => handleRecentClick(item)}>{item}</span>
@@ -94,7 +94,7 @@ const SearchPage: React.FC = () => {
                 onClick={() => handleDelete(item)}
                 className="ml-1 cursor-pointer flex items-center justify-center"
               >
-                <Delete className="w-3 h-4" />
+                <Delete className="w-3 h-4 cursor-pointer" />
               </button>
             </div>
           ))
