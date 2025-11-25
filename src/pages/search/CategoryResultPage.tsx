@@ -3,6 +3,19 @@ import { useCategoryList } from "@/hooks/useSearch";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+/** 카테고리 검색 결과 아이템 타입 */
+interface CategoryItem {
+  auctionId: number;
+  goodsName: string;
+  currentPrice: number;
+  remainingTime?: string;
+  imageUrl?: string[] | null;
+  status?: string;
+  progressStatus?: string;
+  auctionStatus?: string;
+  state?: string;
+}
+
 const CategoryResultPage: React.FC = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -16,19 +29,24 @@ const CategoryResultPage: React.FC = () => {
     isError,
   } = useCategoryList(categoryId);
 
-  /** 🔥 status 통일 (API에서 다양한 문자열이 올까봐 대비) */
-  const normalizeStatus = (status: string | undefined) => {
-    if (!status) return "경매중";
+  /** status 통일 (백엔드 값 기준: "IN_PROGRESS", "SOLD") */
+  const normalizeStatus = (item: CategoryItem) => {
+    const raw =
+      item.status ||
+      item.progressStatus ||
+      item.auctionStatus ||
+      item.state ||
+      "";
 
-    const s = status.trim().toUpperCase();
+    if (!raw) return "경매중";
 
-    if (["경매종료", "종료"].includes(status)) return "경매종료";
-    if (["FINISHED", "END", "ENDED", "CLOSED"].includes(s)) return "경매종료";
+    const s = raw.trim().toUpperCase();
+
+    if (s === "SOLD") return "경매종료";
+    if (s === "IN_PROGRESS") return "경매중";
 
     return "경매중";
   };
-
-  console.log("📌 카테고리 검색 API 응답:", products);
 
   return (
     <div className="w-full max-w-[375px] mx-auto bg-white min-h-[812px] px-[20px] py-6">
@@ -63,8 +81,8 @@ const CategoryResultPage: React.FC = () => {
 
       {!isLoading && products.length > 0 ? (
         <div className="flex flex-col gap-3">
-          {products.map(item => {
-            const status = normalizeStatus(item.status);
+          {products.map((item: CategoryItem) => {
+            const status = normalizeStatus(item);
 
             return (
               <div
@@ -73,9 +91,9 @@ const CategoryResultPage: React.FC = () => {
               >
                 {/* 이미지 */}
                 <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
-                  {item.imageUrl && (
+                  {item.imageUrl?.[0] && (
                     <img
-                      src={item.imageUrl}
+                      src={item.imageUrl[0]}
                       alt={item.goodsName}
                       className="w-full h-full object-cover"
                     />

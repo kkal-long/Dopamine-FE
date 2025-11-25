@@ -1,9 +1,7 @@
-// src/types/auction/myAuction.ts
-
 export interface MyAuctionItem {
   id: number;
   title: string;
-  imageUrl: string;
+  imageUrl: string[];
   currentPrice: number;
   endAt: string;
 }

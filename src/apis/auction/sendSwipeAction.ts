@@ -1,4 +1,3 @@
-// src/apis/auction/sendSwipeAction.ts
 import instance from "@/apis/instance";
 
 export type SwipeActionType = "DISLIKE" | "HOLD" | "BIDDING";

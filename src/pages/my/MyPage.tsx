@@ -30,7 +30,7 @@ const MyPage = () => {
       title: a.title,
       price: a.currentPrice,
       status: "경매중",
-      image: a.imageUrl,
+      image: a.imageUrl?.[0] || "",
       timeLeft: { hours, minutes },
     };
   });
@@ -41,7 +41,7 @@ const MyPage = () => {
     title: a.title,
     price: a.currentPrice,
     status: "거래 완료",
-    image: a.imageUrl,
+    image: a.imageUrl?.[0] || "",
   }));
 
   return (

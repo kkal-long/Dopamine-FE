@@ -5,7 +5,7 @@ import { useAuctionDeck } from "@/hooks/auction/useAuctionDeck";
 
 export default function HomePage() {
   /** 페이지 로드 시 SSE 연결 */
-  // ⚠ 테스트 중이라면 잠시 꺼도 됨
+  // 오류 엄청 나서... 다른 거 테스트 먼저 하려고 일단 껐어요 이거 나중에 다시 키면 돼요...
   // useNotificationSSE();
 
   /** 실제 경매 카드를 가져오는 API 훅 */

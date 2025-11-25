@@ -5,7 +5,7 @@ export interface SearchResultItem {
   status: string;
   remainingTime: string;
   currentPrice: number;
-  imageUrl: string | null;
+  imageUrl: string[] | null;
   condition: string;
   year: string;
   categoryId: number;

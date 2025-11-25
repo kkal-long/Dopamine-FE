@@ -15,6 +15,9 @@ const AuctionTimeSection = ({
   hideBid,
   onToggle,
 }: Props) => {
+  // 🔥 옵션에 "직접 입력" 추가!
+  const fullOptions = [...options, "직접 입력"];
+
   return (
     <div className="my-6">
       {/* 경매 시간 제목 */}
@@ -24,12 +27,11 @@ const AuctionTimeSection = ({
       <DurationSelector
         value={duration}
         onChange={onChangeDuration}
-        options={options}
+        options={fullOptions} // ← 여기!
       />
 
-      {/* 텍스트 + 토글을 한 줄로 */}
+      {/* 텍스트 + 토글 */}
       <div className="flex justify-between items-center mt-2 mb-6">
-        {/* 텍스트 부분 */}
         <div>
           <p className="text-med14 text-bluegrey10 mb-1">
             마감 10분 전 입찰가 가리기

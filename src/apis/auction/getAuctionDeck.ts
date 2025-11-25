@@ -1,4 +1,3 @@
-// src/apis/auction/getAuctionDeck.ts
 import instance from "@/apis/instance";
 import type { DeckAuctionResponse } from "@/types/auction/deck";
 

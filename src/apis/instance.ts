@@ -10,9 +10,18 @@ const instance = axios.create({
 // 요청 인터셉터
 instance.interceptors.request.use(config => {
   const { accessToken } = useAuthStore.getState();
+
+  console.log("🔑 AccessToken from Zustand:", accessToken);
+
   if (accessToken) {
     config.headers["Authorization"] = `Bearer ${accessToken}`;
+  } else {
+    console.warn("⚠️ No accessToken found!");
   }
+
+  console.log("👉 요청 헤더:", config.headers);
+  console.log("👉 요청 URL:", config.url);
+
   return config;
 });
 

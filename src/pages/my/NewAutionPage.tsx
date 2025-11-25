@@ -98,8 +98,29 @@ const NewAuctionPage = () => {
     const now = new Date();
     const end = new Date(now);
 
-    if (duration === "12시간") end.setHours(end.getHours() + 12);
-    if (duration === "24시간") end.setHours(end.getHours() + 24);
+    // 1) 기본 옵션 처리
+    if (duration === "12시간") {
+      end.setHours(end.getHours() + 12);
+      return end.toISOString();
+    }
+
+    if (duration === "24시간") {
+      end.setHours(end.getHours() + 24);
+      return end.toISOString();
+    }
+
+    // 2) 직접 입력 ("00일 11시간 20분" 같은 형태)
+    const dayMatch = duration.match(/(\d+)일/);
+    const hourMatch = duration.match(/(\d+)시간/);
+    const minuteMatch = duration.match(/(\d+)분/);
+
+    const d = dayMatch ? Number(dayMatch[1]) : 0;
+    const h = hourMatch ? Number(hourMatch[1]) : 0;
+    const m = minuteMatch ? Number(minuteMatch[1]) : 0;
+
+    end.setDate(end.getDate() + d);
+    end.setHours(end.getHours() + h);
+    end.setMinutes(end.getMinutes() + m);
 
     return end.toISOString();
   };

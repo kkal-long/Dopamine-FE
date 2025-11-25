@@ -1,4 +1,3 @@
-// src/hooks/auction/useBid.ts
 import { useState } from "react";
 
 export const useBid = (initialPrice: number) => {

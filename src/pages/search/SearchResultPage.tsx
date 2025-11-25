@@ -115,11 +115,11 @@ const SearchResultPage: React.FC = () => {
         </div>
       )}
 
+      {/* 검색 결과 */}
       <p className="text-med12 text-black mb-[10px]">
         검색 결과 {products.length}개
       </p>
 
-      {/* 검색 결과 */}
       <div
         className="flex flex-col gap-4 overflow-y-auto flex-1 scrollbar-hide"
         style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
@@ -141,9 +141,9 @@ const SearchResultPage: React.FC = () => {
               className="flex items-center border border-grey09 rounded-[8px] px-3 py-3"
             >
               <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
-                {item.imageUrl && (
+                {item.imageUrl?.[0] && (
                   <img
-                    src={item.imageUrl}
+                    src={item.imageUrl[0]}
                     alt={item.goodsName}
                     className="w-full h-full object-cover"
                   />

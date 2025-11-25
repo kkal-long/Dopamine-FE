@@ -1,4 +1,3 @@
-// src/hooks/auction/useImageUpload.ts
 import { uploadImage } from "@/apis/auction/imageApi";
 import { useState } from "react";
 
@@ -11,7 +10,10 @@ export const useImageUpload = () => {
       const urls: string[] = [];
 
       for (const file of files) {
+        console.log("📤 업로드 요청:", file.name);
         const res = await uploadImage(file);
+        console.log("📤 업로드 응답:", res);
+
         if (res?.result?.url) urls.push(res.result.url);
       }
 

@@ -11,6 +11,7 @@ export const useAuctionDeck = () => {
   const fetchDeck = async () => {
     try {
       setIsLoading(true);
+
       const res = await getAuctionDeck();
       setDeck(prev => [...prev, ...res.auctions]); // 기존 덱 뒤에 추가
     } catch (err) {

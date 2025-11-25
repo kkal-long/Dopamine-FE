@@ -72,7 +72,7 @@ const CategorySearchPage: React.FC = () => {
       {/* 상단 바 */}
       <div className="flex items-center mb-[14px]">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/search")}
           className="flex justify-center items-center w-[32px] h-[32px]"
         >
           <Goback className="w-[17.5px] h-[24px] cursor-pointer -ml-2" />
@@ -156,9 +156,9 @@ const CategorySearchPage: React.FC = () => {
               className="flex items-center border border-grey04 rounded-[8px] px-3 py-3 mb-3"
             >
               <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
-                {item.imageUrl && (
+                {item.imageUrl?.[0] && (
                   <img
-                    src={item.imageUrl}
+                    src={item.imageUrl[0]}
                     alt={item.goodsName}
                     className="w-full h-full object-cover"
                   />
@@ -169,16 +169,29 @@ const CategorySearchPage: React.FC = () => {
                 <span className="text-med16 text-darkgrey05 mb-[4px]">
                   {item.goodsName}
                 </span>
+
                 <div className="flex items-center gap-2 mb-[4px]">
-                  <span className="text-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
+                  {/* 상태 badge */}
+                  <span
+                    className={
+                      item.status === "경매종료"
+                        ? "text-reg12 text-darkgrey04 bg-grey01 px-2 py-[2px] rounded-full"
+                        : "text-reg12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full"
+                    }
+                  >
                     {item.status}
                   </span>
-                  <span className="text-med14 text-mainpink">
-                    {item.remainingTime}
-                  </span>
+
+                  {item.status !== "경매종료" && (
+                    <span className="text-med14 text-mainpink">
+                      {item.remainingTime}
+                    </span>
+                  )}
                 </div>
-                <span className="text-med14 text-darkgrey05">
-                  현재 최고가: ₩{item.currentPrice.toLocaleString()}
+                <span className="text-reg14 text-darkgrey05">
+                  {item.status === "경매종료"
+                    ? `낙찰가: ₩${item.currentPrice.toLocaleString()}`
+                    : `현재 최고가: ₩${item.currentPrice.toLocaleString()}`}
                 </span>
               </div>
             </div>

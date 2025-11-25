@@ -1,4 +1,3 @@
-// types/auction.ts
 export interface CreateAuctionRequest {
   goodsName: string;
   description: string;

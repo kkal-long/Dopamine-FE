@@ -1,4 +1,3 @@
-// types/image.ts
 export interface ImageUploadResponse {
   success: boolean;
   status: number;
