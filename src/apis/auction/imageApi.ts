@@ -1,4 +1,3 @@
-// src/apis/auction/imageApi.ts
 import instance from "@/apis/instance";
 import { ImageUploadResponse } from "@/types/auction/image";
 

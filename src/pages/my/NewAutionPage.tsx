@@ -123,7 +123,7 @@ const NewAuctionPage = () => {
       const body: CreateAuctionRequest = {
         goodsName: title,
         description: description,
-        startPrice: 0,
+        startPrice: 1000,
         startAt: new Date().toISOString(),
         endAt: calculateEndAt(),
         condition: conditionMap[condition],

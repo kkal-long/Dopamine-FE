@@ -7,6 +7,6 @@ import {
 export const createAuction = async (
   body: CreateAuctionRequest
 ): Promise<CreateAuctionResponse> => {
-  const res = await instance.post<CreateAuctionResponse>("/api/auctions", body);
+  const res = await instance.post<CreateAuctionResponse>("/auctions", body);
   return res.data;
 };

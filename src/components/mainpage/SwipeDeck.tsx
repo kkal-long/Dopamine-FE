@@ -1,59 +1,81 @@
 import SwipeCard from "@/components/mainpage/SwipeCard";
-import { useMemo, useState } from "react";
-import type { MainPageProduct } from "@/types/item/bid/Bid.type";
-import ProductCard from "./ProductCard";
 import BidSheet from "./BidSheet";
-import { useBid } from "@/hooks/useSwipeBid";
+import ProductCard from "./ProductCard";
 
-interface Props {
-  items: MainPageProduct[];
-  onChange?: (current: MainPageProduct | undefined) => void;
+import { sendSwipeAction } from "@/apis/auction/sendSwipeAction";
+import { useBid } from "@/hooks/auction/useBid";
+import type { DeckAuctionItem } from "@/types/auction/deck";
+import { useMemo, useState } from "react";
+
+interface SwipeDeckProps {
+  items: DeckAuctionItem[];
+  onDeckExhausted: () => void;
 }
 
-export default function SwipeDeck({ items, onChange }: Props) {
-  const [deck, setDeck] = useState<MainPageProduct[]>(items);
+export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
+  const [deck, setDeck] = useState(items);
   const [index, setIndex] = useState(0);
 
   const current = deck[index];
   const hasNext = index < deck.length - 1;
 
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { price, setPrice } = useBid(
-    current ? (current.bidPrice ?? current.highestBid) : 0
-  );
+  const { price, setPrice } = useBid(current ? current.currentPrice : 0);
 
-  const openSheet = () => {
+  const openBidSheet = () => {
     if (!current) return;
-    setPrice(current.bidPrice ?? current.highestBid);
+    setPrice(current.currentPrice);
     setSheetOpen(true);
   };
 
-  const closeSheet = () => setSheetOpen(false);
+  const closeBidSheet = () => setSheetOpen(false);
 
-  const confirmBid = () => {
+  /** 🔥 입찰하기 */
+  const confirmBid = async () => {
     if (!current) return;
-    const updated = deck.map((p, i) =>
-      i === index ? { ...p, bidPlaced: true, bidPrice: price } : p
-    );
-    setDeck(updated);
+
+    await sendSwipeAction({
+      auctionId: current.id,
+      action: "BIDDING",
+    });
+
+    setDeck(prev => prev.filter((_, i) => i !== index));
+
     setSheetOpen(false);
+
+    if (deck.length <= 3) onDeckExhausted();
   };
 
-  const defer = () => {
+  /** 🔥 보류 */
+  const defer = async () => {
     if (!current) return;
+
+    await sendSwipeAction({
+      auctionId: current.id,
+      action: "HOLD",
+    });
+
     setDeck(prev => {
       const next = [...prev];
       const [item] = next.splice(index, 1);
       next.push(item);
       return next;
     });
+
+    if (deck.length <= 3) onDeckExhausted();
   };
 
-  const onSwiped = (dir: string) => {
-    if (dir === "left" && hasNext) {
-      const nextIdx = Math.min(index + 1, deck.length - 1);
-      setIndex(nextIdx);
-      onChange?.(deck[nextIdx]);
+  /** 🔥 왼쪽 스와이프 (관심 없음) */
+  const onSwiped = async (dir: string) => {
+    if (dir === "left" && current) {
+      await sendSwipeAction({
+        auctionId: current.id,
+        action: "DISLIKE",
+      });
+
+      setDeck(prev => prev.filter((_, i) => i !== index));
+
+      if (deck.length <= 3) onDeckExhausted();
     }
   };
 
@@ -65,29 +87,25 @@ export default function SwipeDeck({ items, onChange }: Props) {
         const depth = i;
         const scale = 1 - depth * 0.06;
         const translateY = depth * 20;
-        const translateX = depth * 6;
 
         return (
           <div
             key={product.id}
-            className="absolute inset-0 pointer-events-auto transition-transform duration-300 ease-out"
+            className="absolute inset-0"
             style={{
               zIndex: visible.length - i,
-              transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
-              opacity: 1 - depth * 0.12,
+              transform: `translateY(${translateY}px) scale(${scale})`,
             }}
           >
             <SwipeCard
               onSwipe={onSwiped}
               preventSwipe={
-                sheetOpen
-                  ? ["left", "right", "up", "down"]
-                  : ["right", "up", "down"]
+                sheetOpen ? ["left", "right"] : ["right", "up", "down"]
               }
             >
               <ProductCard
                 product={product}
-                onOpenBid={openSheet}
+                onOpenBid={openBidSheet}
                 onDefer={defer}
               />
             </SwipeCard>
@@ -100,10 +118,10 @@ export default function SwipeDeck({ items, onChange }: Props) {
           open={sheetOpen}
           value={price}
           onChange={setPrice}
-          onClose={closeSheet}
+          onClose={closeBidSheet}
           onConfirm={confirmBid}
           productTitle={current.title}
-          highestBid={current.highestBid}
+          highestBid={current.currentPrice}
         />
       )}
     </div>

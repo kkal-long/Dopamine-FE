@@ -3,7 +3,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // https://mmuuttssaa.shop
+  baseURL: import.meta.env.VITE_SERVER_API_URL, // https://mmuuttssaa.shop
   withCredentials: true,
 });
 
@@ -39,7 +39,7 @@ instance.interceptors.response.use(
 
       try {
         const refresh = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/token/access`,
+          `${import.meta.env.VITE_SERVER_API_URL}/token/access`,
           { refreshToken },
           { withCredentials: true }
         );

@@ -1,35 +1,22 @@
 import { Bidding, Edit, Flip } from "@/assets/svgs/main";
-import type { MainPageProduct } from "@/types/item/bid/Bid.type";
+import type { DeckAuctionItem } from "@/types/auction/deck";
 
 type Props = {
-  product: MainPageProduct;
+  product: DeckAuctionItem;
   onOpenBid: () => void;
   onDefer: () => void;
 };
 
 export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
+  /** 이미지 렌더링 — imageUrl만 사용 */
   const Media = () => {
-    if (product.imageUrl) {
-      return (
-        <img
-          src={product.imageUrl}
-          alt={product.title}
-          className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-        />
-      );
-    }
-    if (product.ImageIcon) {
-      const Icon = product.ImageIcon;
-      return (
-        <div className="absolute inset-0 pointer-events-none">
-          <Icon
-            className="h-full w-full"
-            preserveAspectRatio="xMidYMid slice"
-          />
-        </div>
-      );
-    }
-    return <div className="absolute inset-0 bg-gray-200 pointer-events-none" />;
+    return (
+      <img
+        src={product.imageUrl}
+        alt={product.title}
+        className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+      />
+    );
   };
 
   return (
@@ -43,30 +30,32 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
     >
       <Media />
 
+      {/* 그라데이션 */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0)_49.04%,#000_100%)]" />
-      {/* swipe 영역과 버튼 영역 겹치지 않도록 수정 */}
-      {/* 콘텐츠 */}
+
+      {/* 콘텐츠 영역 */}
       <div className="absolute inset-x-0 bottom-0 p-4 pointer-events-none">
         <div className="flex items-end justify-between gap-3">
           <h3 className="text-[20px] leading-tight text-white">
             {product.title}
           </h3>
+
           <div className="shrink-0 text-[11px] text-white">
             <span>현재 최고 입찰가 </span>
-            <span>₩ {product.highestBid.toLocaleString()}</span>
+            <span>₩ {product.currentPrice.toLocaleString()}</span>
           </div>
         </div>
 
+        {/* 입찰 전 */}
         {!product.bidPlaced ? (
           <div className="mt-3 flex items-center gap-3">
-            {/* 버튼 영역만 클릭 가능하도록 수정 */}
             <button
               onClick={onOpenBid}
               className="
                 pointer-events-auto
                 w-[203px] h-[47px] ml-[72px]
                 rounded-[25.68px] bg-mainpink
-                text-white flex items-center justify-center gap-2  cursor-pointer
+                text-white flex items-center justify-center gap-2 cursor-pointer
               "
             >
               <Bidding className="h-[20px] w-[20px]" />
@@ -83,6 +72,7 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
             </button>
           </div>
         ) : (
+          // 입찰 완료 UI
           <div className="mt-3 flex items-center gap-3 cursor-pointer">
             <button
               onClick={onOpenBid}
@@ -94,7 +84,7 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
             </button>
 
             <div className="flex w-[203px] h-[47px] flex-1 items-center gap-2 rounded-[25.68px] bg-black/45 px-4 py-2 text-[#FF0458] backdrop-blur pointer-events-none">
-              <span className="text-[12px]">w</span>
+              <span className="text-[12px]">₩</span>
               <span className="font-med18">
                 {(product.bidPrice ?? 0).toLocaleString()}원
               </span>

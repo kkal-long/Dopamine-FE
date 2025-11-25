@@ -1,46 +1,15 @@
 import { Logo } from "@/assets/svgs/main";
 import HeaderBell from "@/components/mainpage/HeaderBell";
 import SwipeDeck from "@/components/mainpage/SwipeDeck";
-import useNotificationSSE from "@/hooks/useNotificationSSE";
-import type { MainPageProduct } from "@/types/item/bid/Bid.type";
-import { useMemo } from "react";
+import { useAuctionDeck } from "@/hooks/auction/useAuctionDeck";
 
 export default function HomePage() {
   /** 페이지 로드 시 SSE 연결 */
-  useNotificationSSE();
+  // ⚠ 테스트 중이라면 잠시 꺼도 됨
+  // useNotificationSSE();
 
-  const products: MainPageProduct[] = useMemo(
-    () => [
-      {
-        id: "p1",
-        title: "빈티지 레더자켓",
-        imageUrl:
-          "https://m.ouof.kr/web/product/big/202403/8d67e618b8def1c197c0ae62117deeb6.jpg",
-        highestBid: 85000,
-      },
-      {
-        id: "p2",
-        title: "에어포스",
-        imageUrl:
-          "https://cafe24.poxo.com/ec01/boom2004/2MPBwJPY1W6L+wzPUGJ+dBY8T2Dq6MzVgsX5AKsZoRi3EhBrPTywEEFf8iZ9+YZAsSJNJIiK+Qv2rBXcZNprig==/_/web/product/big/20200325/7832d45821017324b869ab3125eaac53.jpg",
-        highestBid: 42000,
-      },
-      {
-        id: "p3",
-        title: "에어팟",
-        imageUrl:
-          "https://sitem.ssgcdn.com/48/29/95/item/1000550952948_i1_750.jpg",
-        highestBid: 32000,
-      },
-      {
-        id: "p4",
-        title: "카드지갑",
-        imageUrl: "https://www.mibizshop.co.kr/data/goods/657c2fe01ae63.jpg",
-        highestBid: 50000,
-      },
-    ],
-    []
-  );
+  /** 실제 경매 카드를 가져오는 API 훅 */
+  const { deck, isLoading, error, loadMore } = useAuctionDeck();
 
   return (
     <main className="w-full">
@@ -50,7 +19,7 @@ export default function HomePage() {
           {/* LOGO */}
           <Logo className="w-[58px] h-auto ml-3" aria-label="LOGO" />
 
-          {/* 알림 아이콘 */}
+          {/* 알림 버튼 */}
           <div className="mr-3">
             <HeaderBell />
           </div>
@@ -58,8 +27,22 @@ export default function HomePage() {
       </header>
 
       {/* 카드 덱 */}
-      <section className="py-3">
-        <SwipeDeck items={products} />
+      <section className="py-3 min-h-[640px] flex justify-center items-center">
+        {isLoading && <p className="text-bluegrey07">상품을 불러오는 중...</p>}
+
+        {error && (
+          <p className="text-red-500 text-center">
+            데이터를 불러오는 중 오류가 발생했습니다.
+          </p>
+        )}
+
+        {!isLoading && !error && deck.length === 0 && (
+          <p className="text-bluegrey07">오늘의 추천 경매가 없습니다!</p>
+        )}
+
+        {deck.length > 0 && (
+          <SwipeDeck items={deck} onDeckExhausted={loadMore} />
+        )}
       </section>
     </main>
   );
