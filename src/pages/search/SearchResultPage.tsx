@@ -1,30 +1,7 @@
-import { Dropdown, Filter, Goback, Search } from "@/assets/svgs/search";
+import { Delete, Goback, Search } from "@/assets/svgs/search";
+import { useSearchAll } from "@/hooks/useSearch";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-
-const mockProducts = [
-  {
-    id: 1,
-    name: "나이키 에어포스1 로우 265",
-    price: 110000,
-    status: "경매중",
-    timeLeft: "2",
-  },
-  {
-    id: 2,
-    name: "나이키 에어포스1 실버 새상품",
-    price: 20000,
-    status: "경매중",
-    timeLeft: "2",
-  },
-  {
-    id: 3,
-    name: "슈프림 에어포스1",
-    price: 40000,
-    status: "경매중",
-    timeLeft: "2",
-  },
-];
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SearchResultPage: React.FC = () => {
   const navigate = useNavigate();
@@ -32,26 +9,60 @@ const SearchResultPage: React.FC = () => {
   const initialQuery = location.state?.query || "";
 
   const [query, setQuery] = useState(initialQuery);
+  const [confirmedQuery, setConfirmedQuery] = useState(initialQuery);
+
+  // 로컬 최근 검색어
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  const filteredProducts = mockProducts.filter(p =>
-    p.name.toLowerCase().includes(query.toLowerCase())
-  );
-
+  // 로컬스토리지 로드
   useEffect(() => {
     const stored = localStorage.getItem("recentSearches");
     if (stored) setRecentSearches(JSON.parse(stored));
   }, []);
 
-  const handleSearchSubmit = () => {
-    if (!query.trim()) return;
-    const updated = [query, ...recentSearches.filter(i => i !== query)].slice(
-      0,
-      10
-    );
+  // 최근 검색어 저장
+  const saveRecentKeyword = (word: string) => {
+    const trimmed = word.trim();
+    if (!trimmed) return;
+
+    const updated = [
+      trimmed,
+      ...recentSearches.filter(w => w !== trimmed),
+    ].slice(0, 10);
+
     setRecentSearches(updated);
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
+
+  // 검색 실행
+  const handleSearchSubmit = () => {
+    if (!query.trim()) return;
+
+    const finalWord = query.trim();
+    saveRecentKeyword(finalWord);
+    setConfirmedQuery(finalWord);
+  };
+
+  // 최근 검색어 클릭 → 자동 검색
+  const handleRecentClick = (word: string) => {
+    setQuery(word);
+    saveRecentKeyword(word);
+    setConfirmedQuery(word);
+  };
+
+  // 최근 검색어 삭제
+  const handleDelete = (word: string) => {
+    const updated = recentSearches.filter(w => w !== word);
+    setRecentSearches(updated);
+    localStorage.setItem("recentSearches", JSON.stringify(updated));
+  };
+
+  // 백엔드 API 호출: 전체 검색
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useSearchAll(confirmedQuery);
 
   return (
     <div className="w-full max-w-[375px] mx-auto bg-white min-h-[812px] px-[20px] py-6 flex flex-col">
@@ -59,90 +70,122 @@ const SearchResultPage: React.FC = () => {
       <div className="flex items-center mb-6">
         <button
           onClick={() => navigate("/search")}
-          className="flex justify-center items-center w-[32px] h-[32px] flex-shrink-0 bg-transparent border-0 cursor-pointer outline-none"
+          className="flex justify-center items-center w-[32px] h-[32px]"
         >
-          <Goback className="w-[17.5px] h-[24px] mr-3" />
+          <Goback className="w-[17.5px] h-[24px] mr-3 cursor-pointer" />
         </button>
 
+        {/* 검색창 */}
         <div className="w-full h-[50px] flex items-center bg-white rounded-[8px] pl-[8px] pr-[12px] py-[13px] border border-grey09">
           <Search className="w-4 h-4 mr-2" />
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
-            onBlur={handleSearchSubmit}
             onKeyDown={e => e.key === "Enter" && handleSearchSubmit()}
-            type="text"
             placeholder="검색어를 입력하세요"
-            className="flex-1 bg-transparent outline-none text-med16 text-darkgrey02 placeholder-bluegrey04"
+            className="flex-1 bg-transparent outline-none text-med16 text-darkgrey02"
           />
         </div>
       </div>
 
-      {/* 필터 */}
-      <div className="flex items-center mb-4 flex-shrink-0">
-        <Filter className="w-[28px] h-[28px] mr-1" />
-        <div
-          className="flex flex-nowrap overflow-x-auto gap-1.5 scrollbar-hide"
-          style={{
-            msOverflowStyle: "none",
-            scrollbarWidth: "none",
-          }}
-        >
-          {["상태", "연식", "가격", "카테고리"].map(label => (
-            <button
-              key={label}
-              className="flex items-center text-med13 text-grey14 border border-grey09 rounded-[3px] px-[6px] py-[3px] whitespace-nowrap flex-shrink-0"
-            >
-              {label}
-              <Dropdown className="w-[18px] h-[18px] ml-[4px]" />
-            </button>
-          ))}
+      {/* 최근 검색어 */}
+      {recentSearches.length > 0 && (
+        <div className="mb-4">
+          <p className="text-med14 text-darkgrey05 mb-3">최근 검색어</p>
+
+          <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-hide">
+            {recentSearches.map((word, index) => (
+              <div
+                key={index}
+                className="flex items-center border border-grey09 rounded-[8px] px-3 py-1.5 flex-shrink-0"
+              >
+                <button
+                  className="mr-1 text-reg14 text-darkgrey04 cursor-pointer"
+                  onClick={() => handleRecentClick(word)}
+                >
+                  {word}
+                </button>
+
+                <button onClick={() => handleDelete(word)}>
+                  <Delete className="w-3 h-4 cursor-pointer" />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <p className="text-med12 text-black mb-[10px]">
-        검색 결과 {filteredProducts.length}개
+        검색 결과 {products.length}개
       </p>
 
-      {/* 상품 리스트 */}
+      {/* 검색 결과 */}
       <div
         className="flex flex-col gap-4 overflow-y-auto flex-1 scrollbar-hide"
-        style={{
-          msOverflowStyle: "none",
-          scrollbarWidth: "none",
-        }}
+        style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
       >
-        {filteredProducts.length === 0 ? (
+        {isError && (
+          <p className="text-center text-red-500 text-med14 mt-8">
+            데이터를 불러오지 못했습니다.
+          </p>
+        )}
+
+        {!isLoading && products.length === 0 && confirmedQuery && (
           <p className="text-med14 text-grey04">검색 결과가 없습니다.</p>
-        ) : (
-          filteredProducts.map(({ id, name, price, status, timeLeft }) => (
-            <div
-              key={id}
+        )}
+
+        {!isLoading &&
+          products.map(item => (
+            <Link
+              to={`/item/${item.auctionId}`}
+              key={item.auctionId}
               className="flex items-center border border-grey09 rounded-[8px] px-3 py-3"
             >
-              <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 flex-shrink-0" />
+              <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
+                {item.imageUrl && (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.goodsName}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+
+              {/* 정보 */}
               <div className="flex flex-col flex-1">
                 <span className="text-med16 text-darkgrey05 mb-[4px]">
-                  {name}
+                  {item.goodsName}
                 </span>
+
                 <div className="flex items-center gap-2 mb-[4px]">
-                  <span className="text-med12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full">
-                    {status}
+                  {/* 상태 badge */}
+                  <span
+                    className={
+                      item.status === "경매종료"
+                        ? "text-reg12 text-darkgrey04 bg-grey01 px-2 py-[2px] rounded-full"
+                        : "text-reg12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full"
+                    }
+                  >
+                    {item.status}
                   </span>
-                  <span className="text-med14 text-mainpink">
-                    {timeLeft}시간 남음
-                  </span>
+
+                  {item.status !== "경매종료" && (
+                    <span className="text-med14 text-mainpink">
+                      {item.remainingTime}
+                    </span>
+                  )}
                 </div>
-                <span className="text-med14 text-darkgrey05">
-                  현재 최고가: ₩{price.toLocaleString()}
+
+                <span className="text-reg14 text-darkgrey05">
+                  {item.status === "경매종료"
+                    ? `낙찰가: ₩${item.currentPrice.toLocaleString()}`
+                    : `현재 최고가: ₩${item.currentPrice.toLocaleString()}`}
                 </span>
               </div>
-            </div>
-          ))
-        )}
+            </Link>
+          ))}
       </div>
 
-      {/* 스크롤바 숨기기 */}
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
