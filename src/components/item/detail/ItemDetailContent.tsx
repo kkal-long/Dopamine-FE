@@ -33,7 +33,12 @@ const ItemDetailContent = ({ auctionData, qnaData, bidData }: ContentProps) => {
     setRejectModalOpen,
     handleConfirmChat,
     handleConfirmReject,
-  } = useItemModal(auctionData.auctionId);
+  } = useItemModal(
+    auctionData.auctionId,
+    auctionData.imageUrl[0],
+    auctionData.startPrice,
+    auctionData.goodsName
+  );
 
   // Q&A
   const {

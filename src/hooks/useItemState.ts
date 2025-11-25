@@ -18,11 +18,11 @@ export interface ItemState {
 export const useItemState = ({ item }: UseItemStateProps): ItemState => {
   const userId = useUserStore(state => state.userId);
 
-  const isSeller = item.seller.userId === userId;
+  const isSeller = item.seller.user_id === userId;
   const hasBid = item.myBidPrice !== null && item.myBidPrice > 0;
-  const isWinner = item.winner?.userId === userId;
+  const isWinner = item.winner?.user_id === userId;
   const isLive = item.status === "IN_PROGRESS";
-  const isEnded = item.status === "SOLD" || item.status === "CANCELED";
+  const isEnded = item.status === "CLOSED" || item.status === "CANCELED";
 
   /**
    * LIVE : 입찰 안 함(경매중)
@@ -36,7 +36,7 @@ export const useItemState = ({ item }: UseItemStateProps): ItemState => {
       return hasBid && !isSeller ? "LIVE_BIDDING" : "LIVE";
     }
     if (isEnded) {
-      if (isWinner || (isSeller && item.winner?.userId !== null)) return "WON";
+      if (isWinner || (isSeller && item.winner?.user_id !== null)) return "WON";
       if (!isWinner && hasBid) return "LOST";
     }
     return "ENDED";

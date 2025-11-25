@@ -1,11 +1,11 @@
 export interface SellerData {
-  userId: number;
+  user_id: number;
   nickname: string;
   profileImageUrl: string;
 }
 
 export interface WinnerData {
-  userId: number;
+  user_id: number;
   username: string;
   profileImageUrl: string;
 }
@@ -22,7 +22,7 @@ export interface AuctionDetailResponse {
   description: string;
   startPrice: number;
   imageUrl: string[];
-  status: "IN_PROGRESS" | "SOLD" | "CANCELED";
+  status: "IN_PROGRESS" | "CLOSED" | "CANCELED";
   transactionMethod: "FACE_TO_FACE" | "DELIVERY";
   startAt: string;
   endAt: string;

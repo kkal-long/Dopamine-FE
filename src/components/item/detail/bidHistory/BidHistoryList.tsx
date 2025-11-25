@@ -3,7 +3,7 @@ import { BidHistoryResponse } from "@/types/item/bid/bidApi.type";
 import { useState } from "react";
 
 interface BidHistoryListProps {
-  status: "IN_PROGRESS" | "SOLD" | "CANCELED";
+  status: "IN_PROGRESS" | "CLOSED" | "CANCELED";
   bidData: BidHistoryResponse;
 }
 
@@ -23,7 +23,7 @@ const BidHistoryList = ({ status, bidData }: BidHistoryListProps) => {
               const rank = index + 1;
 
               const isWinner =
-                (status === "SOLD" || status === "CANCELED") && rank === 1; // 경매 종료시 1등
+                (status === "CLOSED" || status === "CANCELED") && rank === 1; // 경매 종료시 1등
               const isCurrentTop = status === "IN_PROGRESS" && rank === 1; // 경매 진행중 1등
 
               return (
