@@ -1,15 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 const MainLayout = () => {
   const { pathname } = useLocation();
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo(0, 0);
+    }
   }, [pathname]);
 
   return (
-    <div className="min-h-[100dvh] bg-black flex justify-center">
+    <div
+      ref={scrollRef}
+      className="h-[100dvh] bg-black flex justify-center overflow-y-auto"
+    >
       <main className="w-full max-w-[375px] bg-white">
         <Outlet />
       </main>
