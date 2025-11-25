@@ -27,7 +27,7 @@ const AuctionTimeSection = ({
       <DurationSelector
         value={duration}
         onChange={onChangeDuration}
-        options={fullOptions} // ← 여기!
+        options={fullOptions}
       />
 
       {/* 텍스트 + 토글 */}
