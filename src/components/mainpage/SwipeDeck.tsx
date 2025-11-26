@@ -74,7 +74,8 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
             },
             {
               onSuccess: () => {
-                current.currentPrice = price;
+                current.bidPrice = current.currentPrice = price;
+                current.bidPlaced = true;
                 setSheetOpen(false);
               },
               onError: err => {
