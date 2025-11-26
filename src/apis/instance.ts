@@ -1,25 +1,28 @@
-import { useAuthStore } from "@/store/useAuthStore";
+// src/apis/instance.ts
 import axios from "axios";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const instance = axios.create({
+  baseURL: import.meta.env.VITE_SERVER_API_URL,
   baseURL: import.meta.env.VITE_SERVER_API_URL,
   withCredentials: true,
 });
 
-// 요청 인터셉터
 instance.interceptors.request.use(config => {
   const { accessToken } = useAuthStore.getState();
 
   if (accessToken) {
-    config.headers["Authorization"] = `Bearer ${accessToken}`;
-  } else {
-    console.warn("⚠️ No accessToken found!");
+    config.headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+
+  // Content-Type 없으면 JSON 기본값 유지
+  if (!config.headers.get("Content-Type")) {
+    config.headers.set("Content-Type", "application/json");
   }
 
   return config;
 });
 
-// 응답 인터셉터
 instance.interceptors.response.use(
   res => res,
   async err => {
@@ -48,8 +51,10 @@ instance.interceptors.response.use(
 
         login(refresh.data.accessToken, refreshToken);
 
-        original.headers["Authorization"] =
-          `Bearer ${refresh.data.accessToken}`;
+        original.headers.set(
+          "Authorization",
+          `Bearer ${refresh.data.accessToken}`
+        );
 
         return instance(original);
       } catch {
