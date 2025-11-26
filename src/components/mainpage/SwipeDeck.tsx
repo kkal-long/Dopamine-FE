@@ -2,11 +2,11 @@ import SwipeCard from "@/components/mainpage/SwipeCard";
 import BidSheet from "./BidSheet";
 import ProductCard from "./ProductCard";
 
-import { sendSwipeAction } from "@/apis/auction/sendSwipeAction";
 import { useBid } from "@/hooks/auction/useBid";
-import { useCreateBid } from "@/hooks/auction/useCreateBid";
+import { useBidApi } from "@/hooks/item/bid/useBidApi";
+import { useUserStore } from "@/store/useUserStore";
 import type { DeckAuctionItem } from "@/types/auction/deck";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface SwipeDeckProps {
   items: DeckAuctionItem[];
@@ -14,95 +14,126 @@ interface SwipeDeckProps {
 }
 
 export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
-  const [deck, setDeck] = useState(items);
   const [index, setIndex] = useState(0);
 
-  const current = deck[index];
+  const userId = useUserStore(state => state.userId);
+
+  const current = items[index];
   const { price, setPrice } = useBid(current ? current.currentPrice : 0);
 
-  const { submitBid } = useCreateBid();
+  const { postSwipMutation, postBidMutation } = useBidApi();
+  const { mutate: createBid } = postBidMutation();
+  const { mutate: swipeAction } = postSwipMutation();
+
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  useEffect(() => {
+    if (current) {
+      setPrice(current.currentPrice);
+    }
+  }, [current, setPrice]);
 
   const openBidSheet = () => {
     if (!current) return;
-    setPrice(current.currentPrice);
     setSheetOpen(true);
   };
 
   const closeBidSheet = () => setSheetOpen(false);
 
-  const fixIndexSafety = (newDeck: DeckAuctionItem[]) => {
-    if (index >= newDeck.length) setIndex(0);
+  const removeCard = () => {
+    if (items.length > 0 && items.length - (index + 1) <= 3) {
+      onDeckExhausted();
+    }
+    setIndex(prev => prev + 1);
   };
 
-  /** 🟣 입찰하기 / Edit 모두 여기 */
-  const performBid = async () => {
-    if (!current) return;
+  /* 입찰 */
+  const performBid = () => {
+    if (!current || !userId) {
+      alert("오류가 발생했습니다. 다시 시도해 주세요.");
+      return;
+    }
 
-    console.log("🚀 입찰 시작:", { id: current.id, price });
+    if (price <= current.currentPrice) {
+      alert("입찰가는 현재 가격보다 높아야 합니다.");
+      return;
+    }
 
-    // (1) 입찰 생성
-    await submitBid({
-      auctionId: current.id,
-      bidPrice: price,
-    });
-
-    // (2) swipe action 기록
-    await sendSwipeAction({
-      auctionId: current.id,
-      action: "BIDDING",
-    });
-
-    // (3) 카드 제거
-    setDeck(prev => {
-      const updated = prev.filter((_, i) => i !== index);
-      fixIndexSafety(updated);
-      return updated;
-    });
-
-    setSheetOpen(false);
-    if (deck.length <= 3) onDeckExhausted();
+    swipeAction(
+      {
+        auctionId: current.id,
+        action: "BIDDING",
+      },
+      {
+        onSuccess: () => {
+          createBid(
+            {
+              auctionId: current.id,
+              userId: userId,
+              bidPrice: price,
+            },
+            {
+              onSuccess: () => {
+                current.bidPrice = current.currentPrice = price;
+                current.bidPlaced = true;
+                setSheetOpen(false);
+              },
+              onError: err => {
+                console.error(err);
+                alert("입찰 도중 오류가 발생했습니다.");
+              },
+            }
+          );
+        },
+        onError: err => {
+          console.error(err);
+          alert("입찰에 실패했습니다.");
+        },
+      }
+    );
   };
 
   /* 보류 */
-  const defer = async () => {
+  const defer = () => {
     if (!current) return;
 
-    await sendSwipeAction({
-      auctionId: current.id,
-      action: "HOLD",
-    });
-
-    setDeck(prev => {
-      const next = [...prev];
-      const [item] = next.splice(index, 1);
-      next.push(item);
-      fixIndexSafety(next);
-      return next;
-    });
-
-    if (deck.length <= 3) onDeckExhausted();
+    swipeAction(
+      {
+        auctionId: current.id,
+        action: "HOLD",
+      },
+      {
+        onSuccess: () => {
+          removeCard();
+        },
+        onError: () => {
+          removeCard();
+        },
+      }
+    );
   };
 
   /* 관심 없음 */
-  const onSwiped = async (dir: string) => {
+  const onSwiped = (dir: string) => {
     if (dir === "left" && current) {
-      await sendSwipeAction({
-        auctionId: current.id,
-        action: "DISLIKE",
-      });
-
-      setDeck(prev => {
-        const updated = prev.filter((_, i) => i !== index);
-        fixIndexSafety(updated);
-        return updated;
-      });
-
-      if (deck.length <= 3) onDeckExhausted();
+      swipeAction(
+        { auctionId: current.id, action: "DISLIKE" },
+        {
+          onSuccess: () => {
+            removeCard(); // 다음 카드로 이동
+          },
+          onError: () => {
+            removeCard();
+          },
+        }
+      );
     }
   };
 
-  const visible = useMemo(() => deck.slice(index, index + 3), [deck, index]);
+  const visible = useMemo(() => {
+    if (!items || items.length === 0) return [];
+    return items.slice(index, index + 3);
+  }, [items, index]);
 
   return (
     <div className="relative mx-auto h-[640px] w-[360px]">
@@ -113,7 +144,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
 
         return (
           <div
-            key={`${product.id}-${i}`}
+            key={product.id}
             className="absolute inset-0"
             style={{
               zIndex: visible.length - i,

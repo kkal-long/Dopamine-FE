@@ -1,6 +1,6 @@
 // src/apis/instance.ts
-import axios from "axios";
 import { useAuthStore } from "@/store/useAuthStore";
+import axios from "axios";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API_URL,
@@ -10,7 +10,6 @@ const instance = axios.create({
 instance.interceptors.request.use(config => {
   const { accessToken } = useAuthStore.getState();
 
-  // 🔥 Axios v1에서는 headers가 AxiosHeaders 객체이므로 set() 사용
   if (accessToken) {
     config.headers.set("Authorization", `Bearer ${accessToken}`);
   }
@@ -20,7 +19,6 @@ instance.interceptors.request.use(config => {
     config.headers.set("Content-Type", "application/json");
   }
 
-  console.log("👉 최종 요청 헤더:", config.headers);
   return config;
 });
 
