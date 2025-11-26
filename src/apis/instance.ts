@@ -1,37 +1,34 @@
 // src/apis/instance.ts
-import { useAuthStore } from "@/store/useAuthStore";
 import axios from "axios";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_API_URL, // https://mmuuttssaa.shop
+  baseURL: import.meta.env.VITE_SERVER_API_URL,
   withCredentials: true,
 });
 
-// 요청 인터셉터
 instance.interceptors.request.use(config => {
   const { accessToken } = useAuthStore.getState();
 
-  console.log("🔑 AccessToken from Zustand:", accessToken);
-
+  // 🔥 Axios v1에서는 headers가 AxiosHeaders 객체이므로 set() 사용
   if (accessToken) {
-    config.headers["Authorization"] = `Bearer ${accessToken}`;
-  } else {
-    console.warn("⚠️ No accessToken found!");
+    config.headers.set("Authorization", `Bearer ${accessToken}`);
   }
 
-  console.log("👉 요청 헤더:", config.headers);
-  console.log("👉 요청 URL:", config.url);
+  // Content-Type 없으면 JSON 기본값 유지
+  if (!config.headers.get("Content-Type")) {
+    config.headers.set("Content-Type", "application/json");
+  }
 
+  console.log("👉 최종 요청 헤더:", config.headers);
   return config;
 });
 
-// 응답 인터셉터
 instance.interceptors.response.use(
   res => res,
   async err => {
     const original = err.config;
 
-    // 🔥 여기 수정됨!!! (반드시 이 버전 사용)
     if (
       (err.response?.status === 401 || err.response?.status === 403) &&
       !original._retry
@@ -55,8 +52,10 @@ instance.interceptors.response.use(
 
         login(refresh.data.accessToken, refreshToken);
 
-        original.headers["Authorization"] =
-          `Bearer ${refresh.data.accessToken}`;
+        original.headers.set(
+          "Authorization",
+          `Bearer ${refresh.data.accessToken}`
+        );
 
         return instance(original);
       } catch {

@@ -5,7 +5,7 @@ interface AuctionItem {
   title: string;
   price: number;
   status: string;
-  imageUrl: string[];
+  imageUrl: string;
   timeLeft?: {
     hours: number;
     minutes: number;
@@ -50,12 +50,21 @@ const AuctionList = ({
               className="flex items-center gap-4 border border-bluegrey02 rounded-xl px-4 py-3 hover:shadow-sm transition cursor-pointer active:bg-grey01"
             >
               {/* 왼쪽 상품 이미지 */}
-              <div className="w-[72px] h-[72px] rounded-lg bg-grey02 flex-shrink-0 overflow-hidden">
-                <img
-                  src={item.imageUrl?.[0]}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-[72px] h-[72px] rounded-lg flex-shrink-0 overflow-hidden">
+                {(() => {
+                  // 백엔드 대응: imageUrl이 문자열 또는 배열일 수 있음
+                  const imageSrc = Array.isArray(item.imageUrl)
+                    ? item.imageUrl[0] // 배열이면 첫 번째
+                    : item.imageUrl || "/default.png"; // 단일 문자열 or 없으면 기본 이미지
+
+                  return (
+                    <img
+                      src={imageSrc}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  );
+                })()}
               </div>
 
               {/* 오른쪽 상품 정보 */}

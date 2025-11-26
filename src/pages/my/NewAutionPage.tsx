@@ -51,6 +51,21 @@ const conditionMap: Record<string, string> = {
   "New(미개봉 새상품)": "New",
 };
 
+/** endAt 포맷을 백엔드 요구 형식으로 변환 */
+const formatEndAt = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  const second = String(date.getSeconds()).padStart(2, "0");
+
+  // 밀리초 3자리를 6자리로 확장
+  const ms = String(date.getMilliseconds()).padStart(3, "0") + "000";
+
+  return `${year}-${month}-${day}T${hour}:${minute}:${second}.${ms}`;
+};
+
 const deliveryMethods = ["직거래", "택배"];
 const durations = ["12시간", "24시간"];
 
@@ -98,31 +113,32 @@ const NewAuctionPage = () => {
     const now = new Date();
     const end = new Date(now);
 
-    // 1) 기본 옵션 처리
     if (duration === "12시간") {
       end.setHours(end.getHours() + 12);
-      return end.toISOString();
+      return formatEndAt(end);
     }
 
     if (duration === "24시간") {
       end.setHours(end.getHours() + 24);
-      return end.toISOString();
+      return formatEndAt(end);
     }
 
-    // 2) 직접 입력 ("00일 11시간 20분" 같은 형태)
-    const dayMatch = duration.match(/(\d+)일/);
-    const hourMatch = duration.match(/(\d+)시간/);
-    const minuteMatch = duration.match(/(\d+)분/);
+    // 직접 입력 처리
+    const target = duration;
 
-    const d = dayMatch ? Number(dayMatch[1]) : 0;
-    const h = hourMatch ? Number(hourMatch[1]) : 0;
-    const m = minuteMatch ? Number(minuteMatch[1]) : 0;
+    const dayMatch = target.match(/(\d+)일/);
+    const hourMatch = target.match(/(\d+)시간/);
+    const minuteMatch = target.match(/(\d+)분/);
+
+    const d = Number(dayMatch?.[1] ?? 0);
+    const h = Number(hourMatch?.[1] ?? 0);
+    const m = Number(minuteMatch?.[1] ?? 0);
 
     end.setDate(end.getDate() + d);
     end.setHours(end.getHours() + h);
     end.setMinutes(end.getMinutes() + m);
 
-    return end.toISOString();
+    return formatEndAt(end); // ⭐ ISO 대신 우리가 만든 형태로 변환
   };
 
   const handleSubmit = async () => {
@@ -130,17 +146,21 @@ const NewAuctionPage = () => {
       openAlert("내용을 모두 입력해주세요.", false);
       return;
     }
+    const fileList = images.filter((f): f is File => f !== null);
+    if (fileList.length === 0) {
+      openAlert("최소 1장의 이미지를 등록해주세요.", false);
+      return;
+    }
 
     try {
       // 이미지 중 File만 필터링
-      const fileList = images.filter((f): f is File => f !== null);
 
       const uploadedUrls = await uploadImages(fileList);
 
       const selected = categories.find(c => c.name === category);
       const categoryId = selected ? [selected.id] : [];
 
-      // 🔥 API 타입과 완전히 맞춘 body
+      // API 타입과 완전히 맞춘 body
       const body: CreateAuctionRequest = {
         goodsName: title,
         description: description,
@@ -151,7 +171,7 @@ const NewAuctionPage = () => {
         transactionMethod: delivery === "직거래" ? "FACE_TO_FACE" : "DELIVERY",
         manufactureYear: year,
         location: location,
-        imageUrl: uploadedUrls,
+        imageUrls: uploadedUrls,
         categoryIds: categoryId,
         hideBidPrice: hideBid,
       };
