@@ -5,7 +5,7 @@ interface AuctionItem {
   title: string;
   price: number;
   status: string;
-  image: string;
+  imageUrl: string[];
   timeLeft?: {
     hours: number;
     minutes: number;
@@ -52,7 +52,7 @@ const AuctionList = ({
               {/* 왼쪽 상품 이미지 */}
               <div className="w-[72px] h-[72px] rounded-lg bg-grey02 flex-shrink-0 overflow-hidden">
                 <img
-                  src={item.image}
+                  src={item.imageUrl?.[0]}
                   alt={item.title}
                   className="w-full h-full object-cover"
                 />

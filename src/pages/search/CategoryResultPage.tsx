@@ -1,3 +1,4 @@
+// CategoryResultPage.tsx
 import { Goback, Search } from "@/assets/svgs/search";
 import { useCategoryList } from "@/hooks/useSearch";
 import React from "react";
@@ -29,23 +30,57 @@ const CategoryResultPage: React.FC = () => {
     isError,
   } = useCategoryList(categoryId);
 
-  /** status 통일 (백엔드 값 기준: "IN_PROGRESS", "SOLD") */
+  /** 상태 통합 로직 (remainingTime 도 검사) */
   const normalizeStatus = (item: CategoryItem) => {
-    const raw =
+    const rawStatus =
       item.status ||
       item.progressStatus ||
       item.auctionStatus ||
       item.state ||
       "";
 
-    if (!raw) return "경매중";
+    const s = rawStatus.trim().toUpperCase();
 
-    const s = raw.trim().toUpperCase();
+    // 상태 또는 remainingTime 이 종료를 의미하면 경매 종료로 통일
+    const remaining = item.remainingTime?.trim();
+    const isRemainingEnded =
+      remaining === "경매 종료" ||
+      remaining === "종료" ||
+      remaining === "마감" ||
+      remaining === "END";
 
-    if (s === "SOLD") return "경매종료";
+    if (s === "SOLD" || isRemainingEnded) return "경매종료";
+
     if (s === "IN_PROGRESS") return "경매중";
 
     return "경매중";
+  };
+
+  /** 남은 시간 검증: 실제 시간 형식인지 판별 */
+  const getValidRemainingTime = (status: string, time?: string) => {
+    if (status === "경매종료") return ""; // 종료면 무조건 숨기기
+    if (!time) return "";
+
+    const trimmed = time.trim();
+
+    // 종료 의미라면 숨기기
+    const isEndKeyword =
+      trimmed === "경매 종료" ||
+      trimmed === "종료" ||
+      trimmed === "마감" ||
+      trimmed === "END";
+
+    if (isEndKeyword) return "";
+
+    // 실제 남은 시간 형태인지 체크
+    const isValid =
+      trimmed.includes("남음") ||
+      trimmed.includes("일") ||
+      trimmed.includes("시간") ||
+      trimmed.includes("분") ||
+      /^[0-9]/.test(trimmed);
+
+    return isValid ? trimmed : "";
   };
 
   return (
@@ -83,6 +118,11 @@ const CategoryResultPage: React.FC = () => {
         <div className="flex flex-col gap-3">
           {products.map((item: CategoryItem) => {
             const status = normalizeStatus(item);
+            const isEnded = status === "경매종료";
+            const remainingTime = getValidRemainingTime(
+              status,
+              item.remainingTime
+            );
 
             return (
               <div
@@ -93,7 +133,7 @@ const CategoryResultPage: React.FC = () => {
                 <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
                   {item.imageUrl?.[0] && (
                     <img
-                      src={item.imageUrl[0]}
+                      src={item.imageUrl?.[0]}
                       alt={item.goodsName}
                       className="w-full h-full object-cover"
                     />
@@ -106,10 +146,12 @@ const CategoryResultPage: React.FC = () => {
                     {item.goodsName}
                   </span>
 
+                  {/* 상태 영역 */}
                   <div className="flex items-center gap-2 mb-[4px]">
+                    {/* 상태 배지 */}
                     <span
                       className={
-                        status === "경매종료"
+                        isEnded
                           ? "text-reg12 text-darkgrey04 bg-grey01 px-2 py-[2px] rounded-full"
                           : "text-reg12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full"
                       }
@@ -117,16 +159,17 @@ const CategoryResultPage: React.FC = () => {
                       {status}
                     </span>
 
-                    {status !== "경매종료" && (
+                    {/* 남은 시간: 검증된 시간만 표시 */}
+                    {remainingTime && (
                       <span className="text-med14 text-mainpink">
-                        {item.remainingTime}
+                        {remainingTime}
                       </span>
                     )}
                   </div>
 
                   {/* 가격 */}
                   <span className="text-reg14 text-darkgrey05">
-                    {status === "경매종료"
+                    {isEnded
                       ? item.currentPrice > 0
                         ? `낙찰가: ₩${item.currentPrice.toLocaleString()}`
                         : "낙찰가 정보 없음"

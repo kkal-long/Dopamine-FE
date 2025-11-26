@@ -151,7 +151,7 @@ const NewAuctionPage = () => {
         transactionMethod: delivery === "직거래" ? "FACE_TO_FACE" : "DELIVERY",
         manufactureYear: year,
         location: location,
-        imageUrls: uploadedUrls,
+        imageUrl: uploadedUrls,
         categoryIds: categoryId,
         hideBidPrice: hideBid,
       };

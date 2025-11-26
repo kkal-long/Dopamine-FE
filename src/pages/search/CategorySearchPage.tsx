@@ -1,7 +1,20 @@
+// CategorySearchPage.tsx
 import { Delete, Goback, Search } from "@/assets/svgs/search";
 import { useCategoryKeyword } from "@/hooks/useSearch";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
+interface CategoryItem {
+  auctionId: number;
+  goodsName: string;
+  currentPrice: number;
+  remainingTime?: string;
+  imageUrl?: string[] | null;
+  status?: string;
+  progressStatus?: string;
+  auctionStatus?: string;
+  state?: string;
+}
 
 const CategorySearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -10,29 +23,24 @@ const CategorySearchPage: React.FC = () => {
   const initialCategory = location.state?.category || "카테고리";
   const categoryId = location.state?.categoryId;
 
-  // 입력 중인 검색어
   const [query, setQuery] = useState("");
-
-  // Enter로 확정된 검색어
   const [confirmedQuery, setConfirmedQuery] = useState("");
-
-  // 로컬 최근 검색어
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  // 로컬스토리지 로드
+  /* 최근 검색어 로드 */
   useEffect(() => {
     const stored = localStorage.getItem("recentSearches");
     if (stored) setRecentSearches(JSON.parse(stored));
   }, []);
 
-  /* API: 카테고리 + 키워드 검색 */
+  /* API */
   const {
     data: products = [],
     isLoading,
     isError,
   } = useCategoryKeyword(categoryId, confirmedQuery);
 
-  /* 최신 검색어 저장 */
+  /* 최근 검색어 저장 */
   const saveRecentKeyword = (word: string) => {
     const trimmed = word.trim();
     if (!trimmed) return;
@@ -50,21 +58,69 @@ const CategorySearchPage: React.FC = () => {
   const handleSearchSubmit = (word?: string) => {
     const finalWord = (word ?? query).trim();
     if (!finalWord) return;
+
     saveRecentKeyword(finalWord);
     setConfirmedQuery(finalWord);
-    setQuery(finalWord); // 검색창에도 반영
+    setQuery(finalWord);
   };
 
-  /* 최근 검색어 클릭 → 자동 검색 */
-  const handleRecentClick = (word: string) => {
-    handleSearchSubmit(word);
-  };
+  const handleRecentClick = (word: string) => handleSearchSubmit(word);
 
-  /* 최근 검색어 삭제 */
   const handleDelete = (word: string) => {
     const updated = recentSearches.filter(w => w !== word);
     setRecentSearches(updated);
     localStorage.setItem("recentSearches", JSON.stringify(updated));
+  };
+
+  /** ======================
+   * 상태 통합 로직
+   ======================= */
+  const normalizeStatus = (item: CategoryItem) => {
+    const rawStatus =
+      item.status ||
+      item.progressStatus ||
+      item.auctionStatus ||
+      item.state ||
+      "";
+
+    const s = rawStatus.trim().toUpperCase();
+
+    const remaining = item.remainingTime?.trim();
+    const isRemainingEnded =
+      remaining === "경매 종료" ||
+      remaining === "종료" ||
+      remaining === "마감" ||
+      remaining === "END";
+
+    if (s === "SOLD" || isRemainingEnded) return "경매종료";
+    if (s === "IN_PROGRESS") return "경매중";
+
+    return "경매중";
+  };
+
+  /** 남은 시간 정제 */
+  const getValidRemainingTime = (status: string, time?: string) => {
+    if (status === "경매종료") return "";
+    if (!time) return "";
+
+    const trimmed = time.trim();
+
+    const isEndKeyword =
+      trimmed === "경매 종료" ||
+      trimmed === "종료" ||
+      trimmed === "마감" ||
+      trimmed === "END";
+
+    if (isEndKeyword) return "";
+
+    const isValid =
+      trimmed.includes("남음") ||
+      trimmed.includes("일") ||
+      trimmed.includes("시간") ||
+      trimmed.includes("분") ||
+      /^[0-9]/.test(trimmed);
+
+    return isValid ? trimmed : "";
   };
 
   return (
@@ -78,7 +134,6 @@ const CategorySearchPage: React.FC = () => {
           <Goback className="w-[17.5px] h-[24px] cursor-pointer -ml-2" />
         </button>
 
-        {/* 입력창 */}
         <div className="flex w-[304px] h-[50px] items-center bg-white rounded-lg pl-[8px] pr-[12px] py-[13px] border border-grey09">
           <Search className="w-[17.5px] h-[24px] mr-[14.5px]" />
 
@@ -150,52 +205,65 @@ const CategorySearchPage: React.FC = () => {
         )}
 
         {!isLoading &&
-          products.map(item => (
-            <div
-              key={item.auctionId}
-              className="flex items-center border border-grey04 rounded-[8px] px-3 py-3 mb-3"
-            >
-              <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
-                {item.imageUrl?.[0] && (
-                  <img
-                    src={item.imageUrl[0]}
-                    alt={item.goodsName}
-                    className="w-full h-full object-cover"
-                  />
-                )}
-              </div>
+          products.map((item: CategoryItem) => {
+            const status = normalizeStatus(item);
+            const isEnded = status === "경매종료";
+            const remainingTime = getValidRemainingTime(
+              status,
+              item.remainingTime
+            );
 
-              <div className="flex flex-col flex-1">
-                <span className="text-med16 text-darkgrey05 mb-[4px]">
-                  {item.goodsName}
-                </span>
-
-                <div className="flex items-center gap-2 mb-[4px]">
-                  {/* 상태 badge */}
-                  <span
-                    className={
-                      item.status === "경매종료"
-                        ? "text-reg12 text-darkgrey04 bg-grey01 px-2 py-[2px] rounded-full"
-                        : "text-reg12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full"
-                    }
-                  >
-                    {item.status}
-                  </span>
-
-                  {item.status !== "경매종료" && (
-                    <span className="text-med14 text-mainpink">
-                      {item.remainingTime}
-                    </span>
+            return (
+              <div
+                key={item.auctionId}
+                className="flex items-center border border-grey04 rounded-[8px] px-3 py-3 mb-3"
+              >
+                <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
+                  {item.imageUrl?.[0] && (
+                    <img
+                      src={item.imageUrl?.[0]}
+                      alt={item.goodsName}
+                      className="w-full h-full object-cover"
+                    />
                   )}
                 </div>
-                <span className="text-reg14 text-darkgrey05">
-                  {item.status === "경매종료"
-                    ? `낙찰가: ₩${item.currentPrice.toLocaleString()}`
-                    : `현재 최고가: ₩${item.currentPrice.toLocaleString()}`}
-                </span>
+
+                <div className="flex flex-col flex-1">
+                  <span className="text-med16 text-darkgrey05 mb-[4px]">
+                    {item.goodsName}
+                  </span>
+
+                  <div className="flex items-center gap-2 mb-[4px]">
+                    {/* 상태 배지 */}
+                    <span
+                      className={
+                        isEnded
+                          ? "text-reg12 text-darkgrey04 bg-grey01 px-2 py-[2px] rounded-full"
+                          : "text-reg12 text-orange01 bg-lightorange01 px-2 py-[2px] rounded-full"
+                      }
+                    >
+                      {status}
+                    </span>
+
+                    {/* 남은 시간 */}
+                    {remainingTime && (
+                      <span className="text-med14 text-mainpink">
+                        {remainingTime}
+                      </span>
+                    )}
+                  </div>
+
+                  <span className="text-reg14 text-darkgrey05">
+                    {isEnded
+                      ? item.currentPrice > 0
+                        ? `낙찰가: ₩${item.currentPrice.toLocaleString()}`
+                        : "낙찰가 정보 없음"
+                      : `현재 최고가: ₩${item.currentPrice.toLocaleString()}`}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
       </div>
     </div>
   );

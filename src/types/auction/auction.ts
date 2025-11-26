@@ -8,7 +8,7 @@ export interface CreateAuctionRequest {
   transactionMethod: "FACE_TO_FACE" | "DELIVERY";
   manufactureYear: string;
   location: string;
-  imageUrls: string[];
+  imageUrl: string[];
   categoryIds: number[];
   hideBidPrice: boolean;
 }
