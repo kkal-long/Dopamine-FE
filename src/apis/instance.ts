@@ -1,9 +1,8 @@
-// src/apis/instance.ts
 import { useAuthStore } from "@/store/useAuthStore";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_API_URL, // https://mmuuttssaa.shop
+  baseURL: import.meta.env.VITE_SERVER_API_URL,
   withCredentials: true,
 });
 
@@ -11,16 +10,11 @@ const instance = axios.create({
 instance.interceptors.request.use(config => {
   const { accessToken } = useAuthStore.getState();
 
-  console.log("🔑 AccessToken from Zustand:", accessToken);
-
   if (accessToken) {
     config.headers["Authorization"] = `Bearer ${accessToken}`;
   } else {
     console.warn("⚠️ No accessToken found!");
   }
-
-  console.log("👉 요청 헤더:", config.headers);
-  console.log("👉 요청 URL:", config.url);
 
   return config;
 });
@@ -31,7 +25,6 @@ instance.interceptors.response.use(
   async err => {
     const original = err.config;
 
-    // 🔥 여기 수정됨!!! (반드시 이 버전 사용)
     if (
       (err.response?.status === 401 || err.response?.status === 403) &&
       !original._retry

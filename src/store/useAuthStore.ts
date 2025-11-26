@@ -32,8 +32,6 @@ export const useAuthStore = create<AuthStore>()(
             refreshToken: refresh,
             isLoggedIn: true,
           });
-
-          console.log("🎉 로그인 성공, userId 저장됨:", userId);
         } catch (err) {
           console.error("❌ JWT 파싱 실패:", err);
         }
