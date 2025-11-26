@@ -2,11 +2,12 @@ import SwipeCard from "@/components/mainpage/SwipeCard";
 import BidSheet from "./BidSheet";
 import ProductCard from "./ProductCard";
 
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useBid } from "@/hooks/auction/useBid";
 import { useBidApi } from "@/hooks/item/bid/useBidApi";
 import { useUserStore } from "@/store/useUserStore";
 import type { DeckAuctionItem } from "@/types/auction/deck";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface SwipeDeckProps {
   items: DeckAuctionItem[];
@@ -14,12 +15,11 @@ interface SwipeDeckProps {
 }
 
 export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
-  const [deck, setDeck] = useState(items);
   const [index, setIndex] = useState(0);
 
   const userId = useUserStore(state => state.userId);
 
-  const current = deck[index];
+  const current = items[index];
   const { price, setPrice } = useBid(current ? current.currentPrice : 0);
 
   const { postSwipMutation, postBidMutation } = useBidApi();
@@ -28,25 +28,24 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
 
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  useEffect(() => {
+    if (current) {
+      setPrice(current.currentPrice);
+    }
+  }, [current, setPrice]);
+
   const openBidSheet = () => {
     if (!current) return;
-    setPrice(current.currentPrice);
     setSheetOpen(true);
   };
 
   const closeBidSheet = () => setSheetOpen(false);
 
-  const fixIndexSafety = (newDeck: DeckAuctionItem[]) => {
-    if (index >= newDeck.length) setIndex(0);
-  };
-
   const removeCard = () => {
-    setDeck(prev => {
-      const updated = prev.filter((_, i) => i !== index);
-      fixIndexSafety(updated);
-      return updated;
-    });
-    if (deck.length <= 3) onDeckExhausted();
+    if (items.length > 0 && items.length - (index + 1) <= 3) {
+      onDeckExhausted();
+    }
+    setIndex(prev => prev + 1);
   };
 
   /* 입찰 */
@@ -72,6 +71,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
             {
               onSuccess: () => {
                 setSheetOpen(false);
+                removeCard();
               },
               onError: err => {
                 console.error(err);
@@ -125,7 +125,14 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
     }
   };
 
-  const visible = useMemo(() => deck.slice(index, index + 3), [deck, index]);
+  const visible = useMemo(() => {
+    if (!items || items.length === 0) return [];
+    return items.slice(index, index + 3);
+  }, [items, index]);
+
+  if (!current) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="relative mx-auto h-[640px] w-[360px]">
@@ -136,7 +143,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
 
         return (
           <div
-            key={`${product.id}-${i}`}
+            key={product.id}
             className="absolute inset-0"
             style={{
               zIndex: visible.length - i,

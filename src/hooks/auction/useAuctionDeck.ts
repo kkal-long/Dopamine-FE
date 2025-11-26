@@ -26,11 +26,6 @@ export const useAuctionDeck = () => {
     fetchDeck();
   }, []);
 
-  // 덱이 3개 이하로 떨어지면 자동 충전
-  useEffect(() => {
-    if (deck.length <= 3) fetchDeck();
-  }, [deck.length]);
-
   // loadMore로도 직접 불러올 수 있게 함
   const loadMore = fetchDeck;
 
