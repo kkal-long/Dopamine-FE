@@ -38,9 +38,4 @@ export interface AuctionDetailResponse {
 
 export interface RefusePurchaseResponse {
   success: boolean;
-  nexbidder: {
-    user_id: number;
-    nickname: string;
-    profileImageUrl: string;
-  } | null;
 }
