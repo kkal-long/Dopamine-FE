@@ -2,7 +2,6 @@ import SwipeCard from "@/components/mainpage/SwipeCard";
 import BidSheet from "./BidSheet";
 import ProductCard from "./ProductCard";
 
-import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useBid } from "@/hooks/auction/useBid";
 import { useBidApi } from "@/hooks/item/bid/useBidApi";
 import { useUserStore } from "@/store/useUserStore";
@@ -55,6 +54,11 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
       return;
     }
 
+    if (price <= current.currentPrice) {
+      alert("입찰가는 현재 가격보다 높아야 합니다.");
+      return;
+    }
+
     swipeAction(
       {
         auctionId: current.id,
@@ -70,8 +74,8 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
             },
             {
               onSuccess: () => {
+                current.currentPrice = price;
                 setSheetOpen(false);
-                removeCard();
               },
               onError: err => {
                 console.error(err);
@@ -129,10 +133,6 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
     if (!items || items.length === 0) return [];
     return items.slice(index, index + 3);
   }, [items, index]);
-
-  if (!current) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <div className="relative mx-auto h-[640px] w-[360px]">
