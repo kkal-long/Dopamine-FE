@@ -1,4 +1,3 @@
-// src/hooks/auction/useAuctionDeck.ts
 import { getAuctionDeck } from "@/apis/auction/getAuctionDeck";
 import type { DeckAuctionItem } from "@/types/auction/deck";
 import { useEffect, useState } from "react";
@@ -15,6 +14,7 @@ export const useAuctionDeck = () => {
       const res = await getAuctionDeck();
       setDeck(prev => [...prev, ...res.auctions]); // 기존 덱 뒤에 추가
     } catch (err) {
+      console.error(err);
       setError("경매 데이터를 가져오는 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);

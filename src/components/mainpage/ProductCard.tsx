@@ -10,7 +10,7 @@ type Props = {
 export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
   /** 이미지 렌더링 — 배열 형태에서 첫 번째 이미지 사용 */
   const Media = () => {
-    const img = product.imageUrl?.[0]; // ✔ 첫 번째 이미지 사용
+    const img = product.imageUrl;
 
     return (
       <img
