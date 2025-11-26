@@ -1,7 +1,7 @@
 export interface MyAuctionItem {
   id: number;
   title: string;
-  imageUrl: string[];
+  imageUrls: string[];
   currentPrice: number;
   endAt: string;
 }

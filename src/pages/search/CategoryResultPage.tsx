@@ -9,8 +9,9 @@ interface CategoryItem {
   auctionId: number;
   goodsName: string;
   currentPrice: number;
-  remainingTime?: string;
-  imageUrl?: string[] | null;
+  remainingTime: string;
+  imageUrl: string | null; // 백엔드 원본
+  imageUrls: string[]; // 배열 변환
   status?: string;
   progressStatus?: string;
   auctionStatus?: string;
@@ -25,12 +26,20 @@ const CategoryResultPage: React.FC = () => {
   const categoryId = state?.categoryId;
 
   const {
-    data: products = [],
+    data: rawProducts = [],
     isLoading,
     isError,
   } = useCategoryList(categoryId);
 
-  /** 상태 통합 로직 (remainingTime 도 검사) */
+  /** 🔥 imageUrl → imageUrls 로 정규화 */
+  const products: CategoryItem[] = rawProducts.map(
+    (item: CategoryItem): CategoryItem => ({
+      ...item,
+      imageUrls: item.imageUrl ? [item.imageUrl] : [],
+    })
+  );
+
+  /** 상태 정규화 */
   const normalizeStatus = (item: CategoryItem) => {
     const rawStatus =
       item.status ||
@@ -40,39 +49,34 @@ const CategoryResultPage: React.FC = () => {
       "";
 
     const s = rawStatus.trim().toUpperCase();
-
-    // 상태 또는 remainingTime 이 종료를 의미하면 경매 종료로 통일
     const remaining = item.remainingTime?.trim();
-    const isRemainingEnded =
+
+    const isOver =
       remaining === "경매 종료" ||
       remaining === "종료" ||
       remaining === "마감" ||
       remaining === "END";
 
-    if (s === "SOLD" || isRemainingEnded) return "경매종료";
-
+    if (s === "SOLD" || isOver) return "경매종료";
     if (s === "IN_PROGRESS") return "경매중";
 
     return "경매중";
   };
 
-  /** 남은 시간 검증: 실제 시간 형식인지 판별 */
+  /** 남은 시간 정제 */
   const getValidRemainingTime = (status: string, time?: string) => {
-    if (status === "경매종료") return ""; // 종료면 무조건 숨기기
+    if (status === "경매종료") return "";
     if (!time) return "";
 
     const trimmed = time.trim();
-
-    // 종료 의미라면 숨기기
-    const isEndKeyword =
+    const isEnd =
       trimmed === "경매 종료" ||
       trimmed === "종료" ||
       trimmed === "마감" ||
       trimmed === "END";
 
-    if (isEndKeyword) return "";
+    if (isEnd) return "";
 
-    // 실제 남은 시간 형태인지 체크
     const isValid =
       trimmed.includes("남음") ||
       trimmed.includes("일") ||
@@ -91,7 +95,7 @@ const CategoryResultPage: React.FC = () => {
           onClick={() => navigate(-1)}
           className="flex justify-center items-center w-[32px] h-[32px]"
         >
-          <Goback className="w-[17.5px] h-[24px]" />
+          <Goback className="w-[17.5px] h-[24px] cursor-pointer" />
         </button>
 
         <h2 className="text-med16 text-darkgrey05">{category}</h2>
@@ -116,7 +120,7 @@ const CategoryResultPage: React.FC = () => {
 
       {!isLoading && products.length > 0 ? (
         <div className="flex flex-col gap-3">
-          {products.map((item: CategoryItem) => {
+          {products.map(item => {
             const status = normalizeStatus(item);
             const isEnded = status === "경매종료";
             const remainingTime = getValidRemainingTime(
@@ -131,9 +135,9 @@ const CategoryResultPage: React.FC = () => {
               >
                 {/* 이미지 */}
                 <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
-                  {item.imageUrl?.[0] && (
+                  {item.imageUrls[0] && (
                     <img
-                      src={item.imageUrl?.[0]}
+                      src={item.imageUrls[0]}
                       alt={item.goodsName}
                       className="w-full h-full object-cover"
                     />
@@ -146,9 +150,7 @@ const CategoryResultPage: React.FC = () => {
                     {item.goodsName}
                   </span>
 
-                  {/* 상태 영역 */}
                   <div className="flex items-center gap-2 mb-[4px]">
-                    {/* 상태 배지 */}
                     <span
                       className={
                         isEnded
@@ -159,7 +161,6 @@ const CategoryResultPage: React.FC = () => {
                       {status}
                     </span>
 
-                    {/* 남은 시간: 검증된 시간만 표시 */}
                     {remainingTime && (
                       <span className="text-med14 text-mainpink">
                         {remainingTime}
@@ -167,7 +168,6 @@ const CategoryResultPage: React.FC = () => {
                     )}
                   </div>
 
-                  {/* 가격 */}
                   <span className="text-reg14 text-darkgrey05">
                     {isEnded
                       ? item.currentPrice > 0

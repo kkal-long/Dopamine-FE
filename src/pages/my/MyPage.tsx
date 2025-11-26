@@ -17,7 +17,9 @@ const MyPage = () => {
 
   const now = new Date();
 
-  // 진행중 포맷팅
+  /** =============================
+   * 진행중 데이터 포맷팅
+   ==============================*/
   const ongoingItems = ongoing.map(a => {
     const end = new Date(a.endAt);
     const diff = end.getTime() - now.getTime();
@@ -30,18 +32,25 @@ const MyPage = () => {
       title: a.title,
       price: a.currentPrice,
       status: "경매중",
-      image: a.imageUrl?.[0] || "",
+
+      /** ⭐ 반드시 imageUrls 로 넘겨야 함 (AuctionList가 이 구조를 기대함) */
+      imageUrls: a.imageUrls,
+
       timeLeft: { hours, minutes },
     };
   });
 
-  // 완료된 경매 포맷팅
+  /** =============================
+   * 완료된 데이터 포맷팅
+   ==============================*/
   const completedItems = completed.map(a => ({
     id: a.id,
     title: a.title,
     price: a.currentPrice,
     status: "거래 완료",
-    image: a.imageUrl?.[0] || "",
+
+    /** ⭐ 완료된 항목도 동일한 키 사용해야 함 */
+    imageUrls: a.imageUrls,
   }));
 
   return (
@@ -57,7 +66,7 @@ const MyPage = () => {
         {/* 포인트 카드 */}
         <PointCard amount={150000} />
 
-        {/* 포인트 내역 (더미) */}
+        {/* 포인트 내역 */}
         <PointHistoryList
           histories={[
             {

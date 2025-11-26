@@ -9,7 +9,13 @@ interface SearchItem {
   goodsName: string;
   currentPrice: number;
   remainingTime?: string;
-  imageUrl?: string[] | null;
+
+  /** API: 문자열 */
+  imageUrl: string | null;
+
+  /** 프론트: 배열로 정규화한 필드 */
+  imageUrls: string[];
+
   status?: string;
   progressStatus?: string;
   auctionStatus?: string;
@@ -33,6 +39,19 @@ const SearchResultPage: React.FC = () => {
     if (stored) setRecentSearches(JSON.parse(stored));
   }, []);
 
+  /* API 호출 */
+  const {
+    data: rawProducts = [],
+    isLoading,
+    isError,
+  } = useSearchAll(confirmedQuery);
+
+  /** 🔥 imageUrl → imageUrls 로 정규화 */
+  const products: SearchItem[] = rawProducts.map((item: SearchItem) => ({
+    ...item,
+    imageUrls: item.imageUrl ? [item.imageUrl] : [],
+  }));
+
   /* 최근 검색어 저장 */
   const saveRecentKeyword = (word: string) => {
     const trimmed = word.trim();
@@ -55,7 +74,7 @@ const SearchResultPage: React.FC = () => {
     setConfirmedQuery(finalWord);
   };
 
-  /* 최근 검색어 클릭 → 자동 검색 */
+  /* 최근 검색어 자동 검색 */
   const handleRecentClick = (word: string) => {
     setQuery(word);
     saveRecentKeyword(word);
@@ -69,16 +88,7 @@ const SearchResultPage: React.FC = () => {
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
 
-  /* API 호출: 전체 검색 */
-  const {
-    data: products = [],
-    isLoading,
-    isError,
-  } = useSearchAll(confirmedQuery);
-
-  /** ======================
-   * 상태 정규화: CategorySearchPage와 동일하게 적용
-   ======================= */
+  /** 상태 통합 */
   const normalizeStatus = (item: SearchItem) => {
     const rawStatus =
       item.status ||
@@ -88,18 +98,18 @@ const SearchResultPage: React.FC = () => {
       "";
 
     const s = rawStatus.trim().toUpperCase();
-
     const remaining = item.remainingTime?.trim();
-    const isRemainingEnded =
+
+    const isEnd =
       remaining === "경매 종료" ||
       remaining === "종료" ||
       remaining === "마감" ||
       remaining === "END";
 
-    if (s === "SOLD" || isRemainingEnded) return "경매종료";
+    if (s === "SOLD" || isEnd) return "경매종료";
     if (s === "IN_PROGRESS") return "경매중";
 
-    return "경매중";
+    return "경매중"; // 기본값
   };
 
   /** 남은 시간 정제 */
@@ -108,14 +118,13 @@ const SearchResultPage: React.FC = () => {
     if (!time) return "";
 
     const trimmed = time.trim();
-
-    const isEndKeyword =
+    const isEnd =
       trimmed === "경매 종료" ||
       trimmed === "종료" ||
       trimmed === "마감" ||
       trimmed === "END";
 
-    if (isEndKeyword) return "";
+    if (isEnd) return "";
 
     const isValid =
       trimmed.includes("남음") ||
@@ -185,7 +194,7 @@ const SearchResultPage: React.FC = () => {
         </p>
       )}
 
-      {/* 결과 리스트 */}
+      {/* 리스트 */}
       <div className="flex flex-col gap-4 overflow-y-auto flex-1 scrollbar-hide">
         {isError && (
           <p className="text-center text-red-500 text-med14 mt-8">
@@ -198,7 +207,7 @@ const SearchResultPage: React.FC = () => {
         )}
 
         {!isLoading &&
-          products.map((item: SearchItem) => {
+          products.map(item => {
             const status = normalizeStatus(item);
             const isEnded = status === "경매종료";
             const remainingTime = getValidRemainingTime(
@@ -211,10 +220,11 @@ const SearchResultPage: React.FC = () => {
                 key={item.auctionId}
                 className="flex items-center border border-grey09 rounded-[8px] px-3 py-3"
               >
+                {/* 이미지 */}
                 <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
-                  {item.imageUrl?.[0] && (
+                  {item.imageUrls[0] && (
                     <img
-                      src={item.imageUrl?.[0]}
+                      src={item.imageUrls[0]}
                       alt={item.goodsName}
                       className="w-full h-full object-cover"
                     />
@@ -228,7 +238,6 @@ const SearchResultPage: React.FC = () => {
                   </span>
 
                   <div className="flex items-center gap-2 mb-[4px]">
-                    {/* 상태 배지 */}
                     <span
                       className={
                         isEnded
@@ -239,7 +248,6 @@ const SearchResultPage: React.FC = () => {
                       {status}
                     </span>
 
-                    {/* 남은 시간 */}
                     {remainingTime && (
                       <span className="text-med14 text-mainpink">
                         {remainingTime}

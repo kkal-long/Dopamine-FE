@@ -9,7 +9,10 @@ interface CategoryItem {
   goodsName: string;
   currentPrice: number;
   remainingTime?: string;
-  imageUrl?: string[] | null;
+
+  imageUrl: string | null; // API 문자열
+  imageUrls: string[]; // 프론트 배열 변환
+
   status?: string;
   progressStatus?: string;
   auctionStatus?: string;
@@ -35,10 +38,18 @@ const CategorySearchPage: React.FC = () => {
 
   /* API */
   const {
-    data: products = [],
+    data: rawProducts = [],
     isLoading,
-    isError,
+    isError: _isError, // 🔥 사용하지 않는 변수 → 경고 제거
   } = useCategoryKeyword(categoryId, confirmedQuery);
+
+  /* 🔥 imageUrl → imageUrls 정규화 */
+  const products: CategoryItem[] = rawProducts.map(
+    (item: CategoryItem): CategoryItem => ({
+      ...item,
+      imageUrls: item.imageUrl ? [item.imageUrl] : [],
+    })
+  );
 
   /* 최근 검색어 저장 */
   const saveRecentKeyword = (word: string) => {
@@ -72,9 +83,7 @@ const CategorySearchPage: React.FC = () => {
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
 
-  /** ======================
-   * 상태 통합 로직
-   ======================= */
+  /** 상태 통합 */
   const normalizeStatus = (item: CategoryItem) => {
     const rawStatus =
       item.status ||
@@ -86,13 +95,13 @@ const CategorySearchPage: React.FC = () => {
     const s = rawStatus.trim().toUpperCase();
 
     const remaining = item.remainingTime?.trim();
-    const isRemainingEnded =
+    const isEnd =
       remaining === "경매 종료" ||
       remaining === "종료" ||
       remaining === "마감" ||
       remaining === "END";
 
-    if (s === "SOLD" || isRemainingEnded) return "경매종료";
+    if (s === "SOLD" || isEnd) return "경매종료";
     if (s === "IN_PROGRESS") return "경매중";
 
     return "경매중";
@@ -104,14 +113,13 @@ const CategorySearchPage: React.FC = () => {
     if (!time) return "";
 
     const trimmed = time.trim();
-
-    const isEndKeyword =
+    const isEnd =
       trimmed === "경매 종료" ||
       trimmed === "종료" ||
       trimmed === "마감" ||
       trimmed === "END";
 
-    if (isEndKeyword) return "";
+    if (isEnd) return "";
 
     const isValid =
       trimmed.includes("남음") ||
@@ -200,12 +208,8 @@ const CategorySearchPage: React.FC = () => {
           </p>
         )}
 
-        {!isLoading && products.length === 0 && confirmedQuery && (
-          <p className="text-med14 text-grey04">검색 결과가 없습니다.</p>
-        )}
-
         {!isLoading &&
-          products.map((item: CategoryItem) => {
+          products.map(item => {
             const status = normalizeStatus(item);
             const isEnded = status === "경매종료";
             const remainingTime = getValidRemainingTime(
@@ -219,9 +223,9 @@ const CategorySearchPage: React.FC = () => {
                 className="flex items-center border border-grey04 rounded-[8px] px-3 py-3 mb-3"
               >
                 <div className="w-[70px] h-[70px] bg-grey09 rounded-[8px] mr-4 overflow-hidden">
-                  {item.imageUrl?.[0] && (
+                  {item.imageUrls[0] && (
                     <img
-                      src={item.imageUrl?.[0]}
+                      src={item.imageUrls[0]}
                       alt={item.goodsName}
                       className="w-full h-full object-cover"
                     />
@@ -234,7 +238,6 @@ const CategorySearchPage: React.FC = () => {
                   </span>
 
                   <div className="flex items-center gap-2 mb-[4px]">
-                    {/* 상태 배지 */}
                     <span
                       className={
                         isEnded
@@ -245,7 +248,6 @@ const CategorySearchPage: React.FC = () => {
                       {status}
                     </span>
 
-                    {/* 남은 시간 */}
                     {remainingTime && (
                       <span className="text-med14 text-mainpink">
                         {remainingTime}
@@ -264,6 +266,10 @@ const CategorySearchPage: React.FC = () => {
               </div>
             );
           })}
+
+        {!isLoading && products.length === 0 && confirmedQuery && (
+          <p className="text-med14 text-grey04">검색 결과가 없습니다.</p>
+        )}
       </div>
     </div>
   );

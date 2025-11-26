@@ -5,7 +5,7 @@ interface AuctionItem {
   title: string;
   price: number;
   status: string;
-  imageUrl: string;
+  imageUrls: string[]; // 반드시 배열
   timeLeft?: {
     hours: number;
     minutes: number;
@@ -51,20 +51,11 @@ const AuctionList = ({
             >
               {/* 왼쪽 상품 이미지 */}
               <div className="w-[72px] h-[72px] rounded-lg flex-shrink-0 overflow-hidden">
-                {(() => {
-                  // 백엔드 대응: imageUrl이 문자열 또는 배열일 수 있음
-                  const imageSrc = Array.isArray(item.imageUrl)
-                    ? item.imageUrl[0] // 배열이면 첫 번째
-                    : item.imageUrl || "/default.png"; // 단일 문자열 or 없으면 기본 이미지
-
-                  return (
-                    <img
-                      src={imageSrc}
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                    />
-                  );
-                })()}
+                <img
+                  src={item.imageUrls?.[0] || "/default.png"}
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               {/* 오른쪽 상품 정보 */}
@@ -72,13 +63,13 @@ const AuctionList = ({
                 <p className="text-reg14 text-darkgrey05 mb-[2px]">
                   {item.title}
                 </p>
+
                 <p className="text-reg12 text-darkgrey01 mb-[6px]">
                   {activeTab === "ongoing"
                     ? `최고가: ₩${item.price.toLocaleString()}`
                     : `최종가: ₩${item.price.toLocaleString()}`}
                 </p>
 
-                {/* 경매중 배지 + 시간*/}
                 <div className="flex items-center justify-between">
                   <span
                     className={`px-2 py-[2px] rounded-full text-reg12 ${
