@@ -1,7 +1,7 @@
 import { router } from "@/router/Router";
 import { RouterProvider } from "react-router-dom";
 
-import useNotificationSSE from "@/hooks/useNotificationSSE";
+import useNotificationSSE from "@/hooks/notification/useNotificationSSE";
 
 const App = () => {
   useNotificationSSE();

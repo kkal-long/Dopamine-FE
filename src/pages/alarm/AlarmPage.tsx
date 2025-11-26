@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AlarmLogo, AlarmUp } from "@/assets/svgs/alarm";
 import { Goback } from "@/assets/svgs/search";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { useNotificationList } from "@/hooks/useNotification";
+import { useNotificationList } from "@/hooks/notification/useNotification";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { formatTimeAgo } from "@/utils/dateUtils";
 
