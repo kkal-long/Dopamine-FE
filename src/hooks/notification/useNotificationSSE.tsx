@@ -1,7 +1,9 @@
+import NotificationToast from "@/components/notification/NotificationToast";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AlarmItem, useNotificationStore } from "@/store/useNotificationStore";
 import { Event, EventSourcePolyfill } from "event-source-polyfill";
 import { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 
 export default function useNotificationSSE() {
   const addAlarm = useNotificationStore(s => s.addAlarm);
@@ -45,6 +47,14 @@ export default function useNotificationSSE() {
           typeLabel: "낙찰 성공",
         };
         addAlarm(newAlarm);
+
+        toast.custom(
+          t => <NotificationToast t={t} message={data.message} type="WIN" />,
+          {
+            position: "top-center",
+            duration: 10000,
+          }
+        );
       } catch (err) {
         console.error("WIN 이벤트 파싱 에러:", err);
       }
@@ -66,6 +76,14 @@ export default function useNotificationSSE() {
           typeLabel: "입찰 알림",
         };
         addAlarm(newAlarm);
+
+        toast.custom(
+          t => <NotificationToast t={t} message={data.message} type="OUTBID" />,
+          {
+            position: "top-center",
+            duration: 10000,
+          }
+        );
       } catch (err) {
         console.error("OUTBID 이벤트 파싱 에러:", err);
       }
