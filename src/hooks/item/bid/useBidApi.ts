@@ -1,5 +1,7 @@
+import { postBid } from "@/apis/auction/createBidApi";
+import { postSwipeAction } from "@/apis/auction/postSwipeApi";
 import { getAuctionSummary } from "@/apis/item/bid/bidApi";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useBidApi = () => {
   const getAuctionSummaryQuery = (userId: number | null) => {
@@ -10,7 +12,21 @@ export const useBidApi = () => {
     });
   };
 
+  const postSwipMutation = () => {
+    return useMutation({
+      mutationFn: postSwipeAction,
+    });
+  };
+
+  const postBidMutation = () => {
+    return useMutation({
+      mutationFn: postBid,
+    });
+  };
+
   return {
     getAuctionSummaryQuery,
+    postSwipMutation,
+    postBidMutation,
   };
 };

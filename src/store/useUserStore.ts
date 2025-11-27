@@ -5,10 +5,12 @@ type UserState = {
   userId: number | null;
   userName: string | null;
   userImage: string | null;
+  point: number;
   setUser: (user: {
     userId: number;
     userName: string;
     userImage: string;
+    point: number;
   }) => void;
   clearUser: () => void;
 };
@@ -19,13 +21,14 @@ export const useUserStore = create<UserState>()(
       userId: null,
       userName: null,
       userImage: null,
+      point: 0,
 
       setUser: user => {
         set(user);
       },
 
       clearUser: () => {
-        set({ userId: null, userName: null, userImage: null });
+        set({ userId: null, userName: null, userImage: null, point: 0 });
       },
     }),
     {

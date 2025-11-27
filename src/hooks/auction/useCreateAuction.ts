@@ -1,0 +1,20 @@
+// src/hooks/auction/useCreateAuction.ts
+import { createAuction } from "@/apis/auction/auctionApi";
+import { CreateAuctionRequest } from "@/types/auction/auction";
+import { useState } from "react";
+
+export const useCreateAuction = () => {
+  const [loading, setLoading] = useState(false);
+
+  const submitAuction = async (data: CreateAuctionRequest) => {
+    setLoading(true);
+    try {
+      const res = await createAuction(data);
+      return res;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { submitAuction, loading };
+};

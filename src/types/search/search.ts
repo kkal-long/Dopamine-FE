@@ -5,7 +5,13 @@ export interface SearchResultItem {
   status: string;
   remainingTime: string;
   currentPrice: number;
+
+  /** API 실제 값 (문자열) */
   imageUrl: string | null;
+
+  /** 프론트에서 변환한 배열 */
+  imageUrls: string[];
+
   condition: string;
   year: string;
   categoryId: number;

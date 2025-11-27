@@ -13,3 +13,12 @@ export interface ChargePointResponse {
   userId: number;
   userPoint: number;
 }
+
+export interface PointHistoryData {
+  historyId: number;
+  changeAmount: number;
+  type: "CHARGE" | "WITHDRAW" | "BID_DEPOSIT" | "REFUND" | "PURCHASE" | "SALE";
+  createdAt: string;
+}
+
+export type PointHistoryResponse = PointHistoryData[];

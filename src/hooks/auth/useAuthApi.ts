@@ -24,12 +24,13 @@ export const useAuthApi = () => {
   const putUserProfileMutation = useMutation({
     mutationFn: putUserProfile,
     onSuccess: res => {
-      const { user_id, nickname, profileImageUrl } = res;
+      const { user_id, nickname, profileImageUrl, point } = res;
 
       setUser({
         userId: user_id,
         userName: nickname,
         userImage: profileImageUrl,
+        point: point,
       });
 
       queryClient.setQueryData(["userProfile"], res);
@@ -43,12 +44,13 @@ export const useAuthApi = () => {
     mutationFn: getUserProfile,
     onSuccess: res => {
       try {
-        const { user_id, nickname, profileImageUrl } = res;
+        const { user_id, nickname, profileImageUrl, point } = res;
 
         setUser({
           userId: user_id,
           userName: nickname,
           userImage: profileImageUrl,
+          point: point,
         });
 
         queryClient.setQueryData(["userProfile"], res);

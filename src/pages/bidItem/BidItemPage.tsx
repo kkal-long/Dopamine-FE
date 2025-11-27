@@ -28,7 +28,7 @@ const BidItemPage = () => {
           state: {
             itemInfo: {
               goodsName: selectedItem?.goodsName,
-              imageUrl: selectedItem?.imageUrl,
+              imageUrl: selectedItem?.imageUrl?.[0] || "", // 🔥 배열 기반으로 변경
               finalPrice: selectedItem?.finalPrice,
               sellerId: res.sellerId,
               sellerNickname: res.sellerNickname,
