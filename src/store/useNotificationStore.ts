@@ -5,7 +5,7 @@ export type AlarmItem = {
   id: number;
   message: string;
   auctionId: number;
-  type: "OUTBID" | "WIN";
+  type: "OUTBID" | "WIN" | "FAIL";
   isRead: boolean;
   createdAt: string;
 
@@ -37,6 +37,7 @@ export const useNotificationStore = create<NotificationStore>()(
       setAlarms: list =>
         set(() => ({
           alarms: list,
+          unreadCount: list.filter(alarm => !alarm.isRead).length,
         })),
 
       resetUnread: () => set({ unreadCount: 0 }),

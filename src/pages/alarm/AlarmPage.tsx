@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AlarmLogo, AlarmUp } from "@/assets/svgs/alarm";
 import { Goback } from "@/assets/svgs/search";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { useNotificationList } from "@/hooks/useNotification";
-import useNotificationSSE from "@/hooks/useNotificationSSE";
+import { useNotificationList } from "@/hooks/notification/useNotification";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { formatTimeAgo } from "@/utils/dateUtils";
 
@@ -16,15 +15,13 @@ const AlarmPage = () => {
   const { data: notifications, isLoading } = useNotificationList();
   const { setAlarms, resetUnread, alarms } = useNotificationStore();
 
-  useNotificationSSE();
-
   /* 백엔드 type → 한글 타입 */
-  const typeLabel = (t: "OUTBID" | "WIN") => {
+  const typeLabel = (t: "OUTBID" | "WIN" | "FAIL") => {
     return t === "OUTBID" ? "상위 입찰" : "낙찰 종료";
   };
 
   /* 백엔드 type → 아이콘 매핑 */
-  const getTypeIcon = (t: "OUTBID" | "WIN") => {
+  const getTypeIcon = (t: "OUTBID" | "WIN" | "FAIL") => {
     console.log(t);
     return t === "OUTBID" ? AlarmUp : AlarmLogo;
   };

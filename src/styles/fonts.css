@@ -56,6 +56,11 @@
   --text-reg16--line-height: 170%;
   --text-reg16--letter-spacing: 0;
 
+  --text-bold14: 14px;
+  --text-bold14--font-weight: 700;
+  --text-bold14--line-height: 170%;
+  --text-bold14--letter-spacing: 0;
+
   --text-semibold14: 14px;
   --text-semibold14--font-weight: 600;
   --text-semibold14--line-height: 170%;

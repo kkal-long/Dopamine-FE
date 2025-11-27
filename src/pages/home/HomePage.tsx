@@ -1,14 +1,10 @@
 import { Logo } from "@/assets/svgs/main";
 import HeaderBell from "@/components/mainpage/HeaderBell";
 import SwipeDeck from "@/components/mainpage/SwipeDeck";
-import useNotificationSSE from "@/hooks/useNotificationSSE";
 import type { MainPageProduct } from "@/types/item/bid/Bid.type";
 import { useMemo } from "react";
 
 export default function HomePage() {
-  /** 페이지 로드 시 SSE 연결 */
-  useNotificationSSE();
-
   const products: MainPageProduct[] = useMemo(
     () => [
       {

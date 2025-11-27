@@ -14,8 +14,5 @@ export const getNotificationList = async () => {
 
 // 3) SSE 연결
 export const getconnectNotificationStream = () => {
-  return new EventSource(
-    `${import.meta.env.VITE_SERVER_API_URL}/api/notification/stream`,
-    { withCredentials: true }
-  );
+  return new EventSource(`/api/notification/stream`, { withCredentials: true });
 };
