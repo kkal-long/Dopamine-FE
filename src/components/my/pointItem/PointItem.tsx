@@ -1,12 +1,15 @@
-import { PointItemData } from "@/types/my/PointHistory.type";
+import { POINT_HISTORY_TYPE_MAP } from "@/constants/pointHistory";
+import { PointHistoryData } from "@/types/my/pointApi.type";
 import { formatDateSimple } from "@/utils/dateUtils";
-import { formatPrice } from "@/utils/priceUtils";
+import { formatPriceSimple } from "@/utils/priceUtils";
 import clsx from "clsx";
 
-type PointItemProps = Omit<PointItemData, "id">;
+interface PointItemProps {
+  pointHistory: PointHistoryData;
+}
 
-const PointItem = ({ type, title, date, amount }: PointItemProps) => {
-  const isCharge = type === "CHARGE";
+const PointItem = ({ pointHistory }: PointItemProps) => {
+  const isCharge = ["CHARGE", "REFUND", "SALE"].includes(pointHistory.type);
 
   return (
     <div className="flex gap-3 py-4 border-b border-grey01 ">
@@ -23,15 +26,15 @@ const PointItem = ({ type, title, date, amount }: PointItemProps) => {
 
       <div className="flex flex-col">
         <span className="text-reg14 text-darkgrey05">
-          {isCharge ? "포인트 충전" : `포인트 지불 - ${title}`}
+          {POINT_HISTORY_TYPE_MAP[pointHistory.type]}
         </span>
         <span className="text-reg12 text-darkgrey01">
-          {formatDateSimple(date)}
+          {formatDateSimple(pointHistory.createdAt)}
         </span>
       </div>
 
       <div className="text-med14 text-darkgrey02 ml-auto flex items-center">
-        {isCharge ? "+" : "-"} {formatPrice(amount)}
+        {formatPriceSimple(pointHistory.changeAmount)} 원
       </div>
     </div>
   );
