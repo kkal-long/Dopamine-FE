@@ -2,7 +2,17 @@ import ItemsDetailSection from "@/components/item/detail/itemCard/ItemDetailSect
 import ItemHeader from "@/components/item/detail/itemCard/ItemHeader";
 import PriceBox from "@/components/item/detail/itemCard/PriceBox";
 import SellerInfo from "@/components/item/detail/itemCard/SellerInfo";
-import type { ItemCardProps } from "@/types/item/detail/ItemCard.type";
+import { ViewState } from "@/types/item/detail/ItemCard.type";
+import { AuctionDetailResponse } from "@/types/item/detail/itemDetailApi.type";
+
+export interface ItemCardProps {
+  item: AuctionDetailResponse;
+  isLive: boolean;
+  isEnded: boolean;
+  viewState: ViewState;
+  depositAmount: number;
+  hasBid: boolean;
+}
 
 const ItemCard = ({
   item,
@@ -12,26 +22,25 @@ const ItemCard = ({
   depositAmount,
   hasBid,
 }: ItemCardProps) => {
-  const { item: itemDetails, seller } = item;
-
   return (
     <div className="bg-white py-4 mb-2">
       <div className="mx-4">
-        <ItemHeader isLive={isLive} endsAt={item.endsAt} title={item.title} />
+        <ItemHeader
+          isLive={isLive}
+          endAt={item.endAt}
+          goodsName={item.goodsName}
+        />
         <PriceBox
           viewState={viewState}
           isEnded={isEnded}
           currentPrice={item.currentPrice}
-          bidCount={item.bidCount}
-          myPrice={item.myPrice}
+          bidCount={item.totalNumOfBidder}
+          myPrice={item.myBidPrice}
           hasBid={hasBid}
           depositAmount={depositAmount}
         />
-        <ItemsDetailSection
-          description={item.description}
-          itemDetails={itemDetails}
-        />
-        <SellerInfo seller={seller} />
+        <ItemsDetailSection item={item} />
+        <SellerInfo seller={item.seller} />
       </div>
     </div>
   );

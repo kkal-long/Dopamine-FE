@@ -17,6 +17,13 @@ const QnaInputBar = ({ onSubmit, onClose }: QnaInputBarProps) => {
     setText("");
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   // 모바일 이용시 항상 자판 위에 위치하도록
   useEffect(() => {
     const viewport = window.visualViewport;
@@ -56,6 +63,7 @@ const QnaInputBar = ({ onSubmit, onClose }: QnaInputBarProps) => {
             type="text"
             value={text}
             onChange={e => setText(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="질문을 남겨보세요..."
             className="flex-1 text-reg16 text-darkgrey04 placeholder-grey11 outline-none bg-transparent"
             autoFocus

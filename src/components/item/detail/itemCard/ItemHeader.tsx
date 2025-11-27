@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 
 interface ItemHeaderProps {
   isLive: boolean;
-  endsAt: string;
-  title: string;
+  endAt: string;
+  goodsName: string;
 }
 
-const ItemHeader = ({ isLive, endsAt, title }: ItemHeaderProps) => {
+const ItemHeader = ({ isLive, endAt, goodsName }: ItemHeaderProps) => {
   const [displayTime, setDisplayTime] = useState(() =>
-    isLive ? formatTimeLeft(endsAt) : ""
+    isLive ? formatTimeLeft(endAt) : ""
   );
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const ItemHeader = ({ isLive, endsAt, title }: ItemHeaderProps) => {
       return;
     }
     const intervalId = setInterval(() => {
-      const endDate = new Date(endsAt);
+      const endDate = new Date(endAt);
       const now = new Date();
       const diff = endDate.getTime() - now.getTime();
 
@@ -27,14 +27,14 @@ const ItemHeader = ({ isLive, endsAt, title }: ItemHeaderProps) => {
         clearInterval(intervalId);
         setDisplayTime("경매 종료");
       } else {
-        setDisplayTime(formatTimeLeft(endsAt));
+        setDisplayTime(formatTimeLeft(endAt));
       }
     }, 1000);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [isLive, endsAt]);
+  }, [isLive, endAt]);
 
   return (
     <div className="mb-5">
@@ -53,7 +53,7 @@ const ItemHeader = ({ isLive, endsAt, title }: ItemHeaderProps) => {
           <span className="text-semibold14 text-mainpink">{displayTime}</span>
         )}
       </div>
-      <h1 className="text-bold20 text-bluegrey10">{title}</h1>
+      <h1 className="text-bold20 text-bluegrey10">{goodsName}</h1>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { postBid } from "@/apis/auction/createBidApi";
 import { postSwipeAction } from "@/apis/auction/postSwipeApi";
-import { getAuctionSummary } from "@/apis/item/bid/bidApi";
+import { getAuctionSummary, getBidHistory } from "@/apis/item/bid/bidApi";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useBidApi = () => {
@@ -9,6 +9,16 @@ export const useBidApi = () => {
       queryKey: ["auctionSummary", userId],
       queryFn: () => getAuctionSummary(userId!),
       enabled: !!userId,
+    });
+  };
+
+  const getBidHistoryQuery = (auctionId: number) => {
+    return useQuery({
+      queryKey: ["bidHistory", auctionId],
+      queryFn: () => getBidHistory(auctionId),
+      enabled: !!auctionId,
+      refetchInterval: 5000,
+      refetchOnMount: true,
     });
   };
 
@@ -26,6 +36,7 @@ export const useBidApi = () => {
 
   return {
     getAuctionSummaryQuery,
+    getBidHistoryQuery,
     postSwipMutation,
     postBidMutation,
   };

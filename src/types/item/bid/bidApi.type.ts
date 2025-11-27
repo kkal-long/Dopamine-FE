@@ -21,6 +21,24 @@ export interface AuctionSummaryResponse {
   bidItems: BidItemData[];
 }
 
+export interface BidHistoryData {
+  bidId: number;
+  userId: number;
+  auctionId: number;
+  bidPrice: number;
+  depositAmount: number;
+  status: "PENDING" | "SUCCESS" | "FAILED";
+  depositStatus: "REFUNDED";
+  profileImageUrl: string;
+  nickname: string;
+  createAt: string;
+}
+
+export interface BidHistoryResponse {
+  count: number;
+  bids: BidHistoryData[];
+}
+
 export interface CreateBidRequest {
   auctionId: number;
   userId: number;

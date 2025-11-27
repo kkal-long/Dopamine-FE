@@ -22,12 +22,3 @@ export interface ItemData {
 }
 
 export type ViewState = "LIVE" | "LIVE_BIDDING" | "WON" | "LOST" | "ENDED";
-
-export interface ItemCardProps {
-  item: ItemData;
-  isLive: boolean;
-  isEnded: boolean;
-  viewState: ViewState;
-  depositAmount: number;
-  hasBid: boolean;
-}
