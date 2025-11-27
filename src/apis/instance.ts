@@ -1,59 +1,63 @@
-import axios from "axios";
-
+// src/apis/instance.ts
 import { useAuthStore } from "@/store/useAuthStore";
+import axios from "axios";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API_URL,
   withCredentials: true,
 });
 
-// 요청 인터셉터
 instance.interceptors.request.use(config => {
   const { accessToken } = useAuthStore.getState();
 
   if (accessToken) {
-    config.headers["Authorization"] = `Bearer ${accessToken}`;
+    config.headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+
+  // Content-Type 없으면 JSON 기본값 유지
+  if (!config.headers.get("Content-Type")) {
+    config.headers.set("Content-Type", "application/json");
   }
 
   return config;
 });
 
-// 응답 인터셉터
 instance.interceptors.response.use(
   res => res,
   async err => {
-    const originalRequest = err.config;
+    const original = err.config;
 
     if (
       (err.response?.status === 401 || err.response?.status === 403) &&
-      !originalRequest._retry
+      !original._retry
     ) {
-      originalRequest._retry = true;
+      original._retry = true;
+
+      const { refreshToken, login, logout } = useAuthStore.getState();
+
+      if (!refreshToken) {
+        logout();
+        window.location.href = "/login";
+        return;
+      }
 
       try {
-        const { refreshToken } = useAuthStore.getState();
-
-        if (!refreshToken) {
-          throw new Error("Refresh Token이 없습니다. 다시 로그인 하세요.");
-        }
-
-        const refreshRes = await axios.post(
+        const refresh = await axios.post(
           `${import.meta.env.VITE_SERVER_API_URL}/token/access`,
-          { refreshToken: refreshToken },
+          { refreshToken },
           { withCredentials: true }
         );
 
-        const { accessToken: newAccess } = refreshRes.data;
+        login(refresh.data.accessToken, refreshToken);
 
-        useAuthStore.getState().login(newAccess, refreshToken);
+        original.headers.set(
+          "Authorization",
+          `Bearer ${refresh.data.accessToken}`
+        );
 
-        originalRequest.headers["Authorization"] =
-          `Bearer ${refreshRes.data.accessToken}`;
-
-        return instance(originalRequest);
-      } catch (refreshError) {
-        console.error(refreshError);
-        useAuthStore.getState().logout();
+        return instance(original);
+      } catch {
+        logout();
         window.location.href = "/login";
       }
     }

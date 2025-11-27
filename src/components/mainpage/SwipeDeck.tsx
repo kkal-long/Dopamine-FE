@@ -1,63 +1,139 @@
 import SwipeCard from "@/components/mainpage/SwipeCard";
-import { useMemo, useState } from "react";
-import type { MainPageProduct } from "@/types/item/bid/Bid.type";
-import ProductCard from "./ProductCard";
 import BidSheet from "./BidSheet";
-import { useBid } from "@/hooks/useSwipeBid";
+import ProductCard from "./ProductCard";
 
-interface Props {
-  items: MainPageProduct[];
-  onChange?: (current: MainPageProduct | undefined) => void;
+import { useBid } from "@/hooks/auction/useBid";
+import { useBidApi } from "@/hooks/item/bid/useBidApi";
+import { useUserStore } from "@/store/useUserStore";
+import type { DeckAuctionItem } from "@/types/auction/deck";
+import { useEffect, useMemo, useState } from "react";
+
+interface SwipeDeckProps {
+  items: DeckAuctionItem[];
+  onDeckExhausted: () => void;
 }
 
-export default function SwipeDeck({ items, onChange }: Props) {
-  const [deck, setDeck] = useState<MainPageProduct[]>(items);
+export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
   const [index, setIndex] = useState(0);
 
-  const current = deck[index];
-  const hasNext = index < deck.length - 1;
+  const userId = useUserStore(state => state.userId);
+
+  const current = items[index];
+  const { price, setPrice } = useBid(current ? current.currentPrice : 0);
+
+  const { postSwipMutation, postBidMutation } = useBidApi();
+  const { mutate: createBid } = postBidMutation();
+  const { mutate: swipeAction } = postSwipMutation();
 
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { price, setPrice } = useBid(
-    current ? (current.bidPrice ?? current.highestBid) : 0
-  );
 
-  const openSheet = () => {
+  useEffect(() => {
+    if (current) {
+      setPrice(current.currentPrice);
+    }
+  }, [current, setPrice]);
+
+  const openBidSheet = () => {
     if (!current) return;
-    setPrice(current.bidPrice ?? current.highestBid);
     setSheetOpen(true);
   };
 
-  const closeSheet = () => setSheetOpen(false);
+  const closeBidSheet = () => setSheetOpen(false);
 
-  const confirmBid = () => {
-    if (!current) return;
-    const updated = deck.map((p, i) =>
-      i === index ? { ...p, bidPlaced: true, bidPrice: price } : p
-    );
-    setDeck(updated);
-    setSheetOpen(false);
+  const removeCard = () => {
+    if (items.length > 0 && items.length - (index + 1) <= 3) {
+      onDeckExhausted();
+    }
+    setIndex(prev => prev + 1);
   };
 
+  /* 입찰 */
+  const performBid = () => {
+    if (!current || !userId) {
+      alert("오류가 발생했습니다. 다시 시도해 주세요.");
+      return;
+    }
+
+    if (price <= current.currentPrice) {
+      alert("입찰가는 현재 가격보다 높아야 합니다.");
+      return;
+    }
+
+    swipeAction(
+      {
+        auctionId: current.id,
+        action: "BIDDING",
+      },
+      {
+        onSuccess: () => {
+          createBid(
+            {
+              auctionId: current.id,
+              userId: userId,
+              bidPrice: price,
+            },
+            {
+              onSuccess: () => {
+                current.bidPrice = current.currentPrice = price;
+                current.bidPlaced = true;
+                setSheetOpen(false);
+              },
+              onError: err => {
+                console.error(err);
+                alert("입찰 도중 오류가 발생했습니다.");
+              },
+            }
+          );
+        },
+        onError: err => {
+          console.error(err);
+          alert("입찰에 실패했습니다.");
+        },
+      }
+    );
+  };
+
+  /* 보류 */
   const defer = () => {
     if (!current) return;
-    setDeck(prev => {
-      const next = [...prev];
-      const [item] = next.splice(index, 1);
-      next.push(item);
-      return next;
-    });
+
+    swipeAction(
+      {
+        auctionId: current.id,
+        action: "HOLD",
+      },
+      {
+        onSuccess: () => {
+          removeCard();
+        },
+        onError: () => {
+          removeCard();
+        },
+      }
+    );
   };
 
+  /* 관심 없음 */
   const onSwiped = (dir: string) => {
-    if (dir === "left" && hasNext) {
-      const nextIdx = Math.min(index + 1, deck.length - 1);
-      setIndex(nextIdx);
-      onChange?.(deck[nextIdx]);
+    if (dir === "left" && current) {
+      swipeAction(
+        { auctionId: current.id, action: "DISLIKE" },
+        {
+          onSuccess: () => {
+            removeCard(); // 다음 카드로 이동
+          },
+          onError: () => {
+            removeCard();
+          },
+        }
+      );
     }
   };
 
-  const visible = useMemo(() => deck.slice(index, index + 3), [deck, index]);
+  const visible = useMemo(() => {
+    if (!items || items.length === 0) return [];
+    return items.slice(index, index + 3);
+  }, [items, index]);
 
   return (
     <div className="relative mx-auto h-[640px] w-[360px]">
@@ -65,29 +141,25 @@ export default function SwipeDeck({ items, onChange }: Props) {
         const depth = i;
         const scale = 1 - depth * 0.06;
         const translateY = depth * 20;
-        const translateX = depth * 6;
 
         return (
           <div
             key={product.id}
-            className="absolute inset-0 pointer-events-auto transition-transform duration-300 ease-out"
+            className="absolute inset-0"
             style={{
               zIndex: visible.length - i,
-              transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
-              opacity: 1 - depth * 0.12,
+              transform: `translateY(${translateY}px) scale(${scale})`,
             }}
           >
             <SwipeCard
               onSwipe={onSwiped}
               preventSwipe={
-                sheetOpen
-                  ? ["left", "right", "up", "down"]
-                  : ["right", "up", "down"]
+                sheetOpen ? ["left", "right"] : ["right", "up", "down"]
               }
             >
               <ProductCard
                 product={product}
-                onOpenBid={openSheet}
+                onOpenBid={openBidSheet}
                 onDefer={defer}
               />
             </SwipeCard>
@@ -100,10 +172,10 @@ export default function SwipeDeck({ items, onChange }: Props) {
           open={sheetOpen}
           value={price}
           onChange={setPrice}
-          onClose={closeSheet}
-          onConfirm={confirmBid}
+          onClose={closeBidSheet}
+          onConfirm={performBid}
           productTitle={current.title}
-          highestBid={current.highestBid}
+          highestBid={current.currentPrice}
         />
       )}
     </div>

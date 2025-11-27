@@ -15,10 +15,12 @@ export interface PutUserProfileResponse {
   user_id: number;
   nickname: string;
   profileImageUrl: string;
+  point: number;
 }
 
 export interface GetUserProfileResponse {
   user_id: number;
   nickname: string;
   profileImageUrl: string;
+  point: number;
 }

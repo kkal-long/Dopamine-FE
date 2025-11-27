@@ -5,7 +5,7 @@ interface AuctionItem {
   title: string;
   price: number;
   status: string;
-  image: string;
+  imageUrls: string[]; // 반드시 배열
   timeLeft?: {
     hours: number;
     minutes: number;
@@ -50,9 +50,9 @@ const AuctionList = ({
               className="flex items-center gap-4 border border-bluegrey02 rounded-xl px-4 py-3 hover:shadow-sm transition cursor-pointer active:bg-grey01"
             >
               {/* 왼쪽 상품 이미지 */}
-              <div className="w-[72px] h-[72px] rounded-lg bg-grey02 flex-shrink-0 overflow-hidden">
+              <div className="w-[72px] h-[72px] rounded-lg flex-shrink-0 overflow-hidden">
                 <img
-                  src={item.image}
+                  src={item.imageUrls?.[0] || "/default.png"}
                   alt={item.title}
                   className="w-full h-full object-cover"
                 />
@@ -63,13 +63,13 @@ const AuctionList = ({
                 <p className="text-reg14 text-darkgrey05 mb-[2px]">
                   {item.title}
                 </p>
+
                 <p className="text-reg12 text-darkgrey01 mb-[6px]">
                   {activeTab === "ongoing"
                     ? `최고가: ₩${item.price.toLocaleString()}`
                     : `최종가: ₩${item.price.toLocaleString()}`}
                 </p>
 
-                {/* 경매중 배지 + 시간*/}
                 <div className="flex items-center justify-between">
                   <span
                     className={`px-2 py-[2px] rounded-full text-reg12 ${

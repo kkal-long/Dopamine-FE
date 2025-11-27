@@ -1,9 +1,25 @@
 import Header from "@/components/common/Header";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import PointItem from "@/components/my/pointItem/PointItem";
-import { mockPointHistory } from "@/mock/pointHistory";
+import { PointHistoryResponse } from "@/types/my/pointApi.type";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PointInquiryPage = () => {
-  const pointHistory = mockPointHistory;
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const pointHistory = location.state?.histories as PointHistoryResponse;
+  useEffect(() => {
+    if (!pointHistory) {
+      alert("잘못된 접근입니다.");
+      navigate("/my", { replace: true });
+    }
+  }, [pointHistory, navigate]);
+
+  if (!pointHistory) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div>
@@ -11,13 +27,7 @@ const PointInquiryPage = () => {
 
       <div className="flex flex-col h-full px-4">
         {pointHistory.map(point => (
-          <PointItem
-            key={point.id}
-            type={point.type}
-            title={point.title}
-            date={point.date}
-            amount={point.amount}
-          />
+          <PointItem key={point.historyId} pointHistory={point} />
         ))}
       </div>
     </div>

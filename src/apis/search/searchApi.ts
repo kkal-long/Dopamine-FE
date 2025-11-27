@@ -31,7 +31,7 @@ export const getSearchAll = async (
   return res.data;
 };
 
-// 4) 필터 검색
+// 4) 필터 검색->만들어는 놨는데 안씀...
 export const postFilteredSearch = async (body: {
   conditions: string[];
   minYear: string;
