@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export const useItemModal = (
   auctionId: number,
   imageUrl: string,
-  startPrice: number,
+  currentPrice: number,
   goodsName: string
 ) => {
   const [isChatModalOpen, setChatModalOpen] = useState(false);
@@ -26,7 +26,7 @@ export const useItemModal = (
             itemInfo: {
               goodsName: goodsName,
               imageUrl: imageUrl,
-              finalPrice: startPrice,
+              finalPrice: currentPrice,
               sellId: res.sellerId,
               sellerNickname: res.sellerNickname,
               buyerId: res.buyerId,

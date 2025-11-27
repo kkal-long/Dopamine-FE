@@ -33,7 +33,7 @@ const ItemCard = ({
         <PriceBox
           viewState={viewState}
           isEnded={isEnded}
-          currentPrice={item.startPrice}
+          currentPrice={item.currentPrice}
           bidCount={item.totalNumOfBidder}
           myPrice={item.myBidPrice}
           hasBid={hasBid}

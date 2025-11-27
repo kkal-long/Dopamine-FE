@@ -7,10 +7,10 @@ import ItemCard from "@/components/item/detail/itemCard/ItemCard";
 import ItemImage from "@/components/item/detail/itemImage/ItemImage";
 import QnaInputBar from "@/components/item/detail/qna/QnaInputBar";
 import QnaList from "@/components/item/detail/qna/QnaList";
-import { useItemBid } from "@/hooks/useItemBid";
-import { useItemModal } from "@/hooks/useItemModal";
-import { useItemQna } from "@/hooks/useItemQna";
-import { useItemState } from "@/hooks/useItemState";
+import { useItemBid } from "@/hooks/item/bid/useItemBid";
+import { useItemModal } from "@/hooks/item/detail/useItemModal";
+import { useItemQna } from "@/hooks/item/detail/useItemQna";
+import { useItemState } from "@/hooks/item/detail/useItemState";
 import { BidHistoryResponse } from "@/types/item/bid/bidApi.type";
 import { AuctionDetailResponse } from "@/types/item/detail/itemDetailApi.type";
 import { QnaAuctionResponse } from "@/types/item/detail/qnaApi.type";
@@ -36,7 +36,7 @@ const ItemDetailContent = ({ auctionData, qnaData, bidData }: ContentProps) => {
   } = useItemModal(
     auctionData.auctionId,
     auctionData.imageUrl[0],
-    auctionData.startPrice,
+    auctionData.currentPrice,
     auctionData.goodsName
   );
 
@@ -53,13 +53,8 @@ const ItemDetailContent = ({ auctionData, qnaData, bidData }: ContentProps) => {
   } = useItemQna(auctionData.auctionId);
 
   // 입찰
-  const {
-    isBidSheetOpen,
-    setBidSheetOpen,
-    currentHighestPrice,
-    handleBidSubmit,
-    closeBidSheet,
-  } = useItemBid(auctionData.startPrice);
+  const { isBidSheetOpen, setBidSheetOpen, handleBidSubmit, closeBidSheet } =
+    useItemBid(auctionData.currentPrice, auctionData.auctionId);
 
   // 입찰하기 버튼 클릭시
   const handleBidClick = () => {
@@ -132,7 +127,7 @@ const ItemDetailContent = ({ auctionData, qnaData, bidData }: ContentProps) => {
       <BidBottomSheet
         isOpen={isBidSheetOpen}
         onClose={closeBidSheet}
-        currentHighestPrice={currentHighestPrice}
+        currentHighestPrice={auctionData.currentPrice}
         onBidSubmit={handleBidSubmit}
       />
     </div>

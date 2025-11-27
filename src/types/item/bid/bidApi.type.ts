@@ -38,3 +38,19 @@ export interface BidHistoryResponse {
   count: number;
   bids: BidHistoryData[];
 }
+
+export interface CreateBidRequest {
+  auctionId: number;
+  userId: number;
+  bidPrice: number;
+}
+
+export interface CreateBidResponse {
+  bidId: number;
+  userId: number;
+  auctionId: number;
+  bidPrice: number;
+  depositAmount: number;
+  status: "PENDING" | "SUCCESS" | "FAILED" | "CANCELED";
+  depositStatus: "HELD" | "REFUNDED" | "USED";
+}

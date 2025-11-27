@@ -21,6 +21,7 @@ export interface AuctionDetailResponse {
   goodsName: string;
   description: string;
   startPrice: number;
+  currentPrice: number;
   imageUrl: string[];
   status: "IN_PROGRESS" | "CLOSED" | "CANCELED";
   transactionMethod: "FACE_TO_FACE" | "DELIVERY";
