@@ -1,5 +1,6 @@
 import { Bidding, Edit, Flip } from "@/assets/svgs/main";
 import type { DeckAuctionItem } from "@/types/auction/deck";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   product: DeckAuctionItem;
@@ -8,6 +9,8 @@ type Props = {
 };
 
 export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
+  const navigate = useNavigate();
+
   /** 이미지 렌더링 — 배열 형태에서 첫 번째 이미지 사용 */
   const Media = () => {
     const img = product.imageUrl;
@@ -21,14 +24,29 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
     );
   };
 
+  const handleNavigate = () => {
+    navigate(`/item/${product.id}`);
+  };
+
+  const handleOpenBid = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onOpenBid();
+  };
+
+  const handleDefer = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDefer();
+  };
+
   return (
     <div
+      onClick={handleNavigate}
       className="
-        relative h-[632px] w-full overflow-hidden
-        rounded-[15px] border border-white
-        shadow-[0_8px_10.9px_rgba(81, 73, 73, 0.29)]
-        bg-transparent
-      "
+      relative h-[632px] w-full overflow-hidden
+      rounded-[15px] border border-white
+      shadow-[0_8px_10.9px_rgba(81, 73, 73, 0.29)]
+      bg-transparent cursor-pointer
+    "
     >
       <Media />
 
@@ -52,7 +70,7 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
         {!product.bidPlaced ? (
           <div className="mt-3 flex items-center gap-3">
             <button
-              onClick={onOpenBid}
+              onClick={handleOpenBid}
               className="
                 pointer-events-auto
                 w-[203px] h-[47px] ml-[72px]
@@ -65,7 +83,7 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
             </button>
 
             <button
-              onClick={onDefer}
+              onClick={handleDefer}
               title="보류"
               aria-label="보류"
               className="pointer-events-auto"
@@ -77,7 +95,7 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
           // 입찰 완료 UI
           <div className="mt-3 flex items-center gap-3 cursor-pointer">
             <button
-              onClick={onOpenBid}
+              onClick={handleOpenBid}
               className="grid h-12 w-12 place-items-center rounded-full pointer-events-auto"
               title="가격 수정"
               aria-label="가격 수정"
@@ -94,7 +112,7 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
             </div>
 
             <button
-              onClick={onDefer}
+              onClick={handleDefer}
               title="보류"
               aria-label="보류"
               className="grid h-12 w-12 place-items-center cursor-pointer pointer-events-auto"
