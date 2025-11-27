@@ -2,7 +2,7 @@
 import { Delete, Goback, Search } from "@/assets/svgs/search";
 import { useCategoryKeyword } from "@/hooks/useSearch";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 interface CategoryItem {
   auctionId: number;
@@ -40,7 +40,7 @@ const CategorySearchPage: React.FC = () => {
   const {
     data: rawProducts = [],
     isLoading,
-    isError: _isError, // 🔥 사용하지 않는 변수 → 경고 제거
+    isError,
   } = useCategoryKeyword(categoryId, confirmedQuery);
 
   /* 🔥 imageUrl → imageUrls 정규화 */
@@ -202,6 +202,12 @@ const CategorySearchPage: React.FC = () => {
 
       {/* 검색 결과 */}
       <div className="mt-6">
+        {isError && (
+          <p className="text-center text-red-500 text-med14 mt-8">
+            데이터를 불러오지 못했습니다.
+          </p>
+        )}
+
         {confirmedQuery && (
           <p className="text-med12 text-black mb-[10px]">
             검색 결과 {products.length}개

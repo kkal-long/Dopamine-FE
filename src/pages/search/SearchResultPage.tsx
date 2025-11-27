@@ -2,7 +2,7 @@
 import { Delete, Goback, Search } from "@/assets/svgs/search";
 import { useSearchAll } from "@/hooks/useSearch";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 interface SearchItem {
   auctionId: number;
