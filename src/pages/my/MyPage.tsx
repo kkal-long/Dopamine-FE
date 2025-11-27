@@ -4,9 +4,10 @@ import AuctionTabs from "@/components/my/AuctionTabs";
 import PointCard from "@/components/my/PointCard";
 import PointHistoryList from "@/components/my/PointHistoryList";
 import ProfileHeader from "@/components/my/ProfileHeader";
-import { useState } from "react";
-
 import { useMyAuctions } from "@/hooks/auction/useMyAuctions";
+import { useAuthApi } from "@/hooks/auth/useAuthApi";
+import { useUserStore } from "@/store/useUserStore";
+import { useEffect, useState } from "react";
 
 const MyPage = () => {
   const [activeTab, setActiveTab] = useState<"ongoing" | "completed">(
@@ -14,6 +15,20 @@ const MyPage = () => {
   );
 
   const { ongoing, completed, loading } = useMyAuctions();
+
+  const { getUserProfileMutation } = useAuthApi();
+
+  useEffect(() => {
+    getUserProfileMutation.mutate();
+  }, []);
+
+  const userName = useUserStore(state => state.userName);
+  const userImage = useUserStore(state => state.userImage);
+  const point = useUserStore(state => state.point);
+  if (!userName || !userImage) {
+    alert("로그인 정보가 없습니다.");
+    return;
+  }
 
   const now = new Date();
 
@@ -57,14 +72,10 @@ const MyPage = () => {
     <div className="flex flex-col min-h-screen bg-white">
       <div className="flex-1 overflow-y-auto pb-20">
         {/* 프로필 */}
-        <ProfileHeader
-          name="후멬딧!"
-          email="hoomakethis@email.com"
-          profileImage="/assets/profile.png"
-        />
+        <ProfileHeader name={userName} profileImage={userImage} />
 
         {/* 포인트 카드 */}
-        <PointCard amount={150000} />
+        <PointCard amount={point} />
 
         {/* 포인트 내역 */}
         <PointHistoryList
