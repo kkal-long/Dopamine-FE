@@ -8,6 +8,5 @@ export const uploadImage = async (file: File) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-  console.log("📥 S3 업로드 응답:", res.data);
   return res.data;
 };

@@ -2,7 +2,6 @@ import SwipeCard from "@/components/mainpage/SwipeCard";
 import BidSheet from "./BidSheet";
 import ProductCard from "./ProductCard";
 
-import { useBid } from "@/hooks/auction/useBid";
 import { useBidApi } from "@/hooks/item/bid/useBidApi";
 import { useUserStore } from "@/store/useUserStore";
 import type { DeckAuctionItem } from "@/types/auction/deck";
@@ -19,7 +18,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
   const userId = useUserStore(state => state.userId);
 
   const current = items[index];
-  const { price, setPrice } = useBid(current ? current.currentPrice : 0);
+  const [price, setPrice] = useState(current ? current.currentPrice : 0);
 
   const { postSwipMutation, postBidMutation } = useBidApi();
   const { mutate: createBid } = postBidMutation();
@@ -120,7 +119,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
         { auctionId: current.id, action: "DISLIKE" },
         {
           onSuccess: () => {
-            removeCard(); // 다음 카드로 이동
+            removeCard();
           },
           onError: () => {
             removeCard();
@@ -140,15 +139,14 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
       {visible.map((product, i) => {
         const depth = i;
         const scale = 1 - depth * 0.06;
-        const translateY = depth * 20;
 
         return (
           <div
             key={product.id}
-            className="absolute inset-0"
+            className="absolute inset-0 flex justify-center items-center"
             style={{
               zIndex: visible.length - i,
-              transform: `translateY(${translateY}px) scale(${scale})`,
+              transform: `scale(${scale})`,
             }}
           >
             <SwipeCard

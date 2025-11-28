@@ -1,5 +1,5 @@
 // src/hooks/auction/useCreateAuction.ts
-import { createAuction } from "@/apis/auction/auctionApi";
+import { createAuction } from "@/apis/my/createAuctionApi";
 import { CreateAuctionRequest } from "@/types/auction/auction";
 import { useState } from "react";
 

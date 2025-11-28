@@ -11,19 +11,6 @@ type Props = {
 export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
   const navigate = useNavigate();
 
-  /** 이미지 렌더링 — 배열 형태에서 첫 번째 이미지 사용 */
-  const Media = () => {
-    const img = product.imageUrl;
-
-    return (
-      <img
-        src={img}
-        alt={product.title}
-        className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-      />
-    );
-  };
-
   const handleNavigate = () => {
     navigate(`/item/${product.id}`);
   };
@@ -42,16 +29,20 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
     <div
       onClick={handleNavigate}
       className="
-      relative h-[632px] w-full overflow-hidden
-      rounded-[15px] border border-white
-      shadow-[0_8px_10.9px_rgba(81, 73, 73, 0.29)]
+      relative h-[632px] w-full  overflow-hidden
+      rounded-2xl border border-white
+      shadow-lg
       bg-transparent cursor-pointer
     "
     >
-      <Media />
+      <img
+        src={product.imageUrl}
+        alt={product.title}
+        className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+      />
 
       {/* 그라데이션 */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0)_49.04%,#000_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" />
 
       {/* 콘텐츠 영역 */}
       <div className="absolute inset-x-0 bottom-0 p-4 pointer-events-none">

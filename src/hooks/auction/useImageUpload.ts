@@ -1,5 +1,5 @@
 // useImageUpload.ts
-import { uploadImage } from "@/apis/auction/imageApi";
+import { uploadImage } from "@/apis/my/uploadImageApi";
 import { useState } from "react";
 
 export const useImageUpload = () => {

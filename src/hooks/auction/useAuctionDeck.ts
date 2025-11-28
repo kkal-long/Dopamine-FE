@@ -1,4 +1,4 @@
-import { getAuctionDeck } from "@/apis/auction/getAuctionDeck";
+import { getAuctionDeck } from "@/apis/auction/auctionDeckApi";
 import type { DeckAuctionItem } from "@/types/auction/deck";
 import { useEffect, useState } from "react";
 

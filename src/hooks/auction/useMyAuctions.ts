@@ -1,4 +1,4 @@
-import { getMyAuctions } from "@/apis/auction/getMyAuction";
+import { getMyAuctions } from "@/apis/my/myAuctionApi";
 import { MyAuctionItem } from "@/types/auction/myauction";
 import { useEffect, useState } from "react";
 
