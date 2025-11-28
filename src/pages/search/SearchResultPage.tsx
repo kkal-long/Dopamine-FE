@@ -2,7 +2,7 @@ import { Delete, Goback, Search } from "@/assets/svgs/search";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useSearchAll } from "@/hooks/search/useSearchApi";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 interface SearchItem {
   auctionId: number;
@@ -216,7 +216,8 @@ const SearchResultPage: React.FC = () => {
             );
 
             return (
-              <div
+              <Link
+                to={`/item/${item.auctionId}`}
                 key={item.auctionId}
                 className="flex items-center border border-grey09 rounded-[8px] px-3 py-3"
               >
@@ -263,7 +264,7 @@ const SearchResultPage: React.FC = () => {
                       : `현재 최고가: ₩${item.currentPrice.toLocaleString()}`}
                   </span>
                 </div>
-              </div>
+              </Link>
             );
           })}
       </div>

@@ -7,7 +7,7 @@ export default function HeaderBell() {
   const unread = useNotificationStore(s => s.unreadCount);
 
   return (
-    <header className="absolute top-0 left-0 right-0 z-10 mx-auto w-[360px] py-4">
+    <header className="max-w-[360px] w-full z-10 mx-auto  py-4">
       <div className="flex items-center justify-between">
         {/* LOGO */}
         <Logo className="h-auto w-[58px] ml-3" aria-label="LOGO" />
