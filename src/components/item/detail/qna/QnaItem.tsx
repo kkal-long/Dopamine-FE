@@ -1,4 +1,4 @@
-import { QnaItemProps } from "@/types/item/detail/Qna.type";
+import { QnaItemProps } from "@/types/item/detail/qna.type";
 import { formatTimeAgo } from "@/utils/dateUtils";
 import clsx from "clsx";
 import { useState } from "react";

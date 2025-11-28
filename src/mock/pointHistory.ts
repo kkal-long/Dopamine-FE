@@ -1,4 +1,4 @@
-import { PointItemData } from "@/types/my/PointHistory.type";
+import { PointItemData } from "@/types/my/pointHistory.type";
 
 export const mockPointHistory: PointItemData[] = [
   {

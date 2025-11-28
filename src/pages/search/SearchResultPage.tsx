@@ -1,8 +1,8 @@
 // SearchResultPage.tsx
 import { Delete, Goback, Search } from "@/assets/svgs/search";
-import { useSearchAll } from "@/hooks/useSearch";
+import { useSearchAll } from "@/hooks/search/useSearch";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface SearchItem {
   auctionId: number;

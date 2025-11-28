@@ -1,10 +1,10 @@
 import Footer from "@/components/common/Footer";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import AuctionList from "@/components/my/AuctionList";
-import AuctionTabs from "@/components/my/AuctionTabs";
-import PointCard from "@/components/my/PointCard";
-import PointHistoryList from "@/components/my/PointHistoryList";
-import ProfileHeader from "@/components/my/ProfileHeader";
+import AuctionList from "@/components/my/point/AuctionList";
+import AuctionTabs from "@/components/my/auction/AuctionTabs";
+import PointCard from "@/components/my/point/PointCard";
+import PointHistoryList from "@/components/my/point/PointHistoryList";
+import ProfileHeader from "@/components/my/profile/ProfileHeader";
 import { useMyAuctions } from "@/hooks/auction/useMyAuctions";
 import { useAuthApi } from "@/hooks/auth/useAuthApi";
 import { usePointApi } from "@/hooks/my/charge/usePointApi";

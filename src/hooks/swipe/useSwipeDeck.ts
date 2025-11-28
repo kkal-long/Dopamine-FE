@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import type { MainPageProduct } from "@/types/item/bid/Bid.type";
+import type { MainPageProduct } from "@/types/item/bid/bid.type";
 
 export function useSwipeDeck(initial: MainPageProduct[]) {
   const [products, setProducts] = useState<MainPageProduct[]>(initial);

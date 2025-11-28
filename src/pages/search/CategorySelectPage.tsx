@@ -1,5 +1,5 @@
 import { Search } from "@/assets/svgs/search";
-import { categories } from "@/constants/Category";
+import { categories } from "@/constants/category";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 

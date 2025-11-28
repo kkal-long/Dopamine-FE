@@ -1,5 +1,5 @@
 import QnaItem from "@/components/item/detail/qna/QnaItem";
-import { QnaListProps } from "@/types/item/detail/Qna.type";
+import { QnaListProps } from "@/types/item/detail/qna.type";
 
 const QnaList = ({
   qnaList,

@@ -1,8 +1,8 @@
 // CategorySearchPage.tsx
 import { Delete, Goback, Search } from "@/assets/svgs/search";
-import { useCategoryKeyword } from "@/hooks/useSearch";
+import { useCategoryKeyword } from "@/hooks/search/useSearch";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface CategoryItem {
   auctionId: number;

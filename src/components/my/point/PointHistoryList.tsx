@@ -1,4 +1,4 @@
-import PointItem from "@/components/my/pointItem/PointItem";
+import PointItem from "@/components/my/point/PointItem";
 import { PointHistoryResponse } from "@/types/my/pointApi.type";
 import { useNavigate } from "react-router-dom";
 

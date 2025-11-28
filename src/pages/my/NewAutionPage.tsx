@@ -5,10 +5,10 @@ import Footer from "@/components/common/Footer";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import AuctionDeliverySection from "@/components/my/AuctionForm/AuctionDeliverySection";
-import AuctionDropdown from "@/components/my/AuctionForm/AuctionDropdown";
-import AuctionImageUploader from "@/components/my/AuctionForm/AuctionImageUploader";
-import AuctionTimeSection from "@/components/my/AuctionForm/AuctionTimeSection";
+import AuctionDeliverySection from "@/components/my/newAuctionForm/AuctionDeliverySection";
+import AuctionDropdown from "@/components/my/newAuctionForm/AuctionDropdown";
+import AuctionImageUploader from "@/components/my/newAuctionForm/AuctionImageUploader";
+import AuctionTimeSection from "@/components/my/newAuctionForm/AuctionTimeSection";
 
 import { Check } from "@/assets/svgs/common";
 import { Warning } from "@/assets/svgs/my";

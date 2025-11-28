@@ -1,6 +1,6 @@
 import { Bid, Chat } from "@/assets/svgs/common";
 import { Reject } from "@/assets/svgs/item/detail";
-import { ViewState } from "@/types/item/detail/ItemCard.type";
+import { ViewState } from "@/types/item/detail/itemCard.type";
 
 interface FooterProps {
   viewState: ViewState;

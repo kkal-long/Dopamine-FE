@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import ReactQueryProvider from "@/utils/ReactQueryProvider";
+import ReactQueryProvider from "@/router/ReactQueryProvider";
 
 import App from "./App";
 

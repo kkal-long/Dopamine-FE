@@ -1,6 +1,6 @@
 // CategoryResultPage.tsx
 import { Goback, Search } from "@/assets/svgs/search";
-import { useCategoryList } from "@/hooks/useSearch";
+import { useCategoryList } from "@/hooks/search/useSearch";
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 

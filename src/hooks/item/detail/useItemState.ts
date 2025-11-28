@@ -1,5 +1,5 @@
 import { useUserStore } from "@/store/useUserStore";
-import { ViewState } from "@/types/item/detail/ItemCard.type";
+import { ViewState } from "@/types/item/detail/itemCard.type";
 import { AuctionDetailResponse } from "@/types/item/detail/itemDetailApi.type";
 
 interface UseItemStateProps {
