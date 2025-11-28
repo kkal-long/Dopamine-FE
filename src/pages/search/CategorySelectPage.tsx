@@ -46,7 +46,7 @@ const CategorySelectPage: React.FC = () => {
                 <img
                   src={imageUrl}
                   alt={name}
-                  className="py-4 px-2 w-[88px] h-[88px]"
+                  className="py-6 px-3 w-[88px] h-[88px]"
                 />
               </div>
 
