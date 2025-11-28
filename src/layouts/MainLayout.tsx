@@ -1,8 +1,10 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import useGoogleAnalytics from "@/hooks/googleAnalytics/useGoogleAnalytics";
 import { Suspense, useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 const MainLayout = () => {
+  useGoogleAnalytics();
   const { pathname } = useLocation();
 
   const scrollRef = useRef<HTMLDivElement>(null);
