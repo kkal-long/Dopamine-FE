@@ -1,42 +1,53 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import LayoutWithFooter from "@/layouts/LayoutWithFooter";
 import MainLayout from "@/layouts/MainLayout";
 
 // 메인(홈)
-import HomePage from "@/pages/home/HomePage";
+const HomePage = lazy(() => import("@/pages/home/HomePage"));
 
 // 로그인
-import AdditionalInfoPage from "@/pages/login/AdditionalInfoPage";
-import KakaoRedirectPage from "@/pages/login/KakaoRedirectPage";
-import LoginPage from "@/pages/login/LoginPage";
+const AdditionalInfoPage = lazy(
+  () => import("@/pages/login/AdditionalInfoPage")
+);
+const KakaoRedirectPage = lazy(() => import("@/pages/login/KakaoRedirectPage"));
+const LoginPage = lazy(() => import("@/pages/login/LoginPage"));
 
 // 검색
-import CategoryResultPage from "@/pages/search/CategoryResultPage";
-import CategorySearchPage from "@/pages/search/CategorySearchPage";
-import CategorySelectPage from "@/pages/search/CategorySelectPage";
-import SearchPage from "@/pages/search/SearchPage";
-import SearchResultPage from "@/pages/search/SearchResultPage";
+const CategoryResultPage = lazy(
+  () => import("@/pages/search/CategoryResultPage")
+);
+const CategorySearchPage = lazy(
+  () => import("@/pages/search/CategorySearchPage")
+);
+const CategorySelectPage = lazy(
+  () => import("@/pages/search/CategorySelectPage")
+);
+const SearchPage = lazy(() => import("@/pages/search/SearchPage"));
+const SearchResultPage = lazy(() => import("@/pages/search/SearchResultPage"));
 
 // 입찰/아이템
-import BidItemPage from "@/pages/bidItem/BidItemPage";
-import ItemDetailPage from "@/pages/itemDetail/ItemDetailPage";
+const BidItemPage = lazy(() => import("@/pages/bidItem/BidItemPage"));
+const ItemDetailPage = lazy(() => import("@/pages/itemDetail/ItemDetailPage"));
 
 // 마이/포인트
-import ChargePointPage from "@/pages/my/charge/ChargePointPage";
-import PaymentFailPage from "@/pages/my/charge/PaymentFailPage";
-import PaymentSuccessPage from "@/pages/my/charge/PaymentSuccessPage";
-import MyPage from "@/pages/my/MyPage";
-import NewAutionPage from "@/pages/my/NewAutionPage";
-import PointInquiryPage from "@/pages/my/PointInquiryPage";
+const ChargePointPage = lazy(() => import("@/pages/my/charge/ChargePointPage"));
+const PaymentFailPage = lazy(() => import("@/pages/my/charge/PaymentFailPage"));
+const PaymentSuccessPage = lazy(
+  () => import("@/pages/my/charge/PaymentSuccessPage")
+);
+const MyPage = lazy(() => import("@/pages/my/MyPage"));
+const NewAutionPage = lazy(() => import("@/pages/my/NewAutionPage"));
+const PointInquiryPage = lazy(() => import("@/pages/my/PointInquiryPage"));
 
 // 알림
-import AlarmPage from "@/pages/alarm/AlarmPage";
+const AlarmPage = lazy(() => import("@/pages/alarm/AlarmPage"));
 
 // 기타
-import ChatPage from "@/pages/chat/ChatPage";
-import NotFoundPage from "@/pages/notFound/NotFoundPage";
-import RequireAuth from "@/router/RequireAuth";
+const ChatPage = lazy(() => import("@/pages/chat/ChatPage"));
+const NotFoundPage = lazy(() => import("@/pages/notFound/NotFoundPage"));
+const RequireAuth = lazy(() => import("@/router/RequireAuth"));
 
 export const router = createBrowserRouter([
   {
