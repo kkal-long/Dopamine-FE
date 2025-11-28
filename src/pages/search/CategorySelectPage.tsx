@@ -42,14 +42,13 @@ const CategorySelectPage: React.FC = () => {
               onClick={() => handleCategoryClick(name, id)}
               className="flex flex-col items-center cursor-pointer"
             >
-              <div className="w-[88px] h-[88px] flex items-center justify-center">
+              <div className="w-[88px] aspect-square flex items-center justify-center overflow-hidden">
                 <img
                   src={imageUrl}
                   alt={name}
-                  className="py-6 px-3 w-[88px] h-[88px]"
+                  className="max-w-[70%] max-h-[70%] object-contain"
                 />
               </div>
-
               <span className="mt-2 text-med14 text-darkgrey05 text-center">
                 {name}
               </span>
