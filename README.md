@@ -1,73 +1,333 @@
-# React + TypeScript + Vite
+# 🚀 PLIP – Gamified Auction Commerce
+**가볍게 넘기고 빠르게 입찰하는, 숏폼 기반 경매형 중고거래 플랫폼**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🧠 서비스 개요
+PLIP은 인스타 스토리처럼 **카드를 넘기며 가볍게 탐색**하고, 
 
-Currently, two official plugins are available:
+**클릭 한 번으로 즉시 입찰할 수 있는** 
+게이미피케이션 기반 **경매형 이커머스 서비스**입니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+유저는 **숏폼처럼 빠르게 넘기며** 상품을 발견하고
+**실시간 경쟁·타이머·낙찰 경험** 등 몰입적인 UX를 통해
+새로운 쇼핑 흐름을 경험할 수 있습니다.
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📖 프로젝트 소개
 
-## Expanding the ESLint configuration
+PLIP 프론트엔드는 **“경쟁 기반 경매 경험”** 을 더 직관적이고 생생하게 전달하기 위해 다음과 같은 UX 목표를 가지고 개발되었습니다.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 스와이프 기반 탐색 경험 극대화
+→ framer-motion을 활용한 카드 스택 인터랙션 구현
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- 3초 만에 이해 가능한 입찰 UX
+→ 바텀시트 기반의 즉시 입찰 플로우
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- 경쟁이 보이는 실시간 경매 흐름
+→ 남은 시간, 입찰 히스토리, 입찰 랭킹을 직관적으로 구성
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- 간편한 판매 플로우
+→ 이미지 업로드부터 경매 등록까지의 단계 최소화
+
+- 알림 · 채팅 · 마이페이지 기능을 통한 전체 사용자 여정 완성
+→ SSE notification을 이용한 즉시 알림 서비스 및 토스트 메시지 제공
+
+### 서비스의 목적은 다음 한 문장으로 요약됩니다.
+### **"누구나 부담 없이 즐기고 참여할 수 있는 생생하고 직관적인 경매형 쇼핑 경험을 만드는 것"**
+
+## ✨ 핵심 기능
+**🎴 1. 메인 페이지 – 카드 스택 탐색 경험 (framer-motion)**
+- 인스타 스토리/틴더 카드 구조를 모티브로 한 스와이프 UX
+- framer-motion gesture, drag 활용
+- 다음 카드로의 부드러운 전환
+- 상품 스크롤 없이 빠른 탐색 가능
+
+**🔽 2. 바텀시트 기반 입찰 플로우**
+- 입찰 UI를 화면 하단에 고정된 Bottom Sheet로 구성
+- 현재 최고가, 남은 시간 중심의 미니멀 UI
+- 실시간 입찰 반영
+
+**📄 3. 상품 상세 페이지**
+- 이미지 스와이퍼
+- 상품 설명, 상태, 지역, 구성품 등 상세 정보
+- 전체 입찰 히스토리 조회
+- 판매자와 입찰자 간의 공개 Q&A 기능
+
+**🔔 4. 실시간 알림(Notification)**
+- 알림 리스트 및 토스트 메시지 제공
+- 새로운 입찰/경매 종료 이벤트 표시
+
+**💬 5. 채팅 시스템**
+- 판매자와의 1:1 채팅
+- 낙찰 이후 거래 진행
+
+**🙍‍♂️ 6. 마이페이지**
+- 경매 등록
+- 등록한 경매 리스트
+- 포인트 충전
+- 보증금 관리
+- 낙찰/참여 내역 관리
+
+**🔍 7. 검색 기능**
+- 카테고리 기반 검색
+- 최근 검색어 저장
+
+## 🌱 서비스 차별점
+
+**1) 숏폼 기반 탐색 UX**
+
+기존 중고거래는 검색·필터·스크롤 중심이라 발견의 즐거움이 부족합니다. 
+
+PLIP은 인스타/틱톡 UI 감성을 차용한 카드 스택 스와이프 UX로
+“가볍게 넘기며 우연히 발견하는” 경험을 제공합니다.
+
+
+**2) 네고·채팅 부담 없는 거래 구조**
+
+기존 중고거래의 핵심 피로는
+- 시세 확인
+- 반복되는 질문
+- 네고
+- 거래 장소/시간 조율
+  
+이라는 점이 유저 조사에서 명확하게 드러났습니다.
+
+PLIP은 입찰 기반 가격 형성, 공개 Q&A를 통해 입찰 프로세스를 최소화하였고,
+
+“불필요한 소통 없이 빠르게 거래되는” 중고거래 시스템을 구축하였습니다.
+
+**3) 즉시 입찰 & 자동 낙찰의 박진감**
+
+PLIP은 행동심리를 반영해 
+- 남은 시간
+- 입찰 랭킹
+- 실시간 경쟁 히스토리
+를 직관적으로 보여주며 몰입감을 극대화하였습니다.
+
+**4) 보증금 기반 품질 관리 & 신뢰성 확보**
+
+PLIP은 입찰가 10%를 보증금으로 설정해 낙찰 후 구매 거부를 방지하여
+무책임한 입찰을 줄이고 서비스의 신뢰성을 확보했습니다.
+
+
+**5) 누구나 쉽게 올릴 수 있는 판매 플로우**
+
+**사진 업로드 → 설명 작성 → 경매 시간 설정**
+
+단 3단계의 플로우만으로 
+작은 물건도 부담 없이 올릴 수 있는 환경을 조성했습니다.
+
+## 💰 수익화 전략
+PLIP은 **“빠른 탐색 + 즉시 입찰”** UX 기반으로  
+구매로 이어지는 속도가 빠르기 때문에 다양한 수익화 구조가 가능합니다.
+
+### 🔹 1) 포인트 충전 수수료 모델
+입찰 및 보증금 결제를 위한 **포인트 충전 시 소액 수수료**를 부과합니다.  
+- 모바일 게임·경매 서비스에서 일반적으로 사용되는 핵심 수익 모델  
+- 충전 → 입찰 → 환불/사용의 순환구조로 안정적인 매출 발생
+
+### 🔹 2) 판매자 수수료
+경매 낙찰 시 **판매자에게 수수료**를 부과합니다.  
+- 고정 수수료  
+- 낙찰가 비율 기반 수수료 
+
+### 🔹 3) 프리미엄 판매 옵션
+상품 노출을 높이고 싶은 판매자를 위한 유료 옵션입니다.  
+- 🔝 상단 고정(Boost)  
+- 🏷️ 홈 피드 상위 노출  
+- ⭐ 카테고리 리스트 내 강조 노출  
+중고거래 플랫폼에서 가장 강력한 수익 모델 중 하나입니다.
+
+
+### 🔹 4) 브랜드 협업 상품
+PLIP의 “경매형 재미” 특성을 활용한 **브랜드·크리에이터 협업 경매**입니다.  
+- 한정판 굿즈·콜라보 제품  
+- MZ 타깃 브랜드와 높은 시너지 창출
+
+→ 브랜드의 팬덤 + 경매 경쟁심리가 결합하며 높은 참여율 및 매출 기대.
+
+
+### 🔹 5) 광고 기반 수익
+플랫폼 트래픽을 활용한 광고 수익 모델입니다.  
+- 📰 카드 피드 중간 노출 광고 (Feed Ad)  
+- 🏷️ 특정 카테고리 스폰서 상품  
+- 🎯 사용자 취향 기반 추천 알고리즘 광고  
+
+
+### 🔹 6) 결제 서비스 확장 (Payment & Escrow)
+서비스 고도화 이후 **중개 결제/송금 모델**로 확장 가능합니다.  
+- 안전거래(에스크로)  
+- 수수료 기반 송금/결제 서비스  
+- 거래 완료 흐름 안정화
+
+## ⚙️ 기술 스택
+
+| 구분 | 사용 기술 |
+|:----|:-----------|
+| **Frontend Framework** | React, TypeScript, Vite |
+| **UI/Interaction** | Tailwind CSS, CSS Modules, Global CSS, Framer Motion |
+| **State & Data Management** | TanStack Query, Zustand, React Hooks |
+| **Routing & Networking** | React Router DOM, Axios |
+| **Build & Deployment** | Vite, Vercel |
+| **Version Control** | Git, GitHub |
+| **Code Quality** | ESLint, Prettier, Husky, GitHub Actions |
+| **Design & Collaboration** | Figma, Notion |
+
+
+## 📂 Project Structure
+아래는 실제 프로젝트 구조를 정리한 형태입니다.
+```
+src/
+ ├── apis/
+ │    ├── auction/
+ │    │    ├── auctionDeckApi.ts
+ │    │    ├── createBidApi.ts
+ │    │    └── postSwipeApi.ts
+ │    ├── auth/
+ │    ├── chat/
+ │    ├── item/
+ │    │    ├── bid/
+ │    │    └── detail/
+ │    ├── my/
+ │    ├── notification/
+ │    ├── search/
+ │    └── instance.ts
+ │
+ ├── assets/
+ │    ├── fonts/
+ │    ├── images/
+ │    └── svgs/
+ │
+ ├── components/
+ │    ├── chat/
+ │    ├── common/
+ │    ├── item/
+ │    ├── mainpage/
+ │    ├── my/
+ │    └── notification/
+ │
+ ├── constants/
+ │    ├── category.ts
+ │    ├── newAuction.ts
+ │    ├── pointHistory.ts
+ │    └── profileImage.ts
+ │
+ ├── hooks/
+ │    ├── auction/
+ │    ├── auth/
+ │    ├── chat/
+ │    ├── googleAnalytics/
+ │    ├── item/
+ │    ├── my/
+ │    ├── notification/
+ │    ├── search/
+ │    └── swipe/
+ │
+ ├── layouts/
+ │    ├── LayoutWithFooter.tsx
+ │    └── MainLayout.tsx
+ │
+ ├── pages/
+ │    ├── alarm/
+ │    ├── bidItem/
+ │    ├── chat/
+ │    ├── home/
+ │    ├── itemDetail/
+ │    ├── login/
+ │    ├── my/
+ │    ├── notFound/
+ │    └── search/
+ │
+ ├── router/
+ │    ├── ReactQueryProvider.tsx
+ │    ├── RequireAuth.tsx
+ │    └── Router.tsx
+ │
+ ├── store/
+ │    ├── useAuthStore.ts
+ │    ├── useNotificationStore.ts
+ │    └── useUserStore.ts
+ │
+ ├── styles/
+ │    ├── fonts.css
+ │    ├── global.css
+ │    └── imageSwiper.css
+ │
+ ├── utils/
+ │    ├── dateUtils.ts
+ │    └── priceUtils.ts
+ │
+ ├── App.tsx
+ └── main.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🌿 Git Branch Strategy
+Branch Types
+- main – 배포용 안정 버전
+- dev – 개발 진행 중 버전
+- feat/ – 기능 단위 개발
+- hotfix/ – 긴급 버그 수정
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Naming Convention
+- feat/이슈번호-작업명
+- hotfix/이슈번호-작업명
+- 머지 후 브랜치는 생성자가 삭제
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🧱 Commit Convention
 ```
+[FEAT] 새로운 기능 개발
+[FIX] 버그 수정
+[REFACTOR] 코드 리팩토링
+[STYLE] 코드 스타일 변경
+[DESIGN] UI 디자인 변경
+[CHORE] 설정/자잘한 작업
+[DEL] 불필요한 코드 삭제
+[MOVE] 파일 이동
+[RENAME] 파일 이름 변경
+[DOCS] 문서 작업
+[TEST] 테스트 코드
+
+```
+
+## 🎨 Coding Convention
+- 컴포넌트/페이지: PascalCase
+- hooks/utils: camelCase
+- assets: 소문자
+- import 경로: 절대경로(@/) 사용
+- 폴더명: camelCase
+
+## 📱 주요 화면
+> Figma 디자인 기준 393px 모바일 프레임 기반 구현
+> (카드 탐색 중심의 게이미피케이션 UX 반영)
+
+| 페이지                          | 설명                                                                                                  |
+| :--------------------------- | :-------------------------------------------------------------------------------------------------- |
+| **Home / SwipeFeed**         | 숏폼처럼 **카드를 스와이프로 넘기며** 새로운 경매 물품을 발견하는 탐색형 메인 화면. ‘보류’ 기능을 통해 다시 보고 싶은 상품을 관리할 수 있음.            |
+| **Bid BottomSheet**          | 버튼 한 번으로 즉시 참여 가능한 **단순화된 입찰 UX**. 남은 시간·현재 최고가 등 최소 정보만 보여주는 직관적 구조.                               |
+| **ItemDetail Page**          | 상품 상세 설명, **전체 입찰 히스토리**, 판매자 정보까지 한눈에 확인. **채팅 없이도 동일 질문 반복을 막는** Q&A 기반 소통 시스템.               |
+| **Bidding Status / My Bids** | 진행 중·종료된 경매를 구분해 보여주고, 낙찰·실패 결과를 명확히 알려줌. **실시간 경쟁 흐름**과 내 입찰가 위치를 직관적으로 파악 가능.                     |
+| **Win Result & Chat Page**   | 낙찰 직후 판매자와 바로 이어지는 채팅 화면. 거래 완료 버튼을 통해 구매 확정 후 프로세스가 종료됨.                                           |
+| **MyPage**                   | 포인트·보증금 내역, 나의 경매 목록 관리, **새 경매 등록** 기능 제공. 사진 업로드 → 설명 작성 → 경매 시간 설정 순으로 구성된 간단한 판매 플로우. |
+| **Add Auction Page**         | 최대 10장의 사진 업로드, 카테고리/상태 선택, 경매 시간 설정 등 **누구나 쉽게 올릴 수 있는 경매 등록 프로세스** 제공.                            |
+| **Point / Deposit System**   | 입찰가의 10%를 보증금으로 설정해 무분별한 입찰을 방지. 구매 거부 시 보증금 차감 안내 및 결제/충전 기능 제공.                              |
+
+
+## 🌟 비전
+> **“가볍게 올리고, 가볍게 사고, 빠르게 즐기는 새로운 중고거래 문화”**
+
+PLIP은 기존 중고거래의 느린 소통, 가격 네고, 반복 질문 등
+복잡하고 피로한 과정을 제거하고,
+숏폼처럼 빠르게 탐색하고 버튼 한 번으로 즉시 입찰하는
+**완전히 새로운 쇼핑 경험**을 제공합니다.
+
+우리는 탐색(Discovery) 과 경쟁(Gamification) 이 결합된 UX를 통해
+사용자가 일상 속에서 자연스럽게 즐거움과 몰입감을 느끼며
+사소한 물건도 쉽게 사고팔 수 있는 환경을 만들고자 합니다.
+
+PLIP의 목표는 단순한 중고거래 플랫폼이 아닌,
+즉흥적 탐색이 주는 재미와 공정한 경쟁의 스릴을 담은
+새로운 커머스 경험을 구축하는 것입니다.
+
+## 👥 팀 정보
+**멋쟁이사자처럼 13기 Hoo Make This!팀**  
+가볍게 넘기고 빠르게 입찰하는 숏폼 기반 경매형 중고거래 플랫폼, **‘PLIP’**
+ 
