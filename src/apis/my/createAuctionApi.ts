@@ -2,7 +2,7 @@ import instance from "@/apis/instance";
 import {
   CreateAuctionRequest,
   CreateAuctionResponse,
-} from "@/types/auction/auction";
+} from "@/types/auction/auctionApi.type";
 
 export const createAuction = async (
   body: CreateAuctionRequest

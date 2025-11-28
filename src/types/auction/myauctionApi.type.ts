@@ -1,5 +1,3 @@
-// src/types/auction/myauction.ts
-
 export interface MyAuctionItem {
   id: number;
   title: string;

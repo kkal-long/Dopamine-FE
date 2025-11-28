@@ -13,10 +13,10 @@ import AuctionTimeSection from "@/components/my/newAuctionForm/AuctionTimeSectio
 import { Check } from "@/assets/svgs/common";
 import { Warning } from "@/assets/svgs/my";
 
-import { useCreateAuction } from "@/hooks/auction/useCreateAuction";
-import { useImageUpload } from "@/hooks/auction/useImageUpload";
+import { useCreateAuction } from "@/hooks/auction/useCreateAuctionApi";
+import { useImageUpload } from "@/hooks/auction/useImageUploadApi";
 
-import { CreateAuctionRequest } from "@/types/auction/auction";
+import { CreateAuctionRequest } from "@/types/auction/auctionApi.type";
 
 const categories = [
   { id: 1, name: "디지털 기기" },

@@ -1,7 +1,7 @@
 import { router } from "@/router/Router";
 import { RouterProvider } from "react-router-dom";
 
-import useNotificationSSE from "@/hooks/notification/useNotificationSSE";
+import useNotificationSSE from "@/hooks/notification/useNotificationSSEApi";
 import { Toaster } from "react-hot-toast";
 
 const App = () => {

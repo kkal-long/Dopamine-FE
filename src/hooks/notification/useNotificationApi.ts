@@ -3,7 +3,7 @@ import {
   getUnreadCount,
 } from "@/apis/notification/notificationApi";
 
-import { NotificationItem } from "@/types/alarm/notification";
+import { NotificationItem } from "@/types/alarm/notificationApi.type";
 import { useQuery } from "@tanstack/react-query";
 
 // 안 읽은 개수

@@ -1,7 +1,7 @@
 // CategorySearchPage.tsx
 import { Delete, Goback, Search } from "@/assets/svgs/search";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { useCategoryKeyword } from "@/hooks/search/useSearch";
+import { useCategoryKeyword } from "@/hooks/search/useSearchApi";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 

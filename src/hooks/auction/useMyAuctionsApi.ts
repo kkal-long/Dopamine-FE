@@ -1,5 +1,5 @@
 import { getMyAuctions } from "@/apis/my/myAuctionApi";
-import { MyAuctionItem } from "@/types/auction/myauction";
+import { MyAuctionItem } from "@/types/auction/myauctionApi.type";
 import { useEffect, useState } from "react";
 
 export const useMyAuctions = () => {

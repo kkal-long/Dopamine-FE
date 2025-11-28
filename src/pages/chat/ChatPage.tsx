@@ -4,7 +4,7 @@ import MessageList from "@/components/chat/message/MessageList";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useChatApi } from "@/hooks/chat/useChatApi";
-import { useStompClient } from "@/hooks/chat/useStompClient";
+import { useStompClient } from "@/hooks/chat/useStompClientApi";
 import { useUserStore } from "@/store/useUserStore";
 import { ChatMesageList, ChatMessageItem } from "@/types/chat/chatApi.type";
 import { useCallback, useEffect, useState } from "react";

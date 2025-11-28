@@ -1,5 +1,8 @@
 import instance from "@/apis/instance";
-import { SwipeActionRequest, SwipeActionResponse } from "@/types/auction/deck";
+import {
+  SwipeActionRequest,
+  SwipeActionResponse,
+} from "@/types/auction/deckApi.type";
 
 export const postSwipeAction = async (data: SwipeActionRequest) => {
   const res = await instance.post<SwipeActionResponse>("/swipes/action", data);

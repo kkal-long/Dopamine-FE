@@ -1,5 +1,5 @@
 import { getAuctionDeck } from "@/apis/auction/auctionDeckApi";
-import type { DeckAuctionItem } from "@/types/auction/deck";
+import type { DeckAuctionItem } from "@/types/auction/deckApi.type";
 import { useEffect, useState } from "react";
 
 export const useAuctionDeck = () => {

@@ -1,4 +1,4 @@
-import { ViewState } from "@/types/item/detail/itemCard.type";
+import { ViewState } from "@/types/item/detail/itemDetail.type";
 import { formatPrice } from "@/utils/priceUtils";
 import clsx from "clsx";
 

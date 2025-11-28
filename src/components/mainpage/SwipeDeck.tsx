@@ -4,7 +4,7 @@ import ProductCard from "./ProductCard";
 
 import { useBidApi } from "@/hooks/item/bid/useBidApi";
 import { useUserStore } from "@/store/useUserStore";
-import type { DeckAuctionItem } from "@/types/auction/deck";
+import type { DeckAuctionItem } from "@/types/auction/deckApi.type";
 import { useEffect, useMemo, useState } from "react";
 
 interface SwipeDeckProps {

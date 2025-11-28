@@ -1,5 +1,5 @@
 import { Bidding, Edit, Flip } from "@/assets/svgs/main";
-import type { DeckAuctionItem } from "@/types/auction/deck";
+import type { DeckAuctionItem } from "@/types/auction/deckApi.type";
 import { useNavigate } from "react-router-dom";
 
 type Props = {

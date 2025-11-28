@@ -5,7 +5,7 @@ import AuctionTabs from "@/components/my/auction/AuctionTabs";
 import PointCard from "@/components/my/point/PointCard";
 import PointHistoryList from "@/components/my/point/PointHistoryList";
 import ProfileHeader from "@/components/my/profile/ProfileHeader";
-import { useMyAuctions } from "@/hooks/auction/useMyAuctions";
+import { useMyAuctions } from "@/hooks/auction/useMyAuctionsApi";
 import { useAuthApi } from "@/hooks/auth/useAuthApi";
 import { usePointApi } from "@/hooks/my/charge/usePointApi";
 import { useUserStore } from "@/store/useUserStore";

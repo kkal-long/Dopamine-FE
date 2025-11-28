@@ -2,7 +2,7 @@ import ItemsDetailSection from "@/components/item/detail/itemCard/ItemDetailSect
 import ItemHeader from "@/components/item/detail/itemCard/ItemHeader";
 import PriceBox from "@/components/item/detail/itemCard/PriceBox";
 import SellerInfo from "@/components/item/detail/itemCard/SellerInfo";
-import { ViewState } from "@/types/item/detail/itemCard.type";
+import { ViewState } from "@/types/item/detail/itemDetail.type";
 import { AuctionDetailResponse } from "@/types/item/detail/itemDetailApi.type";
 
 export interface ItemCardProps {
