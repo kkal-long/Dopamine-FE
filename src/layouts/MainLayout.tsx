@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { Suspense, useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 const MainLayout = () => {
@@ -18,7 +19,9 @@ const MainLayout = () => {
       className="h-[100dvh] bg-black flex justify-center overflow-y-auto"
     >
       <main className="w-full max-w-[375px] bg-white">
-        <Outlet />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   );

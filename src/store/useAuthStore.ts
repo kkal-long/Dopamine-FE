@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type AuthStore = {
-  userId: number | null; // 입찰 시 필요해서 추가
+  userId: number | null;
   accessToken: string | null;
   refreshToken: string | null;
   isLoggedIn: boolean;
@@ -20,10 +20,9 @@ export const useAuthStore = create<AuthStore>()(
       refreshToken: null,
       isLoggedIn: false,
 
-      /*  로그인 시 accessToken → userId 자동 추출 */
       login: (access: string, refresh: string) => {
         try {
-          const payload = JSON.parse(atob(access.split(".")[1])); // JWT decode
+          const payload = JSON.parse(atob(access.split(".")[1]));
           const userId = Number(payload.sub);
 
           set({
@@ -33,7 +32,7 @@ export const useAuthStore = create<AuthStore>()(
             isLoggedIn: true,
           });
         } catch (err) {
-          console.error("❌ JWT 파싱 실패:", err);
+          console.error("JWT 파싱 실패:", err);
         }
       },
 
@@ -51,7 +50,6 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
 
-    /* 새로고침 후에도 userId 유지하도록 */
     {
       name: "auth-storage",
       storage: createJSONStorage(() => localStorage),

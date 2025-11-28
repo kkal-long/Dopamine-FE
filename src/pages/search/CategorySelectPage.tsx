@@ -1,5 +1,5 @@
 import { Search } from "@/assets/svgs/search";
-import { categories } from "@/constants/Category";
+import { categories } from "@/constants/category";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -36,14 +36,18 @@ const CategorySelectPage: React.FC = () => {
 
       <div className="flex justify-center">
         <div className="grid grid-cols-3 gap-x-[21px] gap-y-[12px]">
-          {categories.map(({ id, name, Icon }) => (
+          {categories.map(({ id, name, imageUrl }) => (
             <button
               key={id}
               onClick={() => handleCategoryClick(name, id)}
               className="flex flex-col items-center cursor-pointer"
             >
               <div className="w-[88px] h-[88px] flex items-center justify-center">
-                <Icon className="w-[88px] h-[88px]" />
+                <img
+                  src={imageUrl}
+                  alt={name}
+                  className="py-6 px-3 w-[88px] h-[88px]"
+                />
               </div>
 
               <span className="mt-2 text-med14 text-darkgrey05 text-center">

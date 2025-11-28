@@ -1,10 +1,11 @@
 import { useUserStore } from "@/store/useUserStore";
-import { ViewState } from "@/types/item/detail/ItemCard.type";
 import { AuctionDetailResponse } from "@/types/item/detail/itemDetailApi.type";
 
 interface UseItemStateProps {
   item: AuctionDetailResponse;
 }
+
+type ViewState = "LIVE" | "LIVE_BIDDING" | "WON" | "LOST" | "ENDED";
 
 export interface ItemState {
   isLive: boolean;

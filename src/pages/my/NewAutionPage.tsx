@@ -1,57 +1,28 @@
-// src/pages/my/NewAuctionPage.tsx
-
 import { Goback } from "@/assets/svgs/search";
 import Footer from "@/components/common/Footer";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import AuctionDeliverySection from "@/components/my/AuctionForm/AuctionDeliverySection";
-import AuctionDropdown from "@/components/my/AuctionForm/AuctionDropdown";
-import AuctionImageUploader from "@/components/my/AuctionForm/AuctionImageUploader";
-import AuctionTimeSection from "@/components/my/AuctionForm/AuctionTimeSection";
+import AuctionDeliverySection from "@/components/my/newAuctionForm/AuctionDeliverySection";
+import AuctionDropdown from "@/components/my/newAuctionForm/AuctionDropdown";
+import AuctionImageUploader from "@/components/my/newAuctionForm/AuctionImageUploader";
+import AuctionTimeSection from "@/components/my/newAuctionForm/AuctionTimeSection";
+import { categories } from "@/constants/category";
+import {
+  conditionMap,
+  conditions,
+  deliveryMethods,
+  durations,
+} from "@/constants/newAuction";
 
 import { Check } from "@/assets/svgs/common";
 import { Warning } from "@/assets/svgs/my";
 
-import { useCreateAuction } from "@/hooks/auction/useCreateAuction";
-import { useImageUpload } from "@/hooks/auction/useImageUpload";
+import { useCreateAuction } from "@/hooks/auction/useCreateAuctionApi";
+import { useImageUpload } from "@/hooks/auction/useImageUploadApi";
 
-import { CreateAuctionRequest } from "@/types/auction/auction";
+import { CreateAuctionRequest } from "@/types/auction/auctionApi.type";
 
-const categories = [
-  { id: 1, name: "디지털 기기" },
-  { id: 2, name: "가구/인테리어" },
-  { id: 3, name: "유아동" },
-  { id: 4, name: "생활가전" },
-  { id: 5, name: "스포츠" },
-  { id: 6, name: "가공식품" },
-  { id: 7, name: "취미/게임/음반" },
-  { id: 8, name: "도서" },
-  { id: 9, name: "남성패션" },
-  { id: 10, name: "여성패션" },
-  { id: 11, name: "식물" },
-];
-
-const conditions = [
-  "S급(새상품급)",
-  "A급(미세 사용감)",
-  "B급(사용감 있음)",
-  "C급(생활감 많음)",
-  "D급(수리/부품 필요)",
-  "New(미개봉 새상품)",
-];
-
-// 상태값 매핑 (API에서 요구하는 short code)
-const conditionMap: Record<string, string> = {
-  "S급(새상품급)": "S급",
-  "A급(미세 사용감)": "A급",
-  "B급(사용감 있음)": "B급",
-  "C급(생활감 많음)": "C급",
-  "D급(수리/부품 필요)": "D급",
-  "New(미개봉 새상품)": "New",
-};
-
-/** endAt 포맷을 백엔드 요구 형식으로 변환 */
 const formatEndAt = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -60,14 +31,10 @@ const formatEndAt = (date: Date) => {
   const minute = String(date.getMinutes()).padStart(2, "0");
   const second = String(date.getSeconds()).padStart(2, "0");
 
-  // 밀리초 3자리를 6자리로 확장
   const ms = String(date.getMilliseconds()).padStart(3, "0") + "000";
 
   return `${year}-${month}-${day}T${hour}:${minute}:${second}.${ms}`;
 };
-
-const deliveryMethods = ["직거래", "택배"];
-const durations = ["12시간", "24시간"];
 
 const NewAuctionPage = () => {
   const navigate = useNavigate();
@@ -123,7 +90,6 @@ const NewAuctionPage = () => {
       return formatEndAt(end);
     }
 
-    // 직접 입력 처리
     const target = duration;
 
     const dayMatch = target.match(/(\d+)일/);
@@ -138,7 +104,7 @@ const NewAuctionPage = () => {
     end.setHours(end.getHours() + h);
     end.setMinutes(end.getMinutes() + m);
 
-    return formatEndAt(end); // ⭐ ISO 대신 우리가 만든 형태로 변환
+    return formatEndAt(end);
   };
 
   const handleSubmit = async () => {
@@ -153,14 +119,11 @@ const NewAuctionPage = () => {
     }
 
     try {
-      // 이미지 중 File만 필터링
-
       const uploadedUrls = await uploadImages(fileList);
 
       const selected = categories.find(c => c.name === category);
       const categoryId = selected ? [selected.id] : [];
 
-      // API 타입과 완전히 맞춘 body
       const body: CreateAuctionRequest = {
         goodsName: title,
         description: description,

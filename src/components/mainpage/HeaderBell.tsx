@@ -1,4 +1,4 @@
-import { Alarm } from "@/assets/svgs/main";
+import { Alarm, Logo } from "@/assets/svgs/main";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { useNavigate } from "react-router-dom";
 
@@ -7,13 +7,23 @@ export default function HeaderBell() {
   const unread = useNotificationStore(s => s.unreadCount);
 
   return (
-    <button className="relative" onClick={() => navigate("/alarm")}>
-      <Alarm className="w-6 h-6 cursor-pointer" />
-      {unread > 0 && (
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-mainpink text-white text-reg12 rounded-full flex items-center z-50 justify-center">
-          {unread}
-        </span>
-      )}
-    </button>
+    <header className="absolute top-0 left-0 right-0 z-10 mx-auto w-[360px] py-4">
+      <div className="flex items-center justify-between">
+        {/* LOGO */}
+        <Logo className="h-auto w-[58px] ml-3" aria-label="LOGO" />
+
+        {/* 알림 버튼 */}
+        <div className="mr-3">
+          <button className="relative" onClick={() => navigate("/alarm")}>
+            <Alarm className="w-6 h-6 cursor-pointer" />
+            {unread > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-mainpink text-white text-reg12 rounded-full flex items-center z-50 justify-center">
+                {unread}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+    </header>
   );
 }

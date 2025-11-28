@@ -2,10 +2,9 @@ import SwipeCard from "@/components/mainpage/SwipeCard";
 import BidSheet from "./BidSheet";
 import ProductCard from "./ProductCard";
 
-import { useBid } from "@/hooks/auction/useBid";
 import { useBidApi } from "@/hooks/item/bid/useBidApi";
 import { useUserStore } from "@/store/useUserStore";
-import type { DeckAuctionItem } from "@/types/auction/deck";
+import type { DeckAuctionItem } from "@/types/auction/deckApi.type";
 import { useEffect, useMemo, useState } from "react";
 
 interface SwipeDeckProps {
@@ -19,7 +18,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
   const userId = useUserStore(state => state.userId);
 
   const current = items[index];
-  const { price, setPrice } = useBid(current ? current.currentPrice : 0);
+  const [price, setPrice] = useState(current ? current.currentPrice : 0);
 
   const { postSwipMutation, postBidMutation } = useBidApi();
   const { mutate: createBid } = postBidMutation();
@@ -47,7 +46,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
     setIndex(prev => prev + 1);
   };
 
-  /* 입찰 */
+  // 입찰
   const performBid = () => {
     if (!current || !userId) {
       alert("오류가 발생했습니다. 다시 시도해 주세요.");
@@ -93,7 +92,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
     );
   };
 
-  /* 보류 */
+  // 보류
   const defer = () => {
     if (!current) return;
 
@@ -113,14 +112,14 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
     );
   };
 
-  /* 관심 없음 */
+  // 관심 없음
   const onSwiped = (dir: string) => {
     if (dir === "left" && current) {
       swipeAction(
         { auctionId: current.id, action: "DISLIKE" },
         {
           onSuccess: () => {
-            removeCard(); // 다음 카드로 이동
+            removeCard();
           },
           onError: () => {
             removeCard();
@@ -140,15 +139,14 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
       {visible.map((product, i) => {
         const depth = i;
         const scale = 1 - depth * 0.06;
-        const translateY = depth * 20;
 
         return (
           <div
             key={product.id}
-            className="absolute inset-0"
+            className="absolute inset-0 flex justify-center items-center"
             style={{
               zIndex: visible.length - i,
-              transform: `translateY(${translateY}px) scale(${scale})`,
+              transform: `scale(${scale})`,
             }}
           >
             <SwipeCard

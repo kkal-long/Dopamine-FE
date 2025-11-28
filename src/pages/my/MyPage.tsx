@@ -1,11 +1,11 @@
 import Footer from "@/components/common/Footer";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import AuctionList from "@/components/my/AuctionList";
-import AuctionTabs from "@/components/my/AuctionTabs";
-import PointCard from "@/components/my/PointCard";
-import PointHistoryList from "@/components/my/PointHistoryList";
-import ProfileHeader from "@/components/my/ProfileHeader";
-import { useMyAuctions } from "@/hooks/auction/useMyAuctions";
+import AuctionList from "@/components/my/point/AuctionList";
+import AuctionTabs from "@/components/my/auction/AuctionTabs";
+import PointCard from "@/components/my/point/PointCard";
+import PointHistoryList from "@/components/my/point/PointHistoryList";
+import ProfileHeader from "@/components/my/profile/ProfileHeader";
+import { useMyAuctions } from "@/hooks/auction/useMyAuctionsApi";
 import { useAuthApi } from "@/hooks/auth/useAuthApi";
 import { usePointApi } from "@/hooks/my/charge/usePointApi";
 import { useUserStore } from "@/store/useUserStore";
@@ -37,9 +37,6 @@ const MyPage = () => {
 
   const now = new Date();
 
-  /** =============================
-   * 진행중 데이터 포맷팅
-   ==============================*/
   const ongoingItems = ongoing.map(a => {
     const end = new Date(a.endAt);
     const diff = end.getTime() - now.getTime();
@@ -53,23 +50,18 @@ const MyPage = () => {
       price: a.currentPrice,
       status: "경매중",
 
-      /** ⭐ 반드시 imageUrls 로 넘겨야 함 (AuctionList가 이 구조를 기대함) */
       imageUrls: a.imageUrls,
 
       timeLeft: { hours, minutes },
     };
   });
 
-  /** =============================
-   * 완료된 데이터 포맷팅
-   ==============================*/
   const completedItems = completed.map(a => ({
     id: a.id,
     title: a.title,
     price: a.currentPrice,
     status: "거래 완료",
 
-    /** ⭐ 완료된 항목도 동일한 키 사용해야 함 */
     imageUrls: a.imageUrls,
   }));
 
@@ -98,7 +90,6 @@ const MyPage = () => {
         />
 
         {/* 리스트 */}
-
         <AuctionList
           activeTab={activeTab}
           ongoingItems={ongoingItems}

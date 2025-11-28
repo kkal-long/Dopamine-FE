@@ -1,6 +1,6 @@
 import Header from "@/components/common/Header";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import PointItem from "@/components/my/pointItem/PointItem";
+import PointItem from "@/components/my/point/PointItem";
 import { PointHistoryResponse } from "@/types/my/pointApi.type";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";

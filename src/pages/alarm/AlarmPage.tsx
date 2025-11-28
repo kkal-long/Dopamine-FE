@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AlarmLogo, AlarmUp } from "@/assets/svgs/alarm";
 import { Goback } from "@/assets/svgs/search";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { useNotificationList } from "@/hooks/notification/useNotification";
+import { useNotificationList } from "@/hooks/notification/useNotificationApi";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { formatTimeAgo } from "@/utils/dateUtils";
 
@@ -15,18 +15,15 @@ const AlarmPage = () => {
   const { data: notifications, isLoading } = useNotificationList();
   const { setAlarms, resetUnread, alarms } = useNotificationStore();
 
-  /* 백엔드 type → 한글 타입 */
   const typeLabel = (t: "OUTBID" | "WIN" | "FAIL") => {
     return t === "OUTBID" ? "상위 입찰" : "낙찰 종료";
   };
 
-  /* 백엔드 type → 아이콘 매핑 */
   const getTypeIcon = (t: "OUTBID" | "WIN" | "FAIL") => {
     console.log(t);
     return t === "OUTBID" ? AlarmUp : AlarmLogo;
   };
 
-  /* API 알림 데이터를 Zustand alarms로 변환 */
   useEffect(() => {
     if (!notifications) return;
 
@@ -39,7 +36,6 @@ const AlarmPage = () => {
         isRead: n.isRead,
         createdAt: n.createdAt,
 
-        // UI 가공 필드
         typeLabel: typeLabel(n.type),
         timeLabel: formatTimeAgo(n.createdAt),
       })

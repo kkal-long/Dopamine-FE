@@ -1,17 +1,16 @@
-// CategoryResultPage.tsx
 import { Goback, Search } from "@/assets/svgs/search";
-import { useCategoryList } from "@/hooks/useSearch";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { useCategoryList } from "@/hooks/search/useSearchApi";
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-/** 카테고리 검색 결과 아이템 타입 */
 interface CategoryItem {
   auctionId: number;
   goodsName: string;
   currentPrice: number;
   remainingTime: string;
-  imageUrl: string | null; // 백엔드 원본
-  imageUrls: string[]; // 배열 변환
+  imageUrl: string | null;
+  imageUrls: string[];
   status?: string;
   progressStatus?: string;
   auctionStatus?: string;
@@ -31,7 +30,6 @@ const CategoryResultPage: React.FC = () => {
     isError,
   } = useCategoryList(categoryId);
 
-  /** 🔥 imageUrl → imageUrls 로 정규화 */
   const products: CategoryItem[] = rawProducts.map(
     (item: CategoryItem): CategoryItem => ({
       ...item,
@@ -39,7 +37,6 @@ const CategoryResultPage: React.FC = () => {
     })
   );
 
-  /** 상태 정규화 */
   const normalizeStatus = (item: CategoryItem) => {
     const rawStatus =
       item.status ||
@@ -63,7 +60,6 @@ const CategoryResultPage: React.FC = () => {
     return "경매중";
   };
 
-  /** 남은 시간 정제 */
   const getValidRemainingTime = (status: string, time?: string) => {
     if (status === "경매종료") return "";
     if (!time) return "";
@@ -86,6 +82,10 @@ const CategoryResultPage: React.FC = () => {
 
     return isValid ? trimmed : "";
   };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="w-full max-w-[375px] mx-auto bg-white min-h-[812px] px-[20px] py-6">
