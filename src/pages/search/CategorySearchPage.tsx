@@ -1,5 +1,6 @@
 // CategorySearchPage.tsx
 import { Delete, Goback, Search } from "@/assets/svgs/search";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useCategoryKeyword } from "@/hooks/search/useSearch";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -130,6 +131,10 @@ const CategorySearchPage: React.FC = () => {
 
     return isValid ? trimmed : "";
   };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="w-full max-w-[375px] mx-auto bg-white min-h-[812px] px-[20px] py-6">
