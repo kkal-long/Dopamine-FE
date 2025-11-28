@@ -1,6 +1,7 @@
 import { useBidApi } from "@/hooks/item/bid/useBidApi";
 import { useUserStore } from "@/store/useUserStore";
 import { useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useState } from "react";
 
 export const useItemBid = (currentPrice: number, auctionId: number) => {
@@ -46,9 +47,10 @@ export const useItemBid = (currentPrice: number, auctionId: number) => {
                   queryKey: ["bidHistory", auctionId],
                 });
               },
-              onError: err => {
-                console.error(err);
-                alert("입찰 도중 오류가 발생했습니다.");
+              onError: (err: AxiosError<{ message: string }>) => {
+                alert(
+                  err.response?.data.message || "입찰 도중 오류가 발생했습니다."
+                );
               },
             }
           );
