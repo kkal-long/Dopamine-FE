@@ -18,7 +18,7 @@ const MainLayout = () => {
   return (
     <div
       ref={scrollRef}
-      className="h-[100dvh] bg-black flex justify-center overflow-y-auto"
+      className="h-[100dvh] bg-white flex justify-center overflow-y-auto"
     >
       <main className="w-full max-w-[375px] bg-white">
         <Suspense fallback={<LoadingSpinner />}>

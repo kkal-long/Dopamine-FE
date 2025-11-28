@@ -50,10 +50,12 @@ const BidItemPage = () => {
   }
 
   return (
-    <div className="bg-grey02 min-h-screen">
+    <div className="min-h-screen bg-white">
       <Header />
-      <WonBid wonItems={items?.wonItems || []} onChat={handleChatClick} />
-      <Bidding biddingItems={items?.bidItems || []} />
+      <div className="flex flex-col gap-2 bg-grey02">
+        <WonBid wonItems={items?.wonItems || []} onChat={handleChatClick} />
+        <Bidding biddingItems={items?.bidItems || []} />
+      </div>
     </div>
   );
 };

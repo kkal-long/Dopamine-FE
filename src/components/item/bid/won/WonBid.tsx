@@ -16,7 +16,7 @@ const WonBid = ({ wonItems, onChat }: WonBidProps) => {
   const restItems = auctions.slice(1);
 
   return (
-    <div className="bg-white p-4 mb-2">
+    <div className="bg-white p-4">
       <div className="flex items-center gap-2 mb-3">
         <Trophy className="w-5 h-5" />
         <span className="text-med18 text-darkgrey05">낙찰된 물품</span>

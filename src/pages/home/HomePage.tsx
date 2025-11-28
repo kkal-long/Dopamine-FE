@@ -7,12 +7,12 @@ export default function HomePage() {
   const { deck, isLoading, error, loadMore } = useAuctionDeck();
 
   return (
-    <main className="relative w-full h-full bg-white">
+    <main className="relative w-full min-h-full bg-white flex flex-col">
       {/* 상단 헤더 */}
       <HeaderBell />
 
       {/* 카드 덱 */}
-      <section className="flex h-full items-center justify-center">
+      <section className="flex-1 flex items-center justify-center">
         {isLoading && <LoadingSpinner />}
 
         {error && (
