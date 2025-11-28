@@ -5,6 +5,7 @@ import ProductCard from "./ProductCard";
 import { useBidApi } from "@/hooks/item/bid/useBidApi";
 import { useUserStore } from "@/store/useUserStore";
 import type { DeckAuctionItem } from "@/types/auction/deckApi.type";
+import { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 
 interface SwipeDeckProps {
@@ -77,9 +78,10 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
                 current.bidPlaced = true;
                 setSheetOpen(false);
               },
-              onError: err => {
-                console.error(err);
-                alert("입찰 도중 오류가 발생했습니다.");
+              onError: (err: AxiosError<{ message: string }>) => {
+                alert(
+                  err.response?.data.message || "입찰 도중 오류가 발생했습니다."
+                );
               },
             }
           );

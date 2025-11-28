@@ -2,6 +2,11 @@ import { postBid } from "@/apis/auction/createBidApi";
 import { postSwipeAction } from "@/apis/auction/postSwipeApi";
 import { getAuctionSummary, getBidHistory } from "@/apis/item/bid/bidApi";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import {
+  CreateBidRequest,
+  CreateBidResponse,
+} from "@/types/item/bid/bidApi.type";
 
 export const useBidApi = () => {
   const getAuctionSummaryQuery = (userId: number | null) => {
@@ -29,7 +34,11 @@ export const useBidApi = () => {
   };
 
   const postBidMutation = () => {
-    return useMutation({
+    return useMutation<
+      CreateBidResponse,
+      AxiosError<{ message: string }>,
+      CreateBidRequest
+    >({
       mutationFn: postBid,
     });
   };
