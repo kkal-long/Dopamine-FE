@@ -2,6 +2,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import HeaderBell from "@/components/mainpage/HeaderBell";
 import SwipeDeck from "@/components/mainpage/SwipeDeck";
 import { useAuctionDeck } from "@/hooks/auction/useAuctionDeckApi";
+import GuideOverlay from "@/components/onboarding/GuideOverLay";
 
 export default function HomePage() {
   const { deck, isLoading, error, loadMore } = useAuctionDeck();
@@ -26,7 +27,10 @@ export default function HomePage() {
         )}
 
         {deck.length > 0 && (
-          <SwipeDeck items={deck} onDeckExhausted={loadMore} />
+          <>
+            <SwipeDeck items={deck} onDeckExhausted={loadMore} />
+            <GuideOverlay />
+          </>
         )}
       </section>
     </main>
