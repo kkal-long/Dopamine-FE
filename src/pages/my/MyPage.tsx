@@ -37,9 +37,6 @@ const MyPage = () => {
 
   const now = new Date();
 
-  /** =============================
-   * 진행중 데이터 포맷팅
-   ==============================*/
   const ongoingItems = ongoing.map(a => {
     const end = new Date(a.endAt);
     const diff = end.getTime() - now.getTime();
@@ -53,23 +50,18 @@ const MyPage = () => {
       price: a.currentPrice,
       status: "경매중",
 
-      /** ⭐ 반드시 imageUrls 로 넘겨야 함 (AuctionList가 이 구조를 기대함) */
       imageUrls: a.imageUrls,
 
       timeLeft: { hours, minutes },
     };
   });
 
-  /** =============================
-   * 완료된 데이터 포맷팅
-   ==============================*/
   const completedItems = completed.map(a => ({
     id: a.id,
     title: a.title,
     price: a.currentPrice,
     status: "거래 완료",
 
-    /** ⭐ 완료된 항목도 동일한 키 사용해야 함 */
     imageUrls: a.imageUrls,
   }));
 
@@ -98,7 +90,6 @@ const MyPage = () => {
         />
 
         {/* 리스트 */}
-
         <AuctionList
           activeTab={activeTab}
           ongoingItems={ongoingItems}

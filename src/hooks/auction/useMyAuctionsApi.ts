@@ -12,14 +12,13 @@ export const useMyAuctions = () => {
     const fetchData = async () => {
       try {
         const res = await getMyAuctions();
-        console.log("📌 GET /auctions/my 결과:", res);
 
         const now = new Date();
 
         const normalized: MyAuctionItem[] = res.auctions.map(a => ({
           ...a,
-          imageUrls: a.imageUrl ? [a.imageUrl] : [], // 배열 통일
-          price: a.currentPrice, // UI용 price 반영
+          imageUrls: a.imageUrl ? [a.imageUrl] : [],
+          price: a.currentPrice,
         }));
 
         const ongoingItems = normalized.filter(a => new Date(a.endAt) > now);

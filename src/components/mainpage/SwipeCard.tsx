@@ -69,7 +69,6 @@ export default function SwipeCard({
         transition={{ type: "spring", stiffness: 280, damping: 24 }}
         className={`w-full ${className}`}
       >
-        {/* 버튼 클릭 방해 요소 제거했습니다 */}
         {children}
       </motion.div>
     </AnimatePresence>

@@ -10,12 +10,9 @@ const DurationSelector = ({ value, onChange, options }: Props) => {
   const [openSheet, setOpenSheet] = useState(false);
   const [isCustom, setIsCustom] = useState(false);
 
-  // wheel index
   const [dayIndex, setDayIndex] = useState(0);
   const [hourIndex, setHourIndex] = useState(0);
   const [minuteIndex, setMinuteIndex] = useState(0);
-
-  // 리스트 데이터 (앞뒤에 빈값 2개씩 추가)
 
   const days = [
     "",
@@ -72,10 +69,8 @@ const DurationSelector = ({ value, onChange, options }: Props) => {
 
     return (
       <div className="relative h-[180px] w-[90px] flex flex-col items-center overflow-hidden">
-        {/* 선택선 */}
         <div className="absolute top-1/2 -translate-y-1/2 w-full h-[36px] border-y border-bluegrey03 z-10" />
 
-        {/* Scroll Area */}
         <div
           ref={containerRef}
           onScroll={handleScroll}

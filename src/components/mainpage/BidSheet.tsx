@@ -32,7 +32,6 @@ export default function BidSheet({
     <AnimatePresence>
       {open && (
         <>
-          {/* 디자인 수정 */}
           <motion.div
             className="absolute inset-0 z-40"
             onClick={onClose}
@@ -60,10 +59,8 @@ export default function BidSheet({
             transition={{ type: "spring", stiffness: 260, damping: 28 }}
             onPointerDownCapture={e => e.stopPropagation()}
           >
-            {/* 그랩 핸들 */}
             <div className="h-[5px] w-[60px] rounded-full bg-white/30 mb-4" />
 
-            {/* 상품명 + 현재 최고 입찰가 */}
             <div className="flex justify-between items-end w-full mb-4 text-white px-1">
               <span className="text-[20px] font-medium">{productTitle}</span>
               <span className="text-[13px] opacity-80">
@@ -73,7 +70,6 @@ export default function BidSheet({
 
             {/* 가격 조정 섹션 */}
             <div className="flex items-center justify-between w-full gap-4">
-              {/* 가격 감소 */}
               <button
                 className="grid h-[52px] w-[52px] place-items-center rounded-full bg-white/20 backdrop-blur-md cursor-pointer"
                 onClick={e => {
@@ -84,7 +80,6 @@ export default function BidSheet({
                 <Down className="text-white" />
               </button>
 
-              {/* 입찰가 */}
               <div className="flex items-center justify-center gap-2 flex-1 h-[52px] text-white bg-white/10 backdrop-blur-lg border border-white/20 rounded-full px-4">
                 <span className="text-[14px] opacity-80">₩</span>
                 <input
@@ -98,7 +93,6 @@ export default function BidSheet({
                 />
               </div>
 
-              {/* 가격 상승 */}
               <button
                 className="grid h-[52px] w-[52px] place-items-center rounded-full bg-white/20 backdrop-blur-md cursor-pointer"
                 onClick={e => {
@@ -110,7 +104,6 @@ export default function BidSheet({
               </button>
             </div>
 
-            {/* 확인(입찰) 버튼 */}
             <button
               className="mt-6 w-full h-[52px] rounded-full bg-mainpink text-white font-medium text-[17px] shadow-[0_8px_18px_rgba(255,4,88,0.35)] active:scale-[0.99] cursor-pointer"
               onClick={e => {

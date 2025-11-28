@@ -9,8 +9,8 @@ export type AlarmItem = {
   isRead: boolean;
   createdAt: string;
 
-  timeLabel: string; // "5분 전", "1시간 전"
-  typeLabel: string; // 상위 입찰 / 낙찰 종료
+  timeLabel: string; // 5분 전, 1시간 전
+  typeLabel: string; // 상위 입찰, 낙찰 종료
 };
 
 type NotificationStore = {

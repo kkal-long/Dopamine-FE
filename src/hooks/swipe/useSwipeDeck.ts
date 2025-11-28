@@ -13,7 +13,6 @@ export function useSwipeDeck(initial: MainPageProduct[]) {
     setCurrentIndex(i => Math.min(i + 1, products.length - 1));
   }, [hasNext, products.length]);
 
-  // 보류: 현재 카드를 맨 뒤로 이동
   const deferCurrent = useCallback(() => {
     setProducts(prev => {
       const next = [...prev];
@@ -33,7 +32,6 @@ export function useSwipeDeck(initial: MainPageProduct[]) {
     []
   );
 
-  // 카드 겹침 효과용(앞의 3장만 노출)
   const visibleStack = useMemo(
     () => products.slice(currentIndex, currentIndex + 3),
     [products, currentIndex]

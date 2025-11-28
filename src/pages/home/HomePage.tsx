@@ -4,7 +4,6 @@ import SwipeDeck from "@/components/mainpage/SwipeDeck";
 import { useAuctionDeck } from "@/hooks/auction/useAuctionDeckApi";
 
 export default function HomePage() {
-  /** 실제 경매 카드를 가져오는 API 훅 */
   const { deck, isLoading, error, loadMore } = useAuctionDeck();
 
   return (

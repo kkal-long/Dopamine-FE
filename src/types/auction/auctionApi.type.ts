@@ -8,7 +8,7 @@ export interface CreateAuctionRequest {
   transactionMethod: "FACE_TO_FACE" | "DELIVERY";
   manufactureYear: string;
   location: string;
-  imageUrls: string[]; // ← 현재 정의된 이름
+  imageUrls: string[];
   categoryIds: number[];
   hideBidPrice: boolean;
 }

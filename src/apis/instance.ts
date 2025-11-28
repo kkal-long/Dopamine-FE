@@ -1,4 +1,3 @@
-// src/apis/instance.ts
 import { useAuthStore } from "@/store/useAuthStore";
 import axios from "axios";
 
@@ -14,7 +13,6 @@ instance.interceptors.request.use(config => {
     config.headers.set("Authorization", `Bearer ${accessToken}`);
   }
 
-  // Content-Type 없으면 JSON 기본값 유지
   if (!config.headers.get("Content-Type")) {
     config.headers.set("Content-Type", "application/json");
   }
@@ -44,7 +42,7 @@ instance.interceptors.response.use(
       try {
         const refresh = await axios.post(
           `${import.meta.env.VITE_SERVER_API_URL}/token/access`,
-          { refreshToken },
+          { refreshToken: refreshToken },
           { withCredentials: true }
         );
 

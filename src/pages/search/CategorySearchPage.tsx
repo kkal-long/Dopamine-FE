@@ -1,4 +1,3 @@
-// CategorySearchPage.tsx
 import { Delete, Goback, Search } from "@/assets/svgs/search";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useCategoryKeyword } from "@/hooks/search/useSearchApi";
@@ -11,8 +10,8 @@ interface CategoryItem {
   currentPrice: number;
   remainingTime?: string;
 
-  imageUrl: string | null; // API 문자열
-  imageUrls: string[]; // 프론트 배열 변환
+  imageUrl: string | null;
+  imageUrls: string[];
 
   status?: string;
   progressStatus?: string;
@@ -31,20 +30,18 @@ const CategorySearchPage: React.FC = () => {
   const [confirmedQuery, setConfirmedQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  /* 최근 검색어 로드 */
+  // 최근 검색어 로드
   useEffect(() => {
     const stored = localStorage.getItem("recentSearches");
     if (stored) setRecentSearches(JSON.parse(stored));
   }, []);
 
-  /* API */
   const {
     data: rawProducts = [],
     isLoading,
     isError,
   } = useCategoryKeyword(categoryId, confirmedQuery);
 
-  /* 🔥 imageUrl → imageUrls 정규화 */
   const products: CategoryItem[] = rawProducts.map(
     (item: CategoryItem): CategoryItem => ({
       ...item,
@@ -52,7 +49,7 @@ const CategorySearchPage: React.FC = () => {
     })
   );
 
-  /* 최근 검색어 저장 */
+  // 최근 검색어 저장
   const saveRecentKeyword = (word: string) => {
     const trimmed = word.trim();
     if (!trimmed) return;
@@ -66,7 +63,7 @@ const CategorySearchPage: React.FC = () => {
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
 
-  /* 검색 실행 */
+  // 검색 실행
   const handleSearchSubmit = (word?: string) => {
     const finalWord = (word ?? query).trim();
     if (!finalWord) return;
@@ -84,7 +81,7 @@ const CategorySearchPage: React.FC = () => {
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
 
-  /** 상태 통합 */
+  // 상태 통합
   const normalizeStatus = (item: CategoryItem) => {
     const rawStatus =
       item.status ||
@@ -108,7 +105,7 @@ const CategorySearchPage: React.FC = () => {
     return "경매중";
   };
 
-  /** 남은 시간 정제 */
+  // 남은 시간 정제
   const getValidRemainingTime = (status: string, time?: string) => {
     if (status === "경매종료") return "";
     if (!time) return "";

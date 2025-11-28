@@ -1,7 +1,7 @@
 import instance from "@/apis/instance";
 import { SearchResultItem } from "@/types/search/search";
 
-// 1) 카테고리별 조회
+// 카테고리별 조회
 export const getCategoryList = async (
   categoryId: number
 ): Promise<SearchResultItem[]> => {
@@ -9,7 +9,7 @@ export const getCategoryList = async (
   return res.data;
 };
 
-// 2) 카테고리 내 키워드 검색
+// 카테고리 내 키워드 검색
 export const getCategoryKeyword = async ({
   categoryId,
   keyword,
@@ -23,7 +23,7 @@ export const getCategoryKeyword = async ({
   return res.data;
 };
 
-// 3) 전체 검색
+// 전체 검색
 export const getSearchAll = async (
   keyword: string
 ): Promise<SearchResultItem[]> => {
@@ -31,7 +31,7 @@ export const getSearchAll = async (
   return res.data;
 };
 
-// 4) 필터 검색->만들어는 놨는데 안씀...
+// 필터 검색
 export const postFilteredSearch = async (body: {
   conditions: string[];
   minYear: string;

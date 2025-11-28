@@ -5,7 +5,7 @@ interface AuctionItem {
   title: string;
   price: number;
   status: string;
-  imageUrls: string[]; // 반드시 배열
+  imageUrls: string[];
   timeLeft?: {
     hours: number;
     minutes: number;

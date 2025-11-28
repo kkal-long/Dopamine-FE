@@ -1,4 +1,3 @@
-// SearchResultPage.tsx
 import { Delete, Goback, Search } from "@/assets/svgs/search";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useSearchAll } from "@/hooks/search/useSearchApi";
@@ -11,10 +10,8 @@ interface SearchItem {
   currentPrice: number;
   remainingTime?: string;
 
-  /** API: 문자열 */
   imageUrl: string | null;
 
-  /** 프론트: 배열로 정규화한 필드 */
   imageUrls: string[];
 
   status?: string;
@@ -34,26 +31,24 @@ const SearchResultPage: React.FC = () => {
 
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  /* 최근 검색어 로드 */
+  // 최근 검색어 로드
   useEffect(() => {
     const stored = localStorage.getItem("recentSearches");
     if (stored) setRecentSearches(JSON.parse(stored));
   }, []);
 
-  /* API 호출 */
   const {
     data: rawProducts = [],
     isLoading,
     isError,
   } = useSearchAll(confirmedQuery);
 
-  /** 🔥 imageUrl → imageUrls 로 정규화 */
   const products: SearchItem[] = rawProducts.map((item: SearchItem) => ({
     ...item,
     imageUrls: item.imageUrl ? [item.imageUrl] : [],
   }));
 
-  /* 최근 검색어 저장 */
+  // 최근 검색어 저장
   const saveRecentKeyword = (word: string) => {
     const trimmed = word.trim();
     if (!trimmed) return;
@@ -67,7 +62,7 @@ const SearchResultPage: React.FC = () => {
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
 
-  /* 검색 실행 */
+  // 검색 실행
   const handleSearchSubmit = () => {
     if (!query.trim()) return;
     const finalWord = query.trim();
@@ -75,21 +70,21 @@ const SearchResultPage: React.FC = () => {
     setConfirmedQuery(finalWord);
   };
 
-  /* 최근 검색어 자동 검색 */
+  // 최근 검색어 자동 검색
   const handleRecentClick = (word: string) => {
     setQuery(word);
     saveRecentKeyword(word);
     setConfirmedQuery(word);
   };
 
-  /* 최근 검색어 삭제 */
+  // 최근 검색어 삭제
   const handleDelete = (word: string) => {
     const updated = recentSearches.filter(w => w !== word);
     setRecentSearches(updated);
     localStorage.setItem("recentSearches", JSON.stringify(updated));
   };
 
-  /** 상태 통합 */
+  // 상태 통합
   const normalizeStatus = (item: SearchItem) => {
     const rawStatus =
       item.status ||
@@ -110,10 +105,10 @@ const SearchResultPage: React.FC = () => {
     if (s === "SOLD" || isEnd) return "경매종료";
     if (s === "IN_PROGRESS") return "경매중";
 
-    return "경매중"; // 기본값
+    return "경매중";
   };
 
-  /** 남은 시간 정제 */
+  // 남은 시간 정제
   const getValidRemainingTime = (status: string, time?: string) => {
     if (status === "경매종료") return "";
     if (!time) return "";

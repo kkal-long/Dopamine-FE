@@ -41,7 +41,6 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
         className="absolute inset-0 h-full w-full object-cover pointer-events-none"
       />
 
-      {/* 그라데이션 */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" />
 
       {/* 콘텐츠 영역 */}
@@ -57,7 +56,6 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
           </div>
         </div>
 
-        {/* 입찰 전 */}
         {!product.bidPlaced ? (
           <div className="mt-3 flex items-center gap-3">
             <button
@@ -83,7 +81,6 @@ export default function ProductCard({ product, onOpenBid, onDefer }: Props) {
             </button>
           </div>
         ) : (
-          // 입찰 완료 UI
           <div className="mt-3 flex items-center gap-3 cursor-pointer">
             <button
               onClick={handleOpenBid}

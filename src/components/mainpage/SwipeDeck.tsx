@@ -46,7 +46,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
     setIndex(prev => prev + 1);
   };
 
-  /* 입찰 */
+  // 입찰
   const performBid = () => {
     if (!current || !userId) {
       alert("오류가 발생했습니다. 다시 시도해 주세요.");
@@ -92,7 +92,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
     );
   };
 
-  /* 보류 */
+  // 보류
   const defer = () => {
     if (!current) return;
 
@@ -112,7 +112,7 @@ export default function SwipeDeck({ items, onDeckExhausted }: SwipeDeckProps) {
     );
   };
 
-  /* 관심 없음 */
+  // 관심 없음
   const onSwiped = (dir: string) => {
     if (dir === "left" && current) {
       swipeAction(

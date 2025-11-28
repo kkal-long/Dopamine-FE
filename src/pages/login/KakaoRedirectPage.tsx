@@ -5,7 +5,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useAuthApi } from "@/hooks/auth/useAuthApi";
 import { useAuthStore } from "@/store/useAuthStore";
 
-// 쿠키 문자열에서 특정 이름의 쿠키 값을 추출하는 함수
+// 쿠키 추출
 const getCookie = (name: string): string | null => {
   const nameEQ = name + "=";
   const ca = document.cookie.split(";");

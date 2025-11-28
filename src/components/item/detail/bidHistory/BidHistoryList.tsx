@@ -23,8 +23,8 @@ const BidHistoryList = ({ status, bidData }: BidHistoryListProps) => {
               const rank = index + 1;
 
               const isWinner =
-                (status === "CLOSED" || status === "CANCELED") && rank === 1; // 경매 종료시 1등
-              const isCurrentTop = status === "IN_PROGRESS" && rank === 1; // 경매 진행중 1등
+                (status === "CLOSED" || status === "CANCELED") && rank === 1;
+              const isCurrentTop = status === "IN_PROGRESS" && rank === 1;
 
               return (
                 <BidHistoryItem

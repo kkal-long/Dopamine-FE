@@ -15,7 +15,6 @@ const AuctionTimeSection = ({
   hideBid,
   onToggle,
 }: Props) => {
-  // 🔥 옵션에 "직접 입력" 추가!
   const fullOptions = [...options, "직접 입력"];
 
   return (
@@ -41,7 +40,6 @@ const AuctionTimeSection = ({
           </p>
         </div>
 
-        {/* 토글 */}
         <label className="relative inline-block w-12 h-6 cursor-pointer">
           <input
             type="checkbox"

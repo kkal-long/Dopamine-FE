@@ -56,7 +56,6 @@ const ItemDetailContent = ({ auctionData, qnaData, bidData }: ContentProps) => {
   const { isBidSheetOpen, setBidSheetOpen, handleBidSubmit, closeBidSheet } =
     useItemBid(auctionData.currentPrice, auctionData.auctionId);
 
-  // 입찰하기 버튼 클릭시
   const handleBidClick = () => {
     setBidSheetOpen(true);
   };
@@ -84,7 +83,6 @@ const ItemDetailContent = ({ auctionData, qnaData, bidData }: ContentProps) => {
         onReplySubmit={handleReplySubmit}
       />
 
-      {/* 질문하기를 누르면 Footer X */}
       {isAsking ? (
         <QnaInputBar onSubmit={handleQuestionSubmit} onClose={cancelAsking} />
       ) : (

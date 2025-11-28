@@ -1,4 +1,3 @@
-// src/hooks/auction/useCreateAuction.ts
 import { createAuction } from "@/apis/my/createAuctionApi";
 import { CreateAuctionRequest } from "@/types/auction/auctionApi.type";
 import { useState } from "react";

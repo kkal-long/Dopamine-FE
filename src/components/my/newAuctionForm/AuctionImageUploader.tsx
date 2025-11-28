@@ -11,7 +11,6 @@ const AuctionImageUploader = ({ images, setImages }: Props) => {
       const newImages = [...prev];
       newImages[index] = file;
 
-      // 🔥 수정된 부분: 마지막 아이템이 null이 아닐 때만 null을 추가 (중복 방지)
       if (
         file &&
         newImages[newImages.length - 1] !== null &&

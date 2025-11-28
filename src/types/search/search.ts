@@ -1,4 +1,3 @@
-// 검색 결과 아이템
 export interface SearchResultItem {
   auctionId: number;
   goodsName: string;
@@ -6,10 +5,8 @@ export interface SearchResultItem {
   remainingTime: string;
   currentPrice: number;
 
-  /** API 실제 값 (문자열) */
   imageUrl: string | null;
 
-  /** 프론트에서 변환한 배열 */
   imageUrls: string[];
 
   condition: string;
@@ -17,7 +14,6 @@ export interface SearchResultItem {
   categoryId: number;
 }
 
-// 최근 검색어
 export interface RecentKeywordItem {
   id: number;
   keyword: string;
