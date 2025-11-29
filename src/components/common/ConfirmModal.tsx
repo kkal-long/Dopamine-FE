@@ -60,7 +60,7 @@ const ConfirmModal = ({
           </button>
           <button
             onClick={onConfirm}
-            className="w-full py-2 bg-bluegrey02 text-med16 text-black rounded-xl cursor-pointer hover:bg-lightpink"
+            className="w-full py-2 bg-mainpink text-med16 text-white rounded-xl cursor-pointer "
           >
             {confirmText}
           </button>
